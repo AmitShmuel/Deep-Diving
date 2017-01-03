@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -17,76 +16,47 @@ import android.view.View;
 
 public class GameAnimationView extends View {
 
-    Paint paint = new Paint();
-    static final int NUM_FRAMES = 1;
+//    Paint paint = new Paint();
+    static final int NUM_FRAMES = 9;
     Bitmap charactersBitmap;
     Background background;
     Character[] characters;
-    int screenWidth, screenHeight;
+    float screenWidth, screenHeight;
     int charWidth, charHeight;
     int frameNum;
     Rect[] frames = new Rect[NUM_FRAMES];
-    Rect dest;
     boolean touch = false;
     int screenSandStart;
-    int bgHeight, bgWidth;
-//    private Character mainChar;
 
 
     public GameAnimationView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(false);
 
-//        paint.setColor(Color.BLACK);
-//        mainChar = new Character();
-        characters = new Character[]{
-//                new Character(),
-//                new Character(),
-//                new Character(),
-                new Character()
-        };
-
-        background = new Background();
-        prepareCharacters();
-
-//        System.out.println("==================================");
+        background = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background));
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         screenWidth = getWidth();
         screenHeight = getHeight();
-        screenSandStart = screenHeight - 120;
-//        System.out.println(screenHeight);
-        float rand, x, y;
+        screenSandStart = (int)screenHeight - 120;
 
-        // handle side edges
-//        rand = (float) Math.random();
-//        x = rand*screenWidth < charWidth ? rand*screenWidth+charWidth: rand*screenWidth - charWidth;
+        prepareCharacters();
 
-        rand = (float) Math.random();
-        y = rand*screenSandStart + charHeight +1;
-        dest = new Rect(screenWidth + 100 - charWidth, (int)y - charHeight, screenWidth + 100, (int)y);
-//        mainChar.setSize(100, 200);
-//        for (Obstacle obstacle: obstacles) {
-//            obstacle.populate(100, 100);
-//        }
-
-        super.onSizeChanged(w, h, oldw, oldh);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
 
-//        mainChar.draw(canvas);
         background.draw(canvas);
         for (Character character: characters) {
             character.draw(canvas);
         }
 //        canvas.drawLine(screenWidth, screenHeight-120, 0, screenHeight-120, paint);
-
         postInvalidateOnAnimation();
-//        postInvalidateDelayed(100);
     }
 
     @Override
@@ -107,151 +77,102 @@ public class GameAnimationView extends View {
     }
 
 
-    private void prepareBackground() {
-
-    }
-
-
     private void prepareCharacters() {
-        charactersBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.fish_1);
 
-        charWidth = (charactersBitmap.getWidth()); //- 64) / 12;
-        charHeight = (charactersBitmap.getHeight()); //- 292) / 6*;
+        characters = new Character[]{
+
+                new Character(1, 1.1f), new Character(2, 0.6f),
+                new Character(5, 1.2f), new Character(3, 1.2f),
+                new Character(2, 0.8f), new Character(1, 0.5f),
+                new Character(2, 1f), new Character(3, 1.1f), new Character(3, 0.9f)
+        };
+
+        charactersBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.fishes);
+
+        charWidth = (charactersBitmap.getWidth()) / 6;
+        charHeight = (charactersBitmap.getHeight()) / 3;
+
+//        System.out.println("==============="+charHeight+" "+charWidth);
+//        System.out.println("==============="+charactersBitmap.getHeight()+" "+charactersBitmap.getWidth());
+
+        float rand, initHeight;
+
 
         int i = 0; // rect index
-        for (int y = 0; y < 1; y++) { // row
-            for (int x = 0; x < 1; x++) { // column
-                characters[i].body = new Rect(x * charWidth, y * charHeight, (x + 1) * charWidth, (y + 1) * charHeight);
-                i++;
-                if (i >= NUM_FRAMES) {
-                    break;
-                }
+        for (int y = 0; y < 3; y++) { // row
+            for (int x = 0; x < 6; x+=2) { // column
+                rand = (float) Math.random();
+                initHeight = rand*screenSandStart + charHeight;
+                characters[i].bodyDst = new Rect((int)screenWidth + 100 - charWidth, (int)initHeight - charHeight, (int)screenWidth + 100, (int)initHeight);
+                characters[i].bodySrc[0] = new Rect(x * charWidth, y * charHeight, (x + 1) * charWidth, (y + 1) * charHeight);
+
+                characters[i].bodySrc[1] = new Rect((x+1) * charWidth, y * charHeight, (x+2) * charWidth, (y + 1) * charHeight);
+                System.out.println(i++);
+//                if (i >= NUM_FRAMES) {
+//                    break;
+//                }
             }
         }
-        //obstacles[0].body.set(0, 0, mCharWidth, mCharHeight);
-//        for (Obstacle obstacle: obstacles) {
-//            obstacle.body.set(objectsBitmap.getWidth();
-//            obstacle.objHeight = objectsBitmap.getHeight();
-//        }
+//        System.out.println("==============================="+screenHeight);
     }
 
     class Background {
 
         Bitmap image;
-        int width, height;
-        int x, y, dx = 1;
+        float width, height;
+        float x, y, dx = 0.2f;
 
-        public Background() {
-            image = BitmapFactory.decodeResource(getResources(), R.drawable.background);
+        public Background(Bitmap image) {
+            this.image = image;
             width = image.getWidth();
             height = image.getHeight();
         }
 
         public void draw(Canvas canvas) {
-
             int save = canvas.save();
 
-            canvas.scale(screenWidth/width, screenHeight/height);
+            canvas.scale(screenWidth/width +0.1f, screenHeight/height);
             canvas.drawBitmap(image, x, y, null);
 
             if(x < 0){
-                canvas.scale(screenWidth/width, screenHeight/height);
-                canvas.drawBitmap(image, x-screenWidth, y, null);
+                canvas.drawBitmap(image, x+width, y, null);
             }
 
             x -= dx;
-            if(x < -screenWidth) {
+            if(x < -width) {
                 x = 0;
             }
-
             canvas.restoreToCount(save);
         }
     }
 
     class Character {
 
-        Rect body;
-        int objWidth, objHeight;
+        Rect[] bodySrc = new Rect[2]; // two frame for each sprite
+        Rect bodyDst;
         float scale;
-        int tx = 0;
-        int speed = 3;
+        int speed;
+        int animation = 0;
+        int frame = 0;
 
-        Character() {
-            //scale = ?;
+        Character(int speed, float scale) {
+            this.speed = speed;
+            this.scale = scale;
         }
 
-//        void setSize(float width, float height) {
-//            objWidth = width;
-//            objHeight = height;
-//            body.set(screenWidth / 2 - objWidth / 2, screenHeight * 0.75f - objHeight / 2,
-//                    screenWidth / 2 + objWidth / 2, screenHeight * 0.75f + objHeight / 2);
-//        }
+        void draw(Canvas canvas) {
 
-        void movePlayer(int x, int y) {
-            body.offsetTo(x - objWidth / 2, y - objHeight);
-        }
+            int save = canvas.save();
 
-        protected void draw(Canvas canvas) {
+            canvas.scale(scale, scale, screenWidth/2, screenHeight/2);
+            canvas.drawBitmap(charactersBitmap, bodySrc[frame], bodyDst, null);
+            bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top);
+            if(animation++ % 15 == 0) {
+                frame++;
+                frame %= 2;
+            }
 
-//            int save = canvas.save();
-
-            canvas.drawBitmap(charactersBitmap, body, dest, null);
-            dest.offsetTo(dest.left - speed, dest.top);
-//            canvas.translate(tx + charWidth / 2, (screenHeight - charHeight));
-//            tx += speed;
-//            canvas.restoreToCount(save);
+            canvas.restoreToCount(save);
         }
     }
 }
-
- /*   class Obstacle extends GameObject {
-
-        float speed = 3f;
-
-        Obstacle() {
-            paint.setColor(Color.BLACK);
-        }
-
-        void populate(float width, float height) {
-//            objWidth = width;
-//            objHeight = height;
-            float rand, x, y;
-
-            // handle side edges
-            rand = (float) Math.random();
-            x = rand*screenWidth < objWidth ? rand*screenWidth+objWidth: rand*screenWidth - objWidth;
-
-            rand = (float) Math.random();
-            y = -(rand*screenHeight);
-
-            // gotta make a better gap between the obstacles
-
-            body.set((int)x, (int)y - objHeight/2, (int)x + objWidth, (int)y + objHeight/2);
-        }
-
-        @Override
-        protected void draw(Canvas canvas) {
-//            int save = canvas.save();
-
-            canvas.drawBitmap(objectsBitmap, body, dst, null);
-            canvas.drawRect(body, paint);
-            body.offsetTo(body.left, body.top + (int)speed);
-
-            // end of screen, populate him again
-            if (body.top > screenHeight)
-                populate(objWidth, objHeight);
-
-            // collision
-//            if (RectF.intersects(mainChar.body, this.body)) {
-//                try {
-//                    Thread.sleep(200);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-
-//            canvas.restoreToCount(save);
-        }
-    }
-}
-*/
