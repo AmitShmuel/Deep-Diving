@@ -151,11 +151,12 @@ public class GameAnimationView extends View {
 
             int save = canvas.save();
 
-            canvas.scale(width, screenHeight/height);
+            canvas.scale(screenWidth/width, screenHeight/height);
             canvas.drawBitmap(image, x, y, null);
 
             if(x < 0){
-                canvas.drawBitmap(image, x+screenWidth, y, null);
+                canvas.scale(screenWidth/width, screenHeight/height);
+                canvas.drawBitmap(image, x-screenWidth, y, null);
             }
 
             x -= dx;
