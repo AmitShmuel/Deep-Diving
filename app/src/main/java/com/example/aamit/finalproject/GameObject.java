@@ -3,6 +3,7 @@ package com.example.aamit.finalproject;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 /**
@@ -11,10 +12,9 @@ import android.graphics.RectF;
 
 public abstract class GameObject {
 
-    protected RectF body = new RectF();
+    protected Rect body = new Rect();
     protected Paint paint = new Paint();
-    protected float objWidth, objHeight;
-    protected int color;
+    protected int objWidth, objHeight;
 
     protected abstract void draw(Canvas canvas);
 
