@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.aamit.finalproject.GameAnimationView
+<com.example.aamit.finalproject.GameView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_game_view"
@@ -7,6 +7,3 @@
     android:layout_height="match_parent"
     tools:context="com.example.aamit.finalproject.GameViewActivity"
     />
-
-
-<!--    android:background="@drawable/background"   -->
