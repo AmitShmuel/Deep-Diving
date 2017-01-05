@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 /**
+ * 
  * View of the game.
  * It shows an undersea background with sea objects moving around
  */
@@ -273,9 +274,9 @@ public class GameView extends View {
     }
 
 
-    class Character implements GameObject{
+    class Character implements GameObject {
 
-        Rect[] bodySrc = new Rect[2]; // two frame for each sprite
+        Rect[] bodySrc = new Rect[2]; // two frames for each sprite
         RectF bodyDst = new RectF();
         float scale, speed;
         float width, height;
