@@ -9,9 +9,16 @@ import android.graphics.Canvas;
  * draw and update that determine how the object appear and move in the view.
  */
 
-interface GameObject {
+abstract class GameObject {
 
-    void draw(Canvas canvas);
+    float width, height;
 
-    void update();
+    abstract void draw(Canvas canvas);
+
+    abstract void update();
+
+    void setSize(float width, float height) {
+        this.width = width;
+        this.height = height;
+    }
 }

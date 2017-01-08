@@ -8,55 +8,55 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import static android.content.Context.SENSOR_SERVICE;
+
 /**
- * 
+ *
  * View of the game.
  * It shows an undersea background with sea objects moving around
  */
 
-public class GameView extends View {
+public class GameView extends View implements SensorEventListener {
 
-//    final int NUM_CHARACTERS = 9;
-//    final int NUM_OBJECTS = 8;
-    final float screen_dx = 0.5f;
+    final float SCREEN_SPEED = 0.5f;
     float bgObjectsGap = 0;
     float screenWidth, screenHeight, screenSand = 120;
-    boolean gameRunning = true;
+    boolean collision, touch, gameRunning = true;
 
-    enum ObjectKind{PLANT, BUBBLE}
+    SensorManager sensorManager;
+    Sensor accelerometer;
+    float sensorX, sensorY;
+    long sensorTime;
+
+    enum ObjectKind{PLANT, BUBBLE, ANIMAL}
+    Bitmap charactersBitmap, objectsBitmap;
     Background background;
     BackgroundObject[] objects;
     Character[] characters;
     Paint paint = new Paint();
-    boolean touch = false;
     RectF mainChar = new RectF(0, 0, 70, 70);
-    Bitmap charactersBitmap, objectsBitmap;
-
+    
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(false);
 
+        sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+        sensorTime = System.currentTimeMillis();
+
         paint.setColor(Color.WHITE);
 
         background = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background));
-
-        characters = new Character[]{
-                new Character(1, 1f), new Character(2, 1f), new Character(3, 1f),
-                new Character(2, 1f), new Character(2, 1f), new Character(3, 1f),
-                new Character(2, 1f), new Character(3, 1f), new Character(3, 1f)
-        };
-
-        objects = new BackgroundObject[] {
-                new BackgroundObject(ObjectKind.PLANT), new BackgroundObject(ObjectKind.PLANT), new BackgroundObject(ObjectKind.PLANT),
-                new BackgroundObject(ObjectKind.PLANT), new BackgroundObject(ObjectKind.PLANT), new BackgroundObject(ObjectKind.PLANT),
-                new BackgroundObject(ObjectKind.PLANT), new BackgroundObject(ObjectKind.PLANT), new BackgroundObject(ObjectKind.PLANT),
-                new BackgroundObject(ObjectKind.PLANT), new BackgroundObject(ObjectKind.BUBBLE), new BackgroundObject(ObjectKind.BUBBLE)
-        };
 
         prepareCharacters();
 
@@ -68,12 +68,9 @@ public class GameView extends View {
                 while(gameRunning) {
                     if(screenWidth != 0) {
                         background.update();
-                        for (Character ch : characters) {
-                            ch.update();
-                        }
-                        for (BackgroundObject ob: objects) {
-                            ob.update();
-                        }
+                        for (Character ch : characters) ch.update();
+                        for (BackgroundObject ob: objects) ob.update();
+                        mainCharUpdate();
                     }
                 }
             }
@@ -95,27 +92,26 @@ public class GameView extends View {
 
         canvas.drawRect(mainChar, paint);
 
-        for (BackgroundObject backgroundObject : objects) {
-            backgroundObject.draw(canvas);
-        }
+        mainChar.offsetTo(mainChar.left + sensorX, mainChar.top + sensorY);
 
-        for (Character character : characters) {
-            character.draw(canvas);
-        }
+        for(BackgroundObject ob : objects) ob.draw(canvas);
+
+        for(Character ch : characters) ch.draw(canvas);
 
         postInvalidateOnAnimation();
     }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if(mainChar.contains(event.getX(), event.getY()))
+//                if(mainChar.contains(event.getX(), event.getY()))
                     touch = true;
                 break;
             case MotionEvent.ACTION_MOVE:
                 if(touch)
-                    mainChar.offsetTo(event.getX()+20, event.getY()-15);
+//                    mainChar.offsetTo(event.getX()+20, event.getY()-15);
                 break;
             case MotionEvent.ACTION_UP:
                 touch = false;
@@ -123,15 +119,51 @@ public class GameView extends View {
         return true;
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if(sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+
+            int elapsedTime = (int)(System.currentTimeMillis() - sensorTime);
+            sensorTime = System.currentTimeMillis();
+
+            float ySpeed = 2 * sensorEvent.values[0];
+            float xSpeed = sensorEvent.values[1];
+
+            sensorX = Math.abs(xSpeed*elapsedTime/10) > 5 ? xSpeed*elapsedTime/10 : 0;
+            sensorY = Math.abs(ySpeed*elapsedTime/10) > 5 ? ySpeed*elapsedTime/10 - 20 : -20;
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+        // no implementation
+    }
+
+    private void mainCharUpdate() {
+
+        if(mainChar.right > screenWidth) {
+            mainChar.offsetTo(screenWidth - 70, mainChar.top);
+        } else if(mainChar.left < 0) {
+            mainChar.offsetTo(0, mainChar.top);
+        }
+        if(mainChar.bottom > screenHeight-screenSand) {
+            mainChar.offsetTo(mainChar.left, screenHeight-screenSand - 70);
+        } else if(mainChar.top < 0) {
+            mainChar.offsetTo(mainChar.left, 0);
+        }
+    }
 
     private void prepareCharacters() {
-
-        int charWidth, charHeight, i = 0;
+        characters = new Character[]{
+                new Character(1, 1f), new Character(2, 1f), new Character(3, 1f),
+                new Character(2, 1f), new Character(2, 1f), new Character(3, 1f),
+                new Character(2, 1f), new Character(3, 1f), new Character(3, 1f)
+        };
         charactersBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.fishes);
 
-        charWidth = (charactersBitmap.getWidth()) / 6;
-        charHeight = (charactersBitmap.getHeight()) / 3;
-
+        int charWidth = (charactersBitmap.getWidth()) / 6;
+        int charHeight = (charactersBitmap.getHeight()) / 3;
+        int i = 0;
         for (int y = 0; y < 3; y++) { // bitmap row
             for (int x = 0; x < 6; x+=2) { // bitmap column
                 characters[i].setSize(charWidth, charHeight);
@@ -143,14 +175,22 @@ public class GameView extends View {
     }
 
     void prepareBackgroundObjects() {
-
-        int objWidth, objHeight, i = 0;
+        objects = new BackgroundObject[] {
+                new BackgroundObject(ObjectKind.PLANT), new BackgroundObject(ObjectKind.PLANT),
+                new BackgroundObject(ObjectKind.PLANT), new BackgroundObject(ObjectKind.PLANT),
+                new BackgroundObject(ObjectKind.PLANT), new BackgroundObject(ObjectKind.PLANT),
+                new BackgroundObject(ObjectKind.PLANT), new BackgroundObject(ObjectKind.PLANT),
+                new BackgroundObject(ObjectKind.PLANT), new BackgroundObject(ObjectKind.PLANT),
+                new BackgroundObject(ObjectKind.PLANT), new BackgroundObject(ObjectKind.PLANT),
+                new BackgroundObject(ObjectKind.BUBBLE), new BackgroundObject(ObjectKind.BUBBLE),
+                new BackgroundObject(ObjectKind.BUBBLE), new BackgroundObject(ObjectKind.BUBBLE)
+        };
         objectsBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.objects);
 
-        objWidth = (objectsBitmap.getWidth()) / 4;
-        objHeight = (objectsBitmap.getHeight()) / 3;
-
-        for (int y = 0; y < 3; y++) { // row
+        int objWidth = (objectsBitmap.getWidth()) / 4;
+        int objHeight = (objectsBitmap.getHeight()) / 4;
+        int i = 0;
+        for (int y = 0; y < 4; y++) { // row
             for (int x = 0; x < 4; x++) { // column
                 objects[i].setSize(objWidth, objHeight);
                 objects[i].objectSrc = new Rect(x * objWidth, y * objHeight, (x + 1) * objWidth, (y + 1) * objHeight);
@@ -160,19 +200,18 @@ public class GameView extends View {
     }
 
 
-    class Background implements GameObject{
+    class Background extends GameObject{
 
         Bitmap image;
-        float width, height, x, y;
+        float x, y;
 
         Background(Bitmap image) {
             this.image = image;
-            width = image.getWidth();
-            height = image.getHeight();
+            setSize(image.getWidth(), image.getHeight());
         }
 
         @Override
-        public void draw(Canvas canvas) {
+        void draw(Canvas canvas) {
             int save = canvas.save();
 
             canvas.scale(screenWidth/width, screenHeight/height);
@@ -181,13 +220,13 @@ public class GameView extends View {
             if(x < 0){
                 canvas.drawBitmap(image, x+width, y, null);
             }
-            x -= screen_dx;
+            x -= SCREEN_SPEED;
 
             canvas.restoreToCount(save);
         }
 
         @Override
-        public void update() {
+        void update() {
             if(x < -width) {
                 x = 0;
             }
@@ -195,29 +234,32 @@ public class GameView extends View {
     }
 
 
-    class BackgroundObject implements GameObject {
+    class BackgroundObject extends GameObject {
 
         Rect objectSrc;
         RectF objectDst = new RectF();
-        float width, height;
         ObjectKind kind;
+        float speed;
 
         BackgroundObject(ObjectKind kind) {
             this.kind = kind;
         }
 
         @Override
-        public void draw(Canvas canvas) {
+        void draw(Canvas canvas) {
             int save = canvas.save();
 
             canvas.drawBitmap(objectsBitmap, objectSrc, objectDst, null);
 
             switch(kind) {
                 case PLANT:
-                    objectDst.offsetTo(objectDst.left - screen_dx, objectDst.top);
+                    objectDst.offsetTo(objectDst.left - SCREEN_SPEED-0.2f, objectDst.top);
                     break;
                 case BUBBLE:
-                    objectDst.offsetTo(objectDst.left, objectDst.top - screen_dx);
+                    objectDst.offsetTo(objectDst.left, objectDst.top - speed);
+                    break;
+                case ANIMAL:
+                    objectDst.offsetTo(objectDst.left + SCREEN_SPEED*2, objectDst.top);
                     break;
             }
 
@@ -225,61 +267,59 @@ public class GameView extends View {
         }
 
         @Override
-        public void update() {
-
-//            if((kind == ObjectKind.PLANT && objectDst.right < -screenWidth) ||
-//               (kind == ObjectKind.BUBBLE && objectDst.bottom < 0)) {
-//                populate();
-//            }
+        void update() {
             switch(kind) {
                 case PLANT:
                     if(objectDst.right < 0)
                         populate();
                     break;
                 case BUBBLE:
-                    if(objectDst.bottom < 0) {
+                    if(objectDst.bottom < 0 || objectDst.isEmpty()) {
                         populate();
                     }
                     break;
+                case ANIMAL:
+                    if(objectDst.left > screenWidth)
+                        populate();
             }
         }
 
         void populate() {
 
-            float randX, randY, initX = 0, initY = 0;
-
-            bgObjectsGap += width*2;
-            randY = (float) Math.random();
-            randX = (float) Math.random();
+            float initX = 0, initY = 0;
+            float rand = (float) Math.random();
 
             switch(kind) {
                 case PLANT:
-                    initY = randY*(screenSand-30) + screenHeight - screenSand + 41;
-                    initX = randX*width + bgObjectsGap;
+                    bgObjectsGap += width*1.5f;
+                    initX = rand*width + bgObjectsGap;
+                    if(bgObjectsGap > screenWidth*3) bgObjectsGap = screenWidth*1.5f;
+                    initY = rand*(screenSand-30) + screenHeight - screenSand + 50;
                     break;
                 case BUBBLE:
                     initY = screenHeight + height;
-                    initX = randX*screenWidth;
+                    initX = rand*(screenWidth-width) + width;
+                    setSpeed(rand*2 + 0.2f);
+                    break;
+                case ANIMAL:
+                    initY = rand*(screenSand-30) + screenHeight - screenSand + 41;
+                    initX = 0;
                     break;
             }
-            bgObjectsGap %= screenWidth*2;
-
             objectDst.set(initX - width, initY - height, initX, initY);
         }
 
-        void setSize(int width, int height) {
-            this.width = width;
-            this.height = height;
+        void setSpeed(float speed) {
+            this.speed = speed;
         }
     }
 
 
-    class Character implements GameObject {
+    class Character extends GameObject {
 
         Rect[] bodySrc = new Rect[2]; // two frames for each sprite
         RectF bodyDst = new RectF();
         float scale, speed;
-        float width, height;
 
         int frame;
         boolean frameFlag = true;
@@ -292,7 +332,7 @@ public class GameView extends View {
         }
 
         @Override
-        public void draw(Canvas canvas) {
+        void draw(Canvas canvas) {
             int save = canvas.save();
 
             canvas.scale(scale, scale, screenWidth/2, screenHeight/2);
@@ -303,14 +343,14 @@ public class GameView extends View {
         }
 
         @Override
-        public void update() {
+        void update() {
 
             if(bodyDst.right < 0) {
                 populate();
             }
 
             if(RectF.intersects(bodyDst, mainChar)) {
-                System.out.println("HIT+++++++++++++++++++++++++");
+                collision = true;
             }
 
             if(frameFlag) {
@@ -325,15 +365,10 @@ public class GameView extends View {
         }
 
         void populate() {
-            float initY, rand;
-            rand = (float) Math.random();
-            initY = rand*(screenHeight - screenSand - height) + height;
-            bodyDst.set(screenWidth, initY - height, screenWidth+ width, initY);
-        }
-
-        void setSize(int width, int height) {
-            this.width = width;
-            this.height = height;
+            float rand = (float) Math.random();
+            float initY = rand*(screenHeight - screenSand - height) + height;
+            float initX = rand*screenWidth + screenWidth;
+            bodyDst.set(initX, initY - height, initX + width, initY);
         }
     }
 }
