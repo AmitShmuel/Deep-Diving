@@ -43,7 +43,20 @@ public class GameView extends View implements SensorEventListener {
     Character[] characters;
     Paint paint = new Paint();
     RectF mainChar = new RectF(0, 0, 70, 70);
-    
+    Runnable updater = new Runnable() {
+        @Override
+        public void run() {
+            while(gameRunning) {
+                if(screenWidth != 0) {
+                    background.update();
+                    for (Character ch : characters) ch.update();
+                    for (BackgroundObject ob: objects) ob.update();
+                    mainCharUpdate();
+                }
+            }
+        }
+    };
+
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -62,19 +75,8 @@ public class GameView extends View implements SensorEventListener {
 
         prepareBackgroundObjects();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(gameRunning) {
-                    if(screenWidth != 0) {
-                        background.update();
-                        for (Character ch : characters) ch.update();
-                        for (BackgroundObject ob: objects) ob.update();
-                        mainCharUpdate();
-                    }
-                }
-            }
-        }).start();
+//        AsyncHandler.post(updater);
+        new Thread(updater).start();
     }
 
     @Override
@@ -127,7 +129,7 @@ public class GameView extends View implements SensorEventListener {
             sensorTime = System.currentTimeMillis();
 
             float ySpeed = 2 * sensorEvent.values[0];
-            float xSpeed = sensorEvent.values[1];
+            float xSpeed = 2 * sensorEvent.values[1];
 
             sensorX = Math.abs(xSpeed*elapsedTime/10) > 5 ? xSpeed*elapsedTime/10 : 0;
             sensorY = Math.abs(ySpeed*elapsedTime/10) > 5 ? ySpeed*elapsedTime/10 - 20 : -20;
@@ -299,7 +301,7 @@ public class GameView extends View implements SensorEventListener {
                 case BUBBLE:
                     initY = screenHeight + height;
                     initX = rand*(screenWidth-width) + width;
-                    setSpeed(rand*2 + 0.2f);
+                    setSpeed(rand*4.2f + 0.3f);
                     break;
                 case ANIMAL:
                     initY = rand*(screenSand-30) + screenHeight - screenSand + 41;
