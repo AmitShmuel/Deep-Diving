@@ -32,10 +32,11 @@ public class GameView extends View  {
     /*
      * Booleans & View measurement values
      */
-    final float SCREEN_SPEED = 0.5f;
+    final float WATER_SPEED = 0.3f, SAND_SPEED = 1.5f;
     float bgObjectsGap = 0;
     float screenWidth, screenHeight, screenSand = 120;
-    boolean collision, touch;
+    boolean collision, pauseGame;
+
 
     /**
      * Statics invented here to symbol background objects kinds as integers
@@ -50,7 +51,7 @@ public class GameView extends View  {
      * Draw objects
      */
     private Bitmap charactersBitmap, objectsBitmap;
-    private Background background;
+    private Background waterBackground, sandBackground;
     private BackgroundObject[] objects;
     private Character[] characters;
     private MainCharacter mainChar;
@@ -63,13 +64,15 @@ public class GameView extends View  {
     Runnable updater = new Runnable() {
         @Override
         public void run() {
-            System.out.println(gameRunning);
             while(gameRunning) {
-                if(screenWidth != 0) {
-                    background.update();
-                    for (Character ch : characters) ch.update();
-                    for (BackgroundObject ob: objects) ob.update();
-                    mainChar.update();
+                if(!pauseGame) {
+                    if (screenWidth != 0) {
+                        waterBackground.update();
+                        sandBackground.update();
+                        for (Character ch : characters) ch.update();
+                        for (BackgroundObject ob : objects) ob.update();
+                        mainChar.update();
+                    }
                 }
             }
         }
@@ -80,7 +83,8 @@ public class GameView extends View  {
         super(context, attrs);
         setWillNotDraw(false);
 
-        background = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background));
+        waterBackground = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.water), WATER_SPEED);
+        sandBackground = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.sand), SAND_SPEED);
 
         mainChar = new MainCharacter();
 
@@ -88,10 +92,10 @@ public class GameView extends View  {
 
         prepareBackgroundObjects();
 
-        resumeGame();
+        runUpdater();
     }
 
-    void resumeGame() {
+    void runUpdater() {
         AsyncHandler.post(updater);
     }
 
@@ -99,7 +103,6 @@ public class GameView extends View  {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         screenWidth = getWidth();
         screenHeight = getHeight();
-
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
@@ -107,13 +110,13 @@ public class GameView extends View  {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        background.draw(canvas);
-
+        waterBackground.draw(canvas);
+        for (Character ch : characters) ch.draw(canvas);
         mainChar.draw(canvas);
-
-        for(BackgroundObject ob : objects) ob.draw(canvas);
-
-        for(Character ch : characters) ch.draw(canvas);
+        // we want bubbles to come behind the sand
+        for (BackgroundObject ob : objects) if(ob.kind == BUBBLE) ob.draw(canvas);
+        sandBackground.draw(canvas);
+        for (BackgroundObject ob : objects) if(ob.kind == PLANT) ob.draw(canvas);
 
         postInvalidateOnAnimation();
     }
@@ -121,18 +124,8 @@ public class GameView extends View  {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch(event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-//                if(mainChar.contains(event.getX(), event.getY()))
-                    touch = true;
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if(touch)
-//                    mainChar.offsetTo(event.getX()+20, event.getY()-15);
-                break;
-            case MotionEvent.ACTION_UP:
-                touch = false;
-        }
+        if(event.getAction() == MotionEvent.ACTION_UP)
+            pauseGame = !pauseGame;
         return true;
     }
 
@@ -201,7 +194,7 @@ public class GameView extends View  {
         @Override
         void draw(Canvas canvas) {
             canvas.drawRect(body, paint);
-            body.offsetTo(body.left + sensorX, body.top + sensorY);
+            if(!pauseGame) body.offsetTo(body.left + sensorX, body.top + sensorY);
         }
 
         @Override
@@ -255,7 +248,7 @@ public class GameView extends View  {
 
             canvas.scale(scale, scale, screenWidth/2, screenHeight/2);
             canvas.drawBitmap(charactersBitmap, bodySrc[frame], bodyDst, null);
-            bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top);
+            if(!pauseGame) bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top);
 
             canvas.restoreToCount(save);
         }
@@ -269,14 +262,7 @@ public class GameView extends View  {
 
             if(bodyDst.right < 0) {
                 // waiting populateDuration milliseconds until populating
-                if(populateTimeFlag) {
-                    populateStartTime = System.currentTimeMillis();
-                    populateTimeFlag = false;
-                }
-                if(populateDuration < System.currentTimeMillis() - populateStartTime) {
-                    populate();
-                    populateTimeFlag = true;
-                }
+                waitBeforePopulate();
             }
             // change frame each frameDuration milliseconds for animation
             if(frameTimeFlag) {
@@ -286,6 +272,17 @@ public class GameView extends View  {
             if(frameDuration < System.currentTimeMillis() - frameStartTime) {
                 frame = (frame == 0 ? 1 : 0);
                 frameTimeFlag = true;
+            }
+        }
+
+        void waitBeforePopulate() {
+            if(populateTimeFlag) {
+                populateStartTime = System.currentTimeMillis();
+                populateTimeFlag = false;
+            }
+            if(populateDuration < System.currentTimeMillis() - populateStartTime) {
+                populate();
+                populateTimeFlag = true;
             }
         }
 
@@ -302,12 +299,13 @@ public class GameView extends View  {
      */
     class Background extends GameObject{
 
-        Bitmap image;
-        float x, y;
+        Bitmap bitmap;
+        float x, speed; // y doesn't change
 
-        Background(Bitmap image) {
-            this.image = image;
-            setSize(image.getWidth(), image.getHeight());
+        Background(Bitmap bitmap, float speed) {
+            this.bitmap = bitmap;
+            this.speed = speed;
+            setSize(bitmap.getWidth(), bitmap.getHeight());
         }
 
         @Override
@@ -315,21 +313,18 @@ public class GameView extends View  {
             int save = canvas.save();
 
             canvas.scale(screenWidth/width, screenHeight/height);
-            canvas.drawBitmap(image, x, y, null);
+            canvas.drawBitmap(bitmap, x, 0, null);
 
-            if(x < 0){
-                canvas.drawBitmap(image, x+width, y, null);
-            }
-            x -= SCREEN_SPEED;
+            if(x < 0) canvas.drawBitmap(bitmap, x+width, 0, null);
+
+            if(!pauseGame) x -= speed;
 
             canvas.restoreToCount(save);
         }
 
         @Override
         void update() {
-            if(x < -width) {
-                x = 0;
-            }
+            if(x < -width) x = 0;
         }
     }
 
@@ -358,27 +353,26 @@ public class GameView extends View  {
         float speed;
 
         BackgroundObject(@ObjectKind int kind) {
-           this.kind = kind;
+            this.kind = kind;
         }
 
         @Override
         void draw(Canvas canvas) {
             int save = canvas.save();
-
             canvas.drawBitmap(objectsBitmap, objectSrc, objectDst, null);
-
-            switch(kind) {
-                case PLANT:
-                    objectDst.offsetTo(objectDst.left - SCREEN_SPEED-0.2f, objectDst.top);
-                    break;
-                case BUBBLE:
-                    objectDst.offsetTo(objectDst.left, objectDst.top - speed);
-                    break;
-                case ANIMAL:
-                    objectDst.offsetTo(objectDst.left + SCREEN_SPEED*2, objectDst.top);
-                    break;
+            if(!pauseGame) {
+                switch (kind) {
+                    case PLANT:
+                        objectDst.offsetTo(objectDst.left - SAND_SPEED, objectDst.top);
+                        break;
+                    case BUBBLE:
+                        objectDst.offsetTo(objectDst.left, objectDst.top - speed);
+                        break;
+                    case ANIMAL:
+                        objectDst.offsetTo(objectDst.left + WATER_SPEED * 2, objectDst.top);
+                        break;
+                }
             }
-
             canvas.restoreToCount(save);
         }
 
@@ -415,10 +409,10 @@ public class GameView extends View  {
                 case BUBBLE:
                     initY = screenHeight + height;
                     initX = randX*(screenWidth-width) + width;
-                    setSpeed(rand.nextFloat()*4.2f + 0.3f);
+                    setSpeed(rand.nextFloat()*5f + 0.3f);
                     break;
                 case ANIMAL:
-                    initY = randY*(screenSand-30) + screenHeight - screenSand + 41;
+                    initY = randY*(screenSand-30) + screenHeight - screenSand + 40;
                     initX = 0;
                     break;
             }

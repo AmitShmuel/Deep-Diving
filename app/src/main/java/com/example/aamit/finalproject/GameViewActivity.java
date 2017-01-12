@@ -14,8 +14,8 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     private GameView view;
     private SensorManager sensorManager;
     private long lastSensorChanged;
-    static boolean sensorChanged, gameRunning;
     static float xAccel, yAccel;
+    static boolean sensorChanged, gameRunning;
 
 
     @Override
@@ -41,11 +41,12 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
         gameRunning = true;
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_GAME);
-        view.resumeGame();
+        view.runUpdater();
     }
 
     @Override
     protected void onPause() {
+        view.pauseGame = true;
         gameRunning = false;
         sensorManager.unregisterListener(this);
         super.onPause();
@@ -53,8 +54,8 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        // need to implement pause window
+//        super.onBackPressed();
+        view.pauseGame = !view.pauseGame;
     }
 
     @Override
