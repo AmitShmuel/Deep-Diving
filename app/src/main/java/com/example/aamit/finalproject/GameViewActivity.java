@@ -6,8 +6,11 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
+
+import java.util.Random;
 
 public class GameViewActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -15,7 +18,9 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     private SensorManager sensorManager;
     private long lastSensorChanged;
     static float xAccel, yAccel;
-    static boolean sensorChanged, gameRunning;
+    static boolean sensorChanged, gameRunning, gamePaused;
+    static Random rand = new Random();
+
 
 
     @Override
@@ -46,7 +51,7 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
 
     @Override
     protected void onPause() {
-        view.pauseGame = true;
+        gamePaused = true;
         gameRunning = false;
         sensorManager.unregisterListener(this);
         super.onPause();
@@ -55,7 +60,7 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
-        view.pauseGame = !view.pauseGame;
+        gamePaused = !gamePaused;
     }
 
     @Override
@@ -68,15 +73,22 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     public void onSensorChanged(SensorEvent sensorEvent) {
         if(sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             // lots of callbacks being performed, so we're creating a 50 ms interval
-            long curTime = System.currentTimeMillis();
-            if ((curTime - lastSensorChanged) > 50) {
-                lastSensorChanged = curTime;
+//            long curTime = System.currentTimeMillis();
+//            if ((curTime - lastSensorChanged) > 50) {
+//                lastSensorChanged = curTime;
 
-                yAccel = 3 * sensorEvent.values[0];
-                xAccel = 3 * sensorEvent.values[1];
+                yAccel = 4 * sensorEvent.values[0];
+                xAccel = 4 * sensorEvent.values[1];
                 sensorChanged = true;
-            }
+//            }
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if(event.getAction() == MotionEvent.ACTION_UP)
+            gamePaused = !gamePaused;
+        return true;
     }
 
     /*
