@@ -32,7 +32,6 @@ class BackgroundObject extends GameObject {
      */
     public static final int PLANT = 1;
     public static final int BUBBLE = 2;
-    public static final int ANIMAL = 3;
 
     /*
      * ObjectKind
@@ -41,8 +40,7 @@ class BackgroundObject extends GameObject {
     @Retention(CLASS)
     @IntDef({
             PLANT,
-            BUBBLE,
-            ANIMAL
+            BUBBLE
     })
     public @interface ObjectKind {}
 
@@ -97,9 +95,6 @@ class BackgroundObject extends GameObject {
                 case BUBBLE:
                     objectDst.offsetTo(objectDst.left, objectDst.top - speed);
                     break;
-                case ANIMAL:
-                    objectDst.offsetTo(objectDst.left + WATER_SPEED * 2, objectDst.top);
-                    break;
             }
         }
         canvas.restoreToCount(save);
@@ -117,9 +112,6 @@ class BackgroundObject extends GameObject {
                     populate();
                 }
                 break;
-            case ANIMAL:
-                if(objectDst.left > screenWidth)
-                    populate();
         }
     }
 
@@ -139,10 +131,6 @@ class BackgroundObject extends GameObject {
                 initY = screenHeight + height;
                 initX = randX*(screenWidth-width) + width;
                 setSpeed(rand.nextFloat()*5f + 0.3f);
-                break;
-            case ANIMAL:
-                initY = randY*(screenSand-30) + screenHeight - screenSand + 40;
-                initX = 0;
                 break;
         }
         objectDst.set(initX - width, initY - height, initX, initY);

@@ -19,13 +19,18 @@ import static com.example.aamit.finalproject.GameViewActivity.yAccel;
      */
 class MainCharacter extends GameObject{
 
+    RectF body = new RectF(0, 0, 70, 70);
     private Paint paint = new Paint();
-    private RectF body = new RectF(0, 0, 70, 70);
     private float sensorX, sensorY;
+    private boolean canGetHit = true;
 
     MainCharacter() {
         paint.setColor(Color.WHITE);
     }
+
+    boolean canGetHit() {return canGetHit;}
+
+    void setCanGetHit(boolean canGetHit) {this.canGetHit = canGetHit;};
 
     @Override
     void draw(Canvas canvas) {
