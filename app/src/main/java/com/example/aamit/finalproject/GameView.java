@@ -71,7 +71,7 @@ public class GameView extends View {
         waterBackground = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.water), WATER_SPEED);
         sandBackground = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.sand), SAND_SPEED);
 
-        mainChar = new MainCharacter();
+        mainChar = MainCharacter.prepareMainChar(BitmapFactory.decodeResource(getResources(), R.drawable.diver));
 
         characters = Character.prepareCharacters(BitmapFactory.decodeResource(getResources(), R.drawable.fishes));
 
@@ -91,7 +91,7 @@ public class GameView extends View {
     void detectCollisions() {
         for (Character character : characters) {
             if(mainChar.canGetHit()) {
-                if (RectF.intersects(character.bodyDst, mainChar.body)) {
+                if (RectF.intersects(character.bodyDst, mainChar.bodyDst)) {
                     score = (score - 200 < 0) ? 0 : score - 200;
                     scoreString = String.valueOf(score);
                     scoreChanged = true;
@@ -99,7 +99,7 @@ public class GameView extends View {
                 }
             } else if(mCounter.timePassed(2000)) mainChar.setCanGetHit(true);
         }
-        if(RectF.intersects(coin.bodyDst, mainChar.body)) {
+        if(RectF.intersects(coin.bodyDst, mainChar.bodyDst)) {
             if(!coin.isCollected()) {
                 score += 100;
                 scoreString = String.valueOf(score);

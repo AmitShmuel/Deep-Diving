@@ -1,13 +1,10 @@
 package com.example.aamit.finalproject;
 
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 
 import static com.example.aamit.finalproject.GameView.screenHeight;
 import static com.example.aamit.finalproject.GameView.screenSand;

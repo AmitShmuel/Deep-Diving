@@ -73,10 +73,6 @@ class Character extends GameObject {
     @Override
     void update() {
 
-//        updateif(RectF.intersects(bodyDst, mainChar.body)) {
-//            collision = true;
-//        }
-
         if(bodyDst.right < 0) {
             // waiting populateDuration milliseconds until populating
             waitBeforePopulate();
