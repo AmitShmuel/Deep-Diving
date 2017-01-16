@@ -8,12 +8,12 @@ import static com.example.aamit.finalproject.GameView.screenWidth;
 import static com.example.aamit.finalproject.GameViewActivity.gamePaused;
 
 /*
-     * Background
-     * The background of the game, consists of water, and sand on the bottom
-     */
+ * Background
+ * The background of the game, consists of water, and sand on the bottom
+ */
 class Background extends GameObject{
 
-    float x, speed; // y doesn't change
+    private float x, speed; // y doesn't change
 
     Background(Bitmap bitmap, float speed) {
         this.speed = speed;

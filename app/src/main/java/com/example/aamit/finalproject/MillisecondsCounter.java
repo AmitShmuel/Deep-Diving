@@ -1,23 +1,28 @@
 package com.example.aamit.finalproject;
 
 /**
- * Created by aamit on 1/15/2017.
+ *
+ * Helper class used to count milliseconds.
  */
-
-public class MillisecondsCounter {
+class MillisecondsCounter {
 
     private boolean flag = true;
     private long startTime;
 
-    public boolean timePassed(long millisecondsToWait) {
-
-        if(flag) {
+    /*
+     * This method receives amount of milliseconds to wait.
+     * when millisecondsToWait have passed, it will return true;
+     * e.g:
+     * if(instantiated_object.timePassed(1000)) do_something();
+     * else do_something_else()
+     */
+    boolean timePassed(long millisecondsToWait) {
+        if (flag) {
             startTime = System.currentTimeMillis();
             flag = false;
         }
-        if(millisecondsToWait < System.currentTimeMillis() - startTime) {
-            return flag = true;
-        }
-        return false;
+        return millisecondsToWait < System.currentTimeMillis() - startTime && (flag = true);
     }
+
+    void restartCount() {flag = true;}
 }

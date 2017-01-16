@@ -16,11 +16,9 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
 
     private GameView view;
     private SensorManager sensorManager;
-    private long lastSensorChanged;
     static float xAccel, yAccel;
     static boolean sensorChanged, gameRunning, gamePaused;
     static Random rand = new Random();
-
 
 
     @Override
@@ -72,15 +70,9 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if(sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            // lots of callbacks being performed, so we're creating a 50 ms interval
-//            long curTime = System.currentTimeMillis();
-//            if ((curTime - lastSensorChanged) > 50) {
-//                lastSensorChanged = curTime;
-
-                yAccel = 4 * sensorEvent.values[0];
-                xAccel = 4 * sensorEvent.values[1];
-                sensorChanged = true;
-//            }
+            yAccel = 4 * sensorEvent.values[0];
+            xAccel = 4 * sensorEvent.values[1];
+            sensorChanged = true;
         }
     }
 

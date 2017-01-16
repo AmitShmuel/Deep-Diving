@@ -1,15 +1,14 @@
 package com.example.aamit.finalproject;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.annotation.IntDef;
+
 import java.lang.annotation.Retention;
 
 import static com.example.aamit.finalproject.GameView.SAND_SPEED;
-import static com.example.aamit.finalproject.GameView.WATER_SPEED;
 import static com.example.aamit.finalproject.GameView.screenHeight;
 import static com.example.aamit.finalproject.GameView.screenSand;
 import static com.example.aamit.finalproject.GameView.screenWidth;
@@ -30,8 +29,8 @@ class BackgroundObject extends GameObject {
      *
      * @ ObjectKind
      */
-    public static final int PLANT = 1;
-    public static final int BUBBLE = 2;
+    static final int PLANT = 1;
+    static final int BUBBLE = 2;
 
     /*
      * ObjectKind
@@ -42,17 +41,16 @@ class BackgroundObject extends GameObject {
             PLANT,
             BUBBLE
     })
-    public @interface ObjectKind {}
+    @interface ObjectKind {}
 
-
-    Rect objectSrc;
-    RectF objectDst = new RectF();
     @ObjectKind int kind;
-    float speed;
+    private Rect objectSrc;
+    private RectF objectDst = new RectF();
+    private float speed;
     private static float bgObjectsGap;
 
 
-    BackgroundObject(@ObjectKind int kind) {
+    private BackgroundObject(@ObjectKind int kind) {
         this.kind = kind;
     }
 
@@ -65,14 +63,15 @@ class BackgroundObject extends GameObject {
                 new BackgroundObject(PLANT), new BackgroundObject(PLANT),
                 new BackgroundObject(PLANT), new BackgroundObject(PLANT),
                 new BackgroundObject(BUBBLE), new BackgroundObject(BUBBLE),
+                new BackgroundObject(BUBBLE), new BackgroundObject(BUBBLE),
+                new BackgroundObject(BUBBLE), new BackgroundObject(BUBBLE),
                 new BackgroundObject(BUBBLE), new BackgroundObject(BUBBLE)
         };
-//        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.objects);
 
         int objWidth = (bitmap.getWidth()) / 4;
-        int objHeight = (bitmap.getHeight()) / 4;
+        int objHeight = (bitmap.getHeight()) / 5;
         int i = 0;
-        for (int y = 0; y < 4; y++) { // Bitmap row
+        for (int y = 0; y < 5; y++) { // Bitmap row
             for (int x = 0; x < 4; x++) { // Bitmap column
                 objects[i].setBitmap(bitmap);
                 objects[i].setSize(objWidth, objHeight);
@@ -115,7 +114,7 @@ class BackgroundObject extends GameObject {
         }
     }
 
-    void populate() {
+    private void populate() {
 
         float initX = 0, initY = 0;
         float randX = rand.nextFloat(), randY = rand.nextFloat();
@@ -136,7 +135,7 @@ class BackgroundObject extends GameObject {
         objectDst.set(initX - width, initY - height, initX, initY);
     }
 
-    void setSpeed(float speed) {
+    private void setSpeed(float speed) {
         this.speed = speed;
     }
 }

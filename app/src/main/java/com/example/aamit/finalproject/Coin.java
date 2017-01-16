@@ -9,22 +9,26 @@ import android.graphics.RectF;
 import static com.example.aamit.finalproject.GameView.screenHeight;
 import static com.example.aamit.finalproject.GameView.screenSand;
 import static com.example.aamit.finalproject.GameView.screenWidth;
+import static com.example.aamit.finalproject.GameViewActivity.gamePaused;
 import static com.example.aamit.finalproject.GameViewActivity.rand;
 
-/*
+/**
  * Coin
  * This class represent a coin
- * in which main character should collect in order to get higher score
+ * in which the main character should collect in order to get higher score
  */
 class Coin extends GameObject{
 
     private Rect[] bodySrc = new Rect[10]; // ten frames for each sprite
-    RectF bodyDst = new RectF();
     private RectF scoreDst = new RectF();
+    RectF bodyDst = new RectF();
 
-    private int frame, frameDuration = 50, populateDuration = 3000;
-    private boolean populateTimeFlag = true, frameTimeFlag = true, collected, canPopulate;
-    private long populateStartTime, frameStartTime;
+    private MillisecondsCounter frameCounter = new MillisecondsCounter();
+    private MillisecondsCounter populationCounter = new MillisecondsCounter();
+
+    private int frame;
+    private final int frameDuration = 50, populateDuration = 3000;
+    private boolean collected, canPopulate;
 
 
     static Coin prepareCoin(Bitmap bitmap) {
@@ -44,14 +48,15 @@ class Coin extends GameObject{
         return coin;
     }
 
-    void setScorePosition(float w, float h) {
-        scoreDst.set(w - this.width - 10, 10, w - 10, 10 + this.height);
+    void setScorePosition(float screenW) {
+        scoreDst.set(screenW - this.width - 10, 10, screenW - 10, 10 + this.height);
     }
 
     @Override
     void draw(Canvas canvas) {
+        canvas.drawBitmap(bitmap, bodySrc[frame], scoreDst, null);
         canvas.drawBitmap(bitmap, bodySrc[frame], bodyDst, null);
-        if(collected) {
+        if(collected && !gamePaused) {
             if(bodyDst.left < scoreDst.left) bodyDst.offsetTo(bodyDst.left + 20, bodyDst.top);
             if(bodyDst.top > scoreDst.top ) bodyDst.offsetTo(bodyDst.left, bodyDst.top - 20);
             if(bodyDst.top < scoreDst.top && bodyDst.left > scoreDst.left) {
@@ -67,29 +72,12 @@ class Coin extends GameObject{
         if(canPopulate) {
             restartPopulation();
             canPopulate = false;
+        } else if(populationCounter.timePassed(populateDuration)) {
+            populate();
         }
-        else waitBeforePopulate();
 
         // change frame each frameDuration milliseconds for animation
-        if(frameTimeFlag) {
-            frameStartTime = System.currentTimeMillis();
-            frameTimeFlag = false;
-        }
-        if(frameDuration < System.currentTimeMillis() - frameStartTime) {
-            frame = (++frame == 10 ? 0 : frame);
-            frameTimeFlag = true;
-        }
-    }
-
-    private void waitBeforePopulate() {
-        if(populateTimeFlag) {
-            populateStartTime = System.currentTimeMillis();
-            populateTimeFlag = false;
-        }
-        if(populateDuration < System.currentTimeMillis() - populateStartTime) {
-            populate();
-            populateTimeFlag = true;
-        }
+        if(frameCounter.timePassed(frameDuration)) frame = (++frame == 10 ? 0 : frame);
     }
 
     private void populate() {
@@ -98,11 +86,12 @@ class Coin extends GameObject{
         bodyDst.set(initX, initY - height, initX + width, initY);
     }
 
-    void restartPopulation() {
+    private void restartPopulation() {
         populate();
-        populateTimeFlag = true;
+        populationCounter.restartCount();
     }
 
     void collected() {collected = true;}
+
     boolean isCollected() {return collected;}
 }
