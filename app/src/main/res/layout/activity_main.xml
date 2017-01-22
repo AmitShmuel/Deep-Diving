@@ -46,6 +46,7 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+<<<<<<< HEAD
         app:srcCompat="@drawable/info_icon"
         android:id="@+id/infoButton"
         android:onClick="openDialog"
@@ -71,3 +72,7 @@
         app:layout_constraintHorizontal_bias="0.55" />
 
 </android.support.constraint.ConstraintLayout>
+=======
+        android:text="Hey, It's Yoav Saroya!" />
+</RelativeLayout>
+>>>>>>> c8bafa01b88731b7eb7510d680d3e7856688b630
