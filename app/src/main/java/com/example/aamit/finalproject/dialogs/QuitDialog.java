@@ -8,11 +8,8 @@ import com.example.aamit.finalproject.R;
 
 public class QuitDialog extends Dialog {
 
-    private Activity mainActivity;
-
     public QuitDialog(Activity a) {
         super(a);
-        mainActivity = a;
     }
 
     @Override

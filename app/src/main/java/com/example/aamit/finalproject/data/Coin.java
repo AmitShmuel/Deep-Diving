@@ -17,7 +17,7 @@ import static com.example.aamit.finalproject.GameViewActivity.rand;
 
 /**
  * Coin
- * This class represent a coin
+ * This class represents a coin
  * in which the main character should collect in order to get higher score
  */
 public class Coin extends GameObject{

@@ -1,11 +1,9 @@
 package com.example.aamit.finalproject;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
@@ -16,6 +14,7 @@ import com.example.aamit.finalproject.data.Background;
 import com.example.aamit.finalproject.data.BackgroundObject;
 import com.example.aamit.finalproject.data.Character;
 import com.example.aamit.finalproject.data.Coin;
+import com.example.aamit.finalproject.data.Life;
 import com.example.aamit.finalproject.data.MainCharacter;
 import com.example.aamit.finalproject.data.StageLabel;
 import com.example.aamit.finalproject.utilities.AsyncHandler;
@@ -48,6 +47,7 @@ public class GameView extends View {
     private Character[] characters;
     private MainCharacter mainChar;
     private Coin coin;
+    private Life life;
     private StageLabel[] stageLabels;
     private final int newRecordIndex = 10;
 
@@ -55,19 +55,17 @@ public class GameView extends View {
      * Stage related types
      */
     private int currentStage;
-    private int[] stageMobs = {1,2,3,4,5,6,7,8,9,10};         //Final Version
-//    private int[] stageMobs = {10,3,3,4,5,6,7,8,9/*,10,11,12,13*/}; //DEBUG
+    private int[] stageMobs = {2,3,4,5,6,7,8,9,10,11};         //Final Version
+//    private int[] stageMobs = {11,3,3,4,5,6,7,8,9/*,10,11,12,13*/}; //DEBUG
     public static boolean stagePassed = true;
     private boolean isStagedPlayedSound;
 
     /*
-     * Score & Life related types
+     * Score related types
      */
     public static int score;
     private boolean scoreChanged = true, isBestScoreUsed;
-    private int life = 3, bestScore;
-    private Bitmap lifeBitmap;
-    private Point lifePoint = new Point();
+    private int bestScore;
     private Rect scoreRect = new Rect();
     private Paint scorePaint = new Paint(), alphaLifePaint = new Paint();
     public static StringBuilder sbScore = Util.acquireStringBuilder();
@@ -84,30 +82,31 @@ public class GameView extends View {
     Runnable updater = new Runnable() {
         @Override
         public void run() {
-            while (gameRunning) {
-                // game resumes, we want to resume the time
-                if(!gamePaused && !stopTimeFlag) {
-                    stopTime(false);
-                    stopTimeFlag = true;
-                }
-                if (screenWidth != 0 && !gamePaused && stopTimeFlag) {
-                    waterBackground.update();
-                    sandBackground.update();
-                    for (int i = 0; i < stageMobs[currentStage]; i++) characters[i].update();
-                    for (BackgroundObject ob : objects) ob.update();
-                    stageLabels[currentStage].update();
-                    stageLabels[newRecordIndex].update();
-                    mainChar.update();
-                    coin.update();
-                    detectCollisions();
-                    continue; // no need to go down..
-                }
-                // game stopped, we wanna stop the time
-                if(gamePaused && stopTimeFlag) {
-                    stopTime(true);
-                    stopTimeFlag = false;
-                }
+        while (gameRunning) {
+            // game resumes, we want to resume the time
+            if(!gamePaused && !stopTimeFlag) {
+                stopTime(false);
+                stopTimeFlag = true;
             }
+            if (screenWidth != 0 && !gamePaused && stopTimeFlag) {
+                waterBackground.update();
+                sandBackground.update();
+                for (int i = 0; i < stageMobs[currentStage]; i++) characters[i].update();
+                for (BackgroundObject ob : objects) ob.update();
+                stageLabels[currentStage].update();
+                stageLabels[newRecordIndex].update();
+                mainChar.update();
+                coin.update();
+                life.update();
+                detectCollisions();
+                continue; // no need to go down..
+            }
+            // game stopped, we wanna stop the time
+            if(gamePaused && stopTimeFlag) {
+                stopTime(true);
+                stopTimeFlag = false;
+            }
+        }
         }
     };
 
@@ -135,6 +134,7 @@ public class GameView extends View {
         mainChar = MainCharacter.prepareMainChar(BitmapFactory.decodeResource(getResources(), R.drawable.diver));
         characters = Character.prepareCharacters(
                 BitmapFactory.decodeResource(getResources(), R.drawable.fish_green),
+                BitmapFactory.decodeResource(getResources(), R.drawable.fish_shark),
                 BitmapFactory.decodeResource(getResources(), R.drawable.fish_piranha),
                 BitmapFactory.decodeResource(getResources(), R.drawable.fish_white_shark),
                 BitmapFactory.decodeResource(getResources(), R.drawable.fish_red),
@@ -148,7 +148,7 @@ public class GameView extends View {
                 BitmapFactory.decodeResource(getResources(), R.drawable.bubbles),
                 BitmapFactory.decodeResource(getResources(), R.drawable.fishes_background));
         coin = Coin.prepareCoin(BitmapFactory.decodeResource(getResources(), R.drawable.coin));
-        lifeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.life);
+        life = Life.prepareLife(BitmapFactory.decodeResource(getResources(), R.drawable.life));
         stageLabels = StageLabel.prepareStageLabels(BitmapFactory.decodeResource(getResources(), R.drawable.stage_labels));
     }
 
@@ -178,7 +178,7 @@ public class GameView extends View {
         screenHeight = getHeight();
         screenSand = screenHeight/5;
         coin.setScorePosition(screenWidth);
-        lifePoint.set((int)(coin.getScoreRect().left+coin.getWidth()/4), (int)(coin.getHeight()*1.5f));
+        life.setPoint(coin);
         stageLabels[currentStage].setToPopulate(true);
         super.onSizeChanged(w, h, oldw, oldh);
     }
@@ -196,6 +196,7 @@ public class GameView extends View {
         // we want bubbles to come behind the sand
         for (int i = 0; i < BUBBLE_LENGTH; i++) objects[i].draw(canvas);
         sandBackground.draw(canvas);
+        life.draw(canvas);
 
         drawScore(canvas);
         drawLife(canvas);
@@ -221,21 +222,21 @@ public class GameView extends View {
     }
 
     private void drawLife(Canvas canvas) {
-        if(life == 3) {
-            canvas.drawBitmap(lifeBitmap, lifePoint.x, lifePoint.y, null);
-            canvas.drawBitmap(lifeBitmap, lifePoint.x - coin.getWidth(), lifePoint.y, null);
-            canvas.drawBitmap(lifeBitmap, lifePoint.x - coin.getWidth()*2, lifePoint.y, null);
-        } else if(life == 2) {
-            canvas.drawBitmap(lifeBitmap, lifePoint.x, lifePoint.y, null);
-            canvas.drawBitmap(lifeBitmap, lifePoint.x - coin.getWidth(), lifePoint.y, null);
-            canvas.drawBitmap(lifeBitmap, lifePoint.x - coin.getWidth()*2, lifePoint.y, alphaLifePaint);
-        } else if(life == 1){
-            canvas.drawBitmap(lifeBitmap, lifePoint.x, lifePoint.y, null);
-            canvas.drawBitmap(lifeBitmap, lifePoint.x - coin.getWidth(), lifePoint.y, alphaLifePaint);
-            canvas.drawBitmap(lifeBitmap, lifePoint.x - coin.getWidth()*2, lifePoint.y, alphaLifePaint);
-        } else if(life == 0) {
+        if(life.getLife() == 3) {
+            canvas.drawBitmap(life.bitmap, life.lifePoint.x, life.lifePoint.y, null);
+            canvas.drawBitmap(life.bitmap, life.lifePoint.x - coin.getWidth(), life.lifePoint.y, null);
+            canvas.drawBitmap(life.bitmap, life.lifePoint.x - coin.getWidth()*2, life.lifePoint.y, null);
+        } else if(life.getLife() == 2) {
+            canvas.drawBitmap(life.bitmap, life.lifePoint.x, life.lifePoint.y, null);
+            canvas.drawBitmap(life.bitmap, life.lifePoint.x - coin.getWidth(), life.lifePoint.y, null);
+            canvas.drawBitmap(life.bitmap, life.lifePoint.x - coin.getWidth()*2, life.lifePoint.y, alphaLifePaint);
+        } else if(life.getLife() == 1){
+            canvas.drawBitmap(life.bitmap, life.lifePoint.x, life.lifePoint.y, null);
+            canvas.drawBitmap(life.bitmap, life.lifePoint.x - coin.getWidth(), life.lifePoint.y, alphaLifePaint);
+            canvas.drawBitmap(life.bitmap, life.lifePoint.x - coin.getWidth()*2, life.lifePoint.y, alphaLifePaint);
+        } else if(life.getLife() == 0) {
             ((GameViewActivity) getContext()).gameOver(score);
-            life = -1;
+            life.setLife(-1);
         }
     }
 
@@ -245,7 +246,7 @@ public class GameView extends View {
                 if(CollisionUtil.isCollisionDetected(characters[i], mainChar)) {
                     MainActivity.soundEffectsUtil.play(R.raw.hit);
                     mainChar.setCanGetHit(false);
-                    life = (--life < 0 ? 0 : life);
+                    life.setLife( life.getLife() == 0 ? 0 : life.getLife()-1 );
                 }
             } // after 2 seconds can get hit again
             else if(mCounter.timePassed(2000)) {
@@ -263,6 +264,11 @@ public class GameView extends View {
                 if( (score == (currentStage+1) * 10) && (currentStage < 9) ) levelUp();
             }
             coin.collected();
+        }
+        if(RectF.intersects(life.bodyDst, mainChar.bodyDst)) {
+            MainActivity.soundEffectsUtil.play(R.raw.extra_life);
+            life.setLife( (life.getLife() == 3) ? 3 : life.getLife()+1 );
+            life.collected();
         }
     }
 

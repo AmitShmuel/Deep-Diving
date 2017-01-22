@@ -11,9 +11,8 @@
         android:id="@+id/txt_dia"
         android:layout_width="408dp"
         android:layout_height="28dp"
-        android:text="Are you sure you want to quit the game?"
+        android:text="@string/quit_the_game_text"
         android:textSize="18sp"
-        android:textAlignment="textStart"
         android:textColor="@android:color/white"
         android:textAllCaps="false"
         android:fontFamily="sans-serif"
@@ -24,7 +23,7 @@
         android:layout_marginLeft="16dp" />
 
     <TextView
-        android:text="Exit"
+        android:text="@string/exit"
         android:layout_width="51dp"
         android:layout_height="22dp"
         android:id="@+id/textView2"
@@ -38,7 +37,7 @@
         android:layout_marginLeft="16dp" />
 
     <Button
-        android:text="KEEP PLAYING"
+        android:text="@string/keep_playing"
         android:onClick="closeDialog"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
@@ -53,7 +52,7 @@
         android:layout_marginRight="8dp" />
 
     <Button
-        android:text="EXIT"
+        android:text="@string/exit"
         android:onClick="quitGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -36,24 +36,24 @@ public class Character extends GameObject {
     }
 
     public static Character[] prepareCharacters(Bitmap greenFishBitmap,
-                    Bitmap piranhaFishBitmap, Bitmap greatSharkFishBitmap,
+                    Bitmap hammerFishBitmap, Bitmap piranhaFishBitmap, Bitmap greatSharkFishBitmap,
                     Bitmap redFishBitmap, Bitmap goldFishBitmap,Bitmap parrotFishBitmap,
                     Bitmap dogFishBitmap, Bitmap lionFishBitmap, Bitmap swordFishBitmap,
                     Bitmap catFishBitmap) {
 
         Character[] characters = new Character[]{
-                new Character(2,1f,100)/*Gold Fish*/,
-                new Character(2.5f,1f,250)/*Dog Fish*/,
-                new Character(4,1f,500)/*Parrot Fish*/,
-                new Character(3,1f,800)/*Cat Fish*/,
-                new Character(4,1f,1000)/*Lion Fish*/,
-                new Character(5,1f,1500)/*Green fish*/,
-                new Character(8,1f,2500)/*Sword Fish*/,
-                new Character(7,1f,2000)/*Red Fish*/,
-                new Character(11,1f,3000)/*Piranha Fish*/,
-                new Character(15,1f,4000)/*Great White Shark*/
+                new Character(3,1f,100)/*Gold Fish*/,
+                new Character(4.5f,1f,250)/*Dog Fish*/,
+                new Character(5,1f,500)/*Parrot Fish*/,
+                new Character(6,1f,800)/*Cat Fish*/,
+                new Character(6,1f,1000)/*Lion Fish*/,
+                new Character(7,1f,1500)/*Green fish*/,
+                new Character(9,1f,2500)/*Sword Fish*/,
+                new Character(10,1f,2000)/*Red Fish*/,
+                new Character(14,1f,3000)/*Piranha Fish*/,
+                new Character(15,1f,4000)/*Hammer Shark*/,
+                new Character(20,1f,7000)/*Great White Shark*/
         };
-
         initSpecialFishes(characters, goldFishBitmap, 0, 5, 1, 60);
         initSpecialFishes(characters, dogFishBitmap, 1,5,1,60);
         initSpecialFishes(characters, parrotFishBitmap, 2, 5, 1, 60);
@@ -63,7 +63,8 @@ public class Character extends GameObject {
         initSpecialFishes(characters, swordFishBitmap, 6, 4, 4, 100);
         initSpecialFishes(characters, redFishBitmap, 7, 5, 1, 100);
         initSpecialFishes(characters, piranhaFishBitmap, 8, 6, 1, 100);
-        initSpecialFishes(characters, greatSharkFishBitmap, 9, 6, 1, 100);
+        initSpecialFishes(characters, hammerFishBitmap, 9, 4, 4, 120);
+        initSpecialFishes(characters, greatSharkFishBitmap, 10, 11, 1, 100);
 
         return characters;
     }

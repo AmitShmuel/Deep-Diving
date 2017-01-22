@@ -24,7 +24,7 @@
         android:shadowColor="@android:color/black" />
 
     <Button
-        android:text="Quit"
+        android:text="@string/quit"
         android:onClick="restartPressed"
         android:id="@+id/back_main_menu_button"
         android:fontFamily="casual"
