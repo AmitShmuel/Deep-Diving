@@ -1,4 +1,19 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 
 android {
     compileSdkVersion 25
@@ -10,6 +25,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -25,6 +41,20 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.1.0'
-    testCompile 'junit:junit:4.12'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile 'com.android.support:support-v4:25.1.0'
+    compile 'com.android.support:support-vector-drawable:25.1.0'
+    testCompile 'junit:junit:4.12'
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
+        transitive = true;
+    }
+    compile('com.crashlytics.sdk.android:crashlytics-ndk:1.1.5@aar') {
+        transitive = true;
+    }
+}
+
+crashlytics {
+    enableNdk true
+    androidNdkOut 'src/main/obj'
+    androidNdkLibsOut 'src/main/libs'
 }

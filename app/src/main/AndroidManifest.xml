@@ -15,20 +15,23 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".MainActivity">
-
-        </activity>
-
-        <activity
-            android:name=".GameViewActivity"
-            android:screenOrientation="landscape"
-            android:parentActivityName=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+        <activity
+            android:name=".GameViewActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="landscape" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="37f2ccb83c317fe02650a1ec6ccdc5706977aaa8" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

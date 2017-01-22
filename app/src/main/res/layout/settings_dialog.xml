@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="500dp"
+    android:orientation="vertical"
+    android:layout_height="400dp"
+    android:background="@drawable/background_info">
+
+    <Switch
+        android:text="Sound"
+        android:layout_width="137dp"
+        android:layout_height="53dp"
+        android:id="@+id/switchSound"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp"
+        android:fontFamily="casual"
+        android:textSize="24sp"
+        android:textColor="@android:color/black"
+        android:elevation="0dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/txt_dia"
+        android:layout_width="212dp"
+        android:layout_height="35dp"
+        android:text="Settings"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textAllCaps="true"
+        android:fontFamily="casual"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        app:srcCompat="@drawable/close"
+        android:onClick="closeDialog"
+        android:id="@+id/imageButton"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@android:color/transparent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="16dp" />
+
+    <SeekBar
+        android:layout_width="288dp"
+        android:layout_height="49dp"
+        android:id="@+id/seekbarMusic"
+        android:max="100"
+        android:progress="1"
+        android:layout_marginTop="48dp"
+        app:layout_constraintTop_toBottomOf="@+id/txt_dia"
+        app:layout_constraintLeft_toRightOf="@+id/textView" />
+
+    <TextView
+        android:text="Music"
+        android:layout_width="92dp"
+        android:layout_height="43dp"
+        android:id="@+id/textView"
+        android:fontFamily="casual"
+        android:textSize="24sp"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="96dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp" />
+
+
+</android.support.constraint.ConstraintLayout>

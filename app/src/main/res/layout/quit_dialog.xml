@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="#424242"
+    android:layout_width="400dp"
+    android:layout_height="170dp">
+
+    <TextView
+        android:id="@+id/txt_dia"
+        android:layout_width="408dp"
+        android:layout_height="28dp"
+        android:text="Are you sure you want to quit the game?"
+        android:textSize="18sp"
+        android:textAlignment="textStart"
+        android:textColor="@android:color/white"
+        android:textAllCaps="false"
+        android:fontFamily="sans-serif"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="64dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp" />
+
+    <TextView
+        android:text="Exit"
+        android:layout_width="51dp"
+        android:layout_height="22dp"
+        android:id="@+id/textView2"
+        android:textColor="@android:color/white"
+        android:textStyle="normal|bold"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp" />
+
+    <Button
+        android:text="KEEP PLAYING"
+        android:onClick="closeDialog"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/keepPlayingButton"
+        android:background="@android:color/transparent"
+        android:textColor="#82C9C1"
+        android:textSize="18sp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/txt_dia"
+        app:layout_constraintRight_toLeftOf="@+id/exitAppButton"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp" />
+
+    <Button
+        android:text="EXIT"
+        android:onClick="quitGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/exitAppButton"
+        android:background="@android:color/transparent"
+        android:textColor="#82C9C1"
+        android:textSize="18sp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/txt_dia"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="8dp" />
+
+
+</android.support.constraint.ConstraintLayout>
