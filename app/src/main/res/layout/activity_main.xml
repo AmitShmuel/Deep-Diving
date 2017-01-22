@@ -11,7 +11,7 @@
 
     <Button
         android:id="@+id/playButton"
-        android:text="Start Game"
+        android:text="@string/start_game"
         android:layout_width="254dp"
         android:layout_height="75dp"
         android:textSize="36sp"
