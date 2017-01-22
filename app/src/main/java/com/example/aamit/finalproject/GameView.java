@@ -55,7 +55,7 @@ public class GameView extends View {
      * Stage related types
      */
     private int currentStage;
-    private int[] stageMobs = {2,3,4,5,6,7,8,9,10,11};         //Final Version
+    private int[] stageMobs = {3,4,5,6,7,7,8,9,10,11};         //Final Version
 //    private int[] stageMobs = {11,3,3,4,5,6,7,8,9/*,10,11,12,13*/}; //DEBUG
     public static boolean stagePassed = true;
     private boolean isStagedPlayedSound;

@@ -51,7 +51,7 @@ public class Life extends GameObject {
     public void draw(Canvas canvas) {
         if(canDraw) {
             canvas.drawBitmap(bitmap, bodySrc, bodyDst, null);
-            if(!gamePaused) bodyDst.offsetTo(bodyDst.left - 2f, bodyDst.top);
+            if(!gamePaused) bodyDst.offsetTo(bodyDst.left - 4f, bodyDst.top);
         }
     }
 
@@ -61,7 +61,7 @@ public class Life extends GameObject {
             populate();
             canDraw = true;
         }
-        if(bodyDst.right < 0) collected();
+        if(bodyDst.right < 0 && canDraw) collected();
 
         if(firstTime) {
             bodyDst.set(-screenWidth, 0, -screenWidth+width, 0); // out of screen
