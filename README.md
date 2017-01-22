@@ -7,10 +7,17 @@ Pass stages by collecting coins, each stage a new fish is introduced, faster and
 Think you're up for the chalange? Try to get to the last stage and meet the great white shark.  
   
   
-![Game Icon](/app/src/main/res/mipmap-hdpi)  
+
   
-![In-App image 1](/InAppPic1.png)  
+
+  
+![Game Icon](/app/src/main/res/mipmap-hdpi/ic_launcher.png)  
+
+  
 ![In-App image 2](/InAppPic2.png)  
+![In-App image 1](/InAppPic1.png)  
   
   
+  
+
 [Google-Doc](https://docs.google.com/document/d/1w6cQPvVO5fuB43tWjU9pKnpVl2wMv3YP2d9w3gouAyo/edit?ts=5883af3b)
