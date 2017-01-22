@@ -1,5 +1,7 @@
 # Deep Diving
 
+[Google-Doc](https://docs.google.com/document/d/1w6cQPvVO5fuB43tWjU9pKnpVl2wMv3YP2d9w3gouAyo/edit?ts=5883af3b)
+
 ##### Dive deep into the ocean and collect as much coins as you can while escaping hungry fishes!
 
 In this game you will act as a brave scuba diver who collects coin and escapes the vicious fishes that come across.  
@@ -20,4 +22,3 @@ Think you're up for the chalange? Try to get to the last stage and meet the grea
   
   
 
-[Google-Doc](https://docs.google.com/document/d/1w6cQPvVO5fuB43tWjU9pKnpVl2wMv3YP2d9w3gouAyo/edit?ts=5883af3b)
