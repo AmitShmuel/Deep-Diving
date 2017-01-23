@@ -1,4 +1,4 @@
-package com.example.aamit.finalproject.dialogs;
+package amit_yoav.deep_diving.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -9,9 +9,9 @@ import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 
-import com.example.aamit.finalproject.MainActivity;
-import com.example.aamit.finalproject.R;
-import com.example.aamit.finalproject.utilities.AsyncHandler;
+import amit_yoav.deep_diving.MainActivity;
+import amit_yoav.deep_diving.R;
+import amit_yoav.deep_diving.utilities.AsyncHandler;
 
 public class SettingsDialog extends Dialog {
 

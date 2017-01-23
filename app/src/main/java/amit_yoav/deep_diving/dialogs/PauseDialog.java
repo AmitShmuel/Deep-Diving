@@ -1,4 +1,4 @@
-package com.example.aamit.finalproject.dialogs;
+package amit_yoav.deep_diving.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -9,10 +9,10 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 
-import com.example.aamit.finalproject.MainActivity;
-import com.example.aamit.finalproject.R;
+import amit_yoav.deep_diving.MainActivity;
+import amit_yoav.deep_diving.R;
 
-import static com.example.aamit.finalproject.GameViewActivity.gamePaused;
+import static amit_yoav.deep_diving.GameViewActivity.gamePaused;
 
 public class PauseDialog extends Dialog implements
         android.view.View.OnClickListener {

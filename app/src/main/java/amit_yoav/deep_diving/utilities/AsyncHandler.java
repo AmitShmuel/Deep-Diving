@@ -1,4 +1,4 @@
-package com.example.aamit.finalproject.utilities;
+package amit_yoav.deep_diving.utilities;
 
 import android.os.Handler;
 import android.os.HandlerThread;

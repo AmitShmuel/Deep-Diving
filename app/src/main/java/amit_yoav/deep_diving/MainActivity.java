@@ -1,4 +1,4 @@
-package com.example.aamit.finalproject;
+package amit_yoav.deep_diving;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,11 +12,11 @@ import android.view.WindowManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.ndk.CrashlyticsNdk;
-import com.example.aamit.finalproject.compat.Compat;
-import com.example.aamit.finalproject.dialogs.InfoDialog;
-import com.example.aamit.finalproject.dialogs.QuitDialog;
-import com.example.aamit.finalproject.dialogs.SettingsDialog;
-import com.example.aamit.finalproject.utilities.AsyncHandler;
+import amit_yoav.deep_diving.compat.Compat;
+import amit_yoav.deep_diving.dialogs.InfoDialog;
+import amit_yoav.deep_diving.dialogs.QuitDialog;
+import amit_yoav.deep_diving.dialogs.SettingsDialog;
+import amit_yoav.deep_diving.utilities.AsyncHandler;
 
 import io.fabric.sdk.android.Fabric;
 import java.io.IOException;

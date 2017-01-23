@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.aamit.finalproject.utilities;
+package amit_yoav.deep_diving.utilities;
 
 import android.content.Context;
 import android.os.Looper;
@@ -23,7 +23,7 @@ import android.support.v4.util.Pools;
 import android.util.Log;
 import android.util.TypedValue;
 
-import com.example.aamit.finalproject.BuildConfig;
+import amit_yoav.deep_diving.BuildConfig;
 
 import java.lang.annotation.Retention;
 import java.util.Arrays;

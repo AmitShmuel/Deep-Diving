@@ -1,10 +1,5 @@
-package com.example.aamit.finalproject.utilities;
+package amit_yoav.deep_diving.utilities;
 
-
-import com.example.aamit.finalproject.GameView;
-import com.example.aamit.finalproject.GameViewActivity;
-
-import static com.example.aamit.finalproject.GameViewActivity.gamePaused;
 
 /**
  *

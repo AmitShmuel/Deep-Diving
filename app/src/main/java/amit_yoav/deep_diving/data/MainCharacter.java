@@ -1,4 +1,4 @@
-package com.example.aamit.finalproject.data;
+package amit_yoav.deep_diving.data;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -6,17 +6,16 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-import com.example.aamit.finalproject.utilities.MillisecondsCounter;
+import amit_yoav.deep_diving.utilities.MillisecondsCounter;
 
-import static com.example.aamit.finalproject.GameView.screenHeight;
-import static com.example.aamit.finalproject.GameView.screenSand;
-import static com.example.aamit.finalproject.GameView.screenWidth;
-import static com.example.aamit.finalproject.GameViewActivity.gamePaused;
-import static com.example.aamit.finalproject.GameViewActivity.rand;
-import static com.example.aamit.finalproject.GameViewActivity.sensorChanged;
-import static com.example.aamit.finalproject.GameViewActivity.xAccel;
-import static com.example.aamit.finalproject.GameViewActivity.yAccel;
-import static com.example.aamit.finalproject.GameViewActivity.ySensorOffset;
+import static amit_yoav.deep_diving.GameView.screenHeight;
+import static amit_yoav.deep_diving.GameView.screenSand;
+import static amit_yoav.deep_diving.GameView.screenWidth;
+import static amit_yoav.deep_diving.GameViewActivity.gamePaused;
+import static amit_yoav.deep_diving.GameViewActivity.sensorChanged;
+import static amit_yoav.deep_diving.GameViewActivity.xAccel;
+import static amit_yoav.deep_diving.GameViewActivity.yAccel;
+import static amit_yoav.deep_diving.GameViewActivity.ySensorOffset;
 
 /*
  * MainCharacter

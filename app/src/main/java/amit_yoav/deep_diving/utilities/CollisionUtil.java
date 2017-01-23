@@ -1,11 +1,11 @@
-package com.example.aamit.finalproject.utilities;
+package amit_yoav.deep_diving.utilities;
 
 import android.graphics.Color;
 import android.graphics.RectF;
 
-import com.example.aamit.finalproject.data.Character;
-import com.example.aamit.finalproject.data.GameObject;
-import com.example.aamit.finalproject.data.MainCharacter;
+import amit_yoav.deep_diving.data.Character;
+import amit_yoav.deep_diving.data.GameObject;
+import amit_yoav.deep_diving.data.MainCharacter;
 
 /**
  * Helper class to detect collisions.

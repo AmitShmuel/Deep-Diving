@@ -1,4 +1,4 @@
-package com.example.aamit.finalproject;
+package amit_yoav.deep_diving;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -10,21 +10,17 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.example.aamit.finalproject.data.Background;
-import com.example.aamit.finalproject.data.BackgroundObject;
-import com.example.aamit.finalproject.data.Character;
-import com.example.aamit.finalproject.data.Coin;
-import com.example.aamit.finalproject.data.Life;
-import com.example.aamit.finalproject.data.MainCharacter;
-import com.example.aamit.finalproject.data.StageLabel;
-import com.example.aamit.finalproject.utilities.AsyncHandler;
-import com.example.aamit.finalproject.utilities.CollisionUtil;
-import com.example.aamit.finalproject.utilities.MillisecondsCounter;
-import com.example.aamit.finalproject.utilities.Util;
-
-import static com.example.aamit.finalproject.GameViewActivity.gamePaused;
-import static com.example.aamit.finalproject.GameViewActivity.gameRunning;
-import static com.example.aamit.finalproject.data.BackgroundObject.BUBBLE_LENGTH;
+import amit_yoav.deep_diving.data.Background;
+import amit_yoav.deep_diving.data.BackgroundObject;
+import amit_yoav.deep_diving.data.Character;
+import amit_yoav.deep_diving.data.Coin;
+import amit_yoav.deep_diving.data.Life;
+import amit_yoav.deep_diving.data.MainCharacter;
+import amit_yoav.deep_diving.data.StageLabel;
+import amit_yoav.deep_diving.utilities.AsyncHandler;
+import amit_yoav.deep_diving.utilities.CollisionUtil;
+import amit_yoav.deep_diving.utilities.MillisecondsCounter;
+import amit_yoav.deep_diving.utilities.Util;
 
 /**
  *
@@ -82,13 +78,13 @@ public class GameView extends View {
     Runnable updater = new Runnable() {
         @Override
         public void run() {
-        while (gameRunning) {
+        while (GameViewActivity.gameRunning) {
             // game resumes, we want to resume the time
-            if(!gamePaused && !stopTimeFlag) {
+            if(!GameViewActivity.gamePaused && !stopTimeFlag) {
                 stopTime(false);
                 stopTimeFlag = true;
             }
-            if (screenWidth != 0 && !gamePaused && stopTimeFlag) {
+            if (screenWidth != 0 && !GameViewActivity.gamePaused && stopTimeFlag) {
                 waterBackground.update();
                 sandBackground.update();
                 for (int i = 0; i < stageMobs[currentStage]; i++) characters[i].update();
@@ -102,7 +98,7 @@ public class GameView extends View {
                 continue; // no need to go down..
             }
             // game stopped, we wanna stop the time
-            if(gamePaused && stopTimeFlag) {
+            if(GameViewActivity.gamePaused && stopTimeFlag) {
                 stopTime(true);
                 stopTimeFlag = false;
             }
@@ -189,12 +185,12 @@ public class GameView extends View {
 
         waterBackground.draw(canvas);
         // drawing small fishes (start after bubbles index)
-        for (int i = BUBBLE_LENGTH; i < objects.length; i++) objects[i].draw(canvas);
+        for (int i = BackgroundObject.BUBBLE_LENGTH; i < objects.length; i++) objects[i].draw(canvas);
         coin.draw(canvas);
         for (int i = 0; i < stageMobs[currentStage]; i++) characters[i].draw(canvas);
         mainChar.draw(canvas);
         // we want bubbles to come behind the sand
-        for (int i = 0; i < BUBBLE_LENGTH; i++) objects[i].draw(canvas);
+        for (int i = 0; i < BackgroundObject.BUBBLE_LENGTH; i++) objects[i].draw(canvas);
         sandBackground.draw(canvas);
         life.draw(canvas);
 

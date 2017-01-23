@@ -1,4 +1,4 @@
-package com.example.aamit.finalproject;
+package amit_yoav.deep_diving;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 
-import com.example.aamit.finalproject.utilities.AsyncHandler;
+import amit_yoav.deep_diving.utilities.AsyncHandler;
 
 
 public class SplashScreen extends Activity {

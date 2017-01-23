@@ -1,4 +1,4 @@
-package com.example.aamit.finalproject.data;
+package amit_yoav.deep_diving.data;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -6,10 +6,10 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-import static com.example.aamit.finalproject.GameView.stagePassed;
-import static com.example.aamit.finalproject.GameView.screenHeight;
-import static com.example.aamit.finalproject.GameView.screenWidth;
-import static com.example.aamit.finalproject.GameViewActivity.gamePaused;
+import static amit_yoav.deep_diving.GameView.stagePassed;
+import static amit_yoav.deep_diving.GameView.screenHeight;
+import static amit_yoav.deep_diving.GameView.screenWidth;
+import static amit_yoav.deep_diving.GameViewActivity.gamePaused;
 
 /*
  * This class represents a label coming down or up the screen

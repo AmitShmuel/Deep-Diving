@@ -1,4 +1,4 @@
-package com.example.aamit.finalproject.compat;
+package amit_yoav.deep_diving.compat;
 
 import android.media.AudioManager;
 import android.media.SoundPool;

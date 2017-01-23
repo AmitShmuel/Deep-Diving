@@ -1,10 +1,10 @@
-package com.example.aamit.finalproject.dialogs;
+package amit_yoav.deep_diving.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 
-import com.example.aamit.finalproject.R;
+import amit_yoav.deep_diving.R;
 
 public class QuitDialog extends Dialog {
 

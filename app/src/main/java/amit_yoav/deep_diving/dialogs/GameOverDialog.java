@@ -1,4 +1,4 @@
-package com.example.aamit.finalproject.dialogs;
+package amit_yoav.deep_diving.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -9,11 +9,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.aamit.finalproject.MainActivity;
-import com.example.aamit.finalproject.R;
+import amit_yoav.deep_diving.MainActivity;
+import amit_yoav.deep_diving.R;
 
 
 public class GameOverDialog extends Dialog implements android.view.View.OnClickListener {

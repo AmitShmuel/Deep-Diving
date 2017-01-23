@@ -1,4 +1,4 @@
-package com.example.aamit.finalproject.data;
+package amit_yoav.deep_diving.data;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -9,11 +9,11 @@ import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 
-import static com.example.aamit.finalproject.GameView.screenHeight;
-import static com.example.aamit.finalproject.GameView.screenSand;
-import static com.example.aamit.finalproject.GameView.screenWidth;
-import static com.example.aamit.finalproject.GameViewActivity.gamePaused;
-import static com.example.aamit.finalproject.GameViewActivity.rand;
+import static amit_yoav.deep_diving.GameView.screenHeight;
+import static amit_yoav.deep_diving.GameView.screenSand;
+import static amit_yoav.deep_diving.GameView.screenWidth;
+import static amit_yoav.deep_diving.GameViewActivity.gamePaused;
+import static amit_yoav.deep_diving.GameViewActivity.rand;
 import static java.lang.annotation.RetentionPolicy.CLASS;
 
 

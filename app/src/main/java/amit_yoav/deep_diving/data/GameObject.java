@@ -1,4 +1,4 @@
-package com.example.aamit.finalproject.data;
+package amit_yoav.deep_diving.data;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

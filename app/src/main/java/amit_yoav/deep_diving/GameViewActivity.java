@@ -1,4 +1,4 @@
-package com.example.aamit.finalproject;
+package amit_yoav.deep_diving;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -10,9 +10,9 @@ import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.example.aamit.finalproject.dialogs.GameOverDialog;
-import com.example.aamit.finalproject.dialogs.PauseDialog;
-import com.example.aamit.finalproject.utilities.AsyncHandler;
+import amit_yoav.deep_diving.dialogs.GameOverDialog;
+import amit_yoav.deep_diving.dialogs.PauseDialog;
+import amit_yoav.deep_diving.utilities.AsyncHandler;
 
 import java.util.Random;
 
