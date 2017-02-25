@@ -20,7 +20,7 @@ import static amit_yoav.deep_diving.GameViewActivity.rand;
  * This class represents a coin
  * in which the main character should collect in order to get higher score
  */
-public class Coin extends GameObject{
+public class Coin extends GameObject implements Collidable{
 
     private Rect[] bodySrc = new Rect[10]; // ten frames for each sprite
     private Rect scoreDst = new Rect();
@@ -111,4 +111,14 @@ public class Coin extends GameObject{
     }
 
     public Rect getScoreRect() { return scoreDst; }
+
+    @Override
+    public RectF getBody() {
+        return bodyDst;
+    }
+
+    @Override
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
 }

@@ -21,7 +21,7 @@ import static amit_yoav.deep_diving.GameViewActivity.ySensorOffset;
  * MainCharacter
  * The main character of the game
  */
-public class MainCharacter extends GameObject{
+public class MainCharacter extends GameObject implements Collidable {
 
     public RectF bodyDst = new RectF();
     private Rect[] bodySrc = new Rect[16]; // 16 frames for the diver
@@ -96,5 +96,15 @@ public class MainCharacter extends GameObject{
     public void blink() {
         if(blinker.getAlpha() == 50) blinker.setAlpha(255);
         else blinker.setAlpha(50);
+    }
+
+    @Override
+    public RectF getBody() {
+        return bodyDst;
+    }
+
+    @Override
+    public Bitmap getBitmap() {
+        return bitmap;
     }
 }
