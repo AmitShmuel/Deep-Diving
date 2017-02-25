@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.aamit.finalproject">
+    package="amit_yoav.deep_diving">
 
     <uses-feature
         android:name="android.hardware.sensor.compass"
@@ -17,22 +17,21 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SplashScreen"
-            android:screenOrientation="landscape">
+        <!--<activity android:name=".SplashScreen"-->
+            <!--android:screenOrientation="landscape">-->
+        <!--</activity>-->
+        <activity
+            android:name="amit_yoav.deep_diving.MainActivity"
+            android:parentActivityName="amit_yoav.deep_diving.SplashScreen"
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".MainActivity"
-            android:parentActivityName=".SplashScreen"
-            android:screenOrientation="landscape" >
-        </activity>
-        <activity
-            android:name=".GameViewActivity"
-            android:parentActivityName=".MainActivity"
+            android:name="amit_yoav.deep_diving.GameViewActivity"
+            android:parentActivityName="amit_yoav.deep_diving.MainActivity"
             android:screenOrientation="landscape" />
         <meta-data
             android:name="io.fabric.ApiKey"

@@ -18,6 +18,7 @@ Think you're up for the chalange? Try to get to the last stage and meet the grea
   
 ![In-App image 2](/InAppPic2.png)  
 ![In-App image 1](/InAppPic1.png)  
+![Cover Photo](/CoverPhoto.png)
   
   
   
