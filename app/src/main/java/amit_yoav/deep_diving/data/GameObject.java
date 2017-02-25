@@ -19,9 +19,7 @@ public abstract class GameObject {
 
     public abstract void update();
 
-    void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
+    void setBitmap(Bitmap bitmap) {this.bitmap = bitmap;}
 
     void setSize(float width, float height) {
         this.width = width;

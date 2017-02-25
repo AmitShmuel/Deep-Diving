@@ -251,7 +251,7 @@ public class GameView extends View {
             }
             else mainChar.blink();
         }
-        if(RectF.intersects(coin.bodyDst, mainChar.bodyDst)) {
+        if(CollisionUtil.isCollisionDetected(coin, mainChar)) {
             if(!coin.isCollected()) {
                 updateScore(score+1); // could do score++ but the function makes more sense like that
                 MainActivity.soundEffectsUtil.play(R.raw.coin_collected);

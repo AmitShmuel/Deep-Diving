@@ -18,7 +18,7 @@ import static amit_yoav.deep_diving.GameViewActivity.rand;
  * This class represents all moving fishes
  * which the user should avoid collide with.
  */
-public class Character extends GameObject {
+public class Character extends GameObject implements Collidable{
 
     public RectF bodyDst = new RectF();
     private Rect[] bodySrc;
@@ -133,5 +133,15 @@ public class Character extends GameObject {
     public void restartPopulation() {
         populateCounter.restartCount();
         populate();
+    }
+
+    @Override
+    public RectF getBody() {
+        return bodyDst;
+    }
+
+    @Override
+    public Bitmap getBitmap() {
+        return bitmap;
     }
 }
