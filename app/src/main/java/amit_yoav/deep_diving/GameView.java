@@ -261,7 +261,7 @@ public class GameView extends View {
             }
             coin.collected();
         }
-        if(RectF.intersects(life.bodyDst, mainChar.bodyDst)) {
+        if(CollisionUtil.isCollisionDetected(life, mainChar)) {
             MainActivity.soundEffectsUtil.play(R.raw.extra_life);
             life.setLife( (life.getLife() == 3) ? 3 : life.getLife()+1 );
             life.collected();

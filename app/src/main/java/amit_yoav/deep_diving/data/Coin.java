@@ -110,7 +110,7 @@ public class Coin extends GameObject implements Collidable{
         populationCounter.stopTime(isPaused);
     }
 
-    public Rect getScoreRect() { return scoreDst; }
+    Rect getScoreRect() { return scoreDst; }
 
     @Override
     public RectF getBody() {

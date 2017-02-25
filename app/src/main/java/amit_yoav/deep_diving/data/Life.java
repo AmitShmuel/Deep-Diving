@@ -21,7 +21,7 @@ import static amit_yoav.deep_diving.GameViewActivity.rand;
  * and also populated a life item in which the main character should collect in order to live longer
  */
 
-public class Life extends GameObject {
+public class Life extends GameObject implements Collidable{
 
     private Rect bodySrc = new Rect();
     public RectF bodyDst = new RectF();
@@ -83,5 +83,15 @@ public class Life extends GameObject {
     public void setPoint(Coin coinForMeasure) {
         lifePoint.set((int)(coinForMeasure.getScoreRect().left+coinForMeasure.getWidth()/4),
             (int)(coinForMeasure.getHeight()*1.5f));
+    }
+
+    @Override
+    public RectF getBody() {
+        return bodyDst;
+    }
+
+    @Override
+    public Bitmap getBitmap() {
+        return bitmap;
     }
 }
