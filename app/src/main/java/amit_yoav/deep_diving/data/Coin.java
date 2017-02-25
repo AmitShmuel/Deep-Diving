@@ -29,8 +29,8 @@ public class Coin extends GameObject{
     private MillisecondsCounter frameCounter = new MillisecondsCounter();
     private MillisecondsCounter populationCounter = new MillisecondsCounter();
 
-    private int frame;
-    private final int frameDuration = 50, populateDuration = 3000;
+    private final int frameDuration = 50;
+    private int frame, populateDuration = 3000;
     private boolean collected, canPopulate;
     private boolean firstPopulation = true;
 
@@ -67,9 +67,11 @@ public class Coin extends GameObject{
             if(bodyDst.top < scoreDst.top && bodyDst.left > scoreDst.left) {
                 /* making him disappear when he reached the top right corner by giving him + 100
                    until he will be populated again to the screen */
-                bodyDst.offsetTo(bodyDst.left +100, bodyDst.top - 100);
+                bodyDst.offsetTo(bodyDst.left +500, bodyDst.top - 500);
                 collected = false; // done collecting
                 canPopulate = true;
+                // we want the coin to populate right after it reaches the score
+                populateDuration = 500;
             }
         }
     }
@@ -88,6 +90,7 @@ public class Coin extends GameObject{
             canPopulate = false;
         } else if(!collected && populationCounter.timePassed(populateDuration)) {
             populate();
+            populateDuration = 3000; // back to normal population time
         }
         // change frame each frameDuration milliseconds for animation
         if(frameCounter.timePassed(frameDuration)) frame = (++frame == 10 ? 0 : frame);
