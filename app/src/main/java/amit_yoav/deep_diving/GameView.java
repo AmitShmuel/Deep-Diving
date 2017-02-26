@@ -52,7 +52,7 @@ public class GameView extends View {
      */
     private int currentStage;
     private int[] stageMobs = {3,4,5,6,7,7,8,9,10,11};         //Final Version
-//    private int[] stageMobs = {11,3,3,4,5,6,7,8,9/*,10,11,12,13*/}; //DEBUG
+    //    private int[] stageMobs = {11,3,3,4,5,6,7,8,9/*,10,11,12,13*/}; //DEBUG
     public static boolean stagePassed = true;
     private boolean isStagedPlayedSound;
 
@@ -78,31 +78,31 @@ public class GameView extends View {
     Runnable updater = new Runnable() {
         @Override
         public void run() {
-        while (GameViewActivity.gameRunning) {
-            // game resumes, we want to resume the time
-            if(!GameViewActivity.gamePaused && !stopTimeFlag) {
-                stopTime(false);
-                stopTimeFlag = true;
+            while (GameViewActivity.gameRunning) {
+                // game resumes, we want to resume the time
+                if(!GameViewActivity.gamePaused && !stopTimeFlag) {
+                    stopTime(false);
+                    stopTimeFlag = true;
+                }
+                if (screenWidth != 0 && !GameViewActivity.gamePaused && stopTimeFlag) {
+                    waterBackground.update();
+                    sandBackground.update();
+                    for (int i = 0; i < stageMobs[currentStage]; i++) characters[i].update();
+                    for (BackgroundObject ob : objects) ob.update();
+                    stageLabels[currentStage].update();
+                    stageLabels[newRecordIndex].update();
+                    mainChar.update();
+                    coin.update();
+                    life.update();
+                    detectCollisions();
+                    continue; // no need to go down..
+                }
+                // game stopped, we wanna stop the time
+                if(GameViewActivity.gamePaused && stopTimeFlag) {
+                    stopTime(true);
+                    stopTimeFlag = false;
+                }
             }
-            if (screenWidth != 0 && !GameViewActivity.gamePaused && stopTimeFlag) {
-                waterBackground.update();
-                sandBackground.update();
-                for (int i = 0; i < stageMobs[currentStage]; i++) characters[i].update();
-                for (BackgroundObject ob : objects) ob.update();
-                stageLabels[currentStage].update();
-                stageLabels[newRecordIndex].update();
-                mainChar.update();
-                coin.update();
-                life.update();
-                detectCollisions();
-                continue; // no need to go down..
-            }
-            // game stopped, we wanna stop the time
-            if(GameViewActivity.gamePaused && stopTimeFlag) {
-                stopTime(true);
-                stopTimeFlag = false;
-            }
-        }
         }
     };
 
@@ -203,8 +203,8 @@ public class GameView extends View {
                 MainActivity.soundEffectsUtil.play(R.raw.level_complete);
                 isStagedPlayedSound = true;
             }
-            stageLabels[currentStage].draw(canvas);
         }
+        stageLabels[currentStage].draw(canvas);
         if(stageLabels[newRecordIndex].canDraw) stageLabels[newRecordIndex].draw(canvas);
         postInvalidateOnAnimation();
     }
@@ -253,7 +253,7 @@ public class GameView extends View {
             }
             else mainChar.blink();
         }
-        if(RectF.intersects(coin.bodyDst, mainChar.bodyDst)) {
+        if(CollisionUtil.isCollisionDetected(coin, mainChar)) {
             if(!coin.isCollected()) {
                 updateScore(score+1); // could do score++ but the function makes more sense like that
                 MainActivity.soundEffectsUtil.play(R.raw.coin_collected);
@@ -263,7 +263,7 @@ public class GameView extends View {
             }
             coin.collected();
         }
-        if(RectF.intersects(life.bodyDst, mainChar.bodyDst)) {
+        if(CollisionUtil.isCollisionDetected(life, mainChar)) {
             MainActivity.soundEffectsUtil.play(R.raw.extra_life);
             life.setLife( (life.getLife() == 3) ? 3 : life.getLife()+1 );
             life.collected();

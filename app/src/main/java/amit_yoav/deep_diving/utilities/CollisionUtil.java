@@ -3,9 +3,7 @@ package amit_yoav.deep_diving.utilities;
 import android.graphics.Color;
 import android.graphics.RectF;
 
-import amit_yoav.deep_diving.data.Character;
-import amit_yoav.deep_diving.data.GameObject;
-import amit_yoav.deep_diving.data.MainCharacter;
+import amit_yoav.deep_diving.data.Collidable;
 
 /**
  * Helper class to detect collisions.
@@ -14,9 +12,10 @@ import amit_yoav.deep_diving.data.MainCharacter;
  */
 public class CollisionUtil {
 
-    public static boolean isCollisionDetected(Character sprite1, MainCharacter sprite2){
-        RectF bounds1 = sprite1.bodyDst;
-        RectF bounds2 = sprite2.bodyDst;
+    public static boolean isCollisionDetected(Collidable sprite1, Collidable sprite2){
+
+        RectF bounds1 = sprite1.getBody();
+        RectF bounds2 = sprite2.getBody();
 
         // First level detection
         if( RectF.intersects(bounds1, bounds2) ){
@@ -40,32 +39,16 @@ public class CollisionUtil {
         return false;
     }
 
-    private static int getBitmapPixel(GameObject sprite, int i, int j) {
+    private static int getBitmapPixel(Collidable sprite, int i, int j) {
 
-        if(sprite instanceof Character) {
-            int x = ((int)(i - ((Character)sprite).bodyDst.left));
-            int y = ((int)(j - ((Character)sprite).bodyDst.top));
+        int x = ((int)(i - sprite.getBody().left));
+        int y = ((int)(j - sprite.getBody().top));
 
-            // protecting the edges in case we got an out-of-bitmap-bound pixel
-            if(     (x > 1) &&
-                    (x < ((Character)sprite).bitmap.getWidth()) &&
-                    (y > 1) &&
-                    (y < ((Character)sprite).bitmap.getHeight())) {
+        // protecting the edges in case we got an out-of-bitmap-bound pixel
+        if(     (x > 1) && (x < sprite.getBitmap().getWidth()) &&
+                (y > 1) && (y < sprite.getBitmap().getHeight())) {
 
-                return ((Character)sprite).bitmap.getPixel(x, y);
-            }
-        }
-        else { // same as before just instance of MainCharacter
-            int x = ((int)(i - ((MainCharacter)sprite).bodyDst.left));
-            int y = ((int)(j - ((MainCharacter)sprite).bodyDst.top));
-
-            if(     (x > 1) &&
-                    (x < ((MainCharacter) sprite).bitmap.getWidth()) &&
-                    (y > 1) &&
-                    (y < ((MainCharacter) sprite).bitmap.getHeight())) {
-
-                return ((MainCharacter) sprite).bitmap.getPixel(x, y);
-            }
+            return sprite.getBitmap().getPixel(x, y);
         }
         return -1;
     }
@@ -78,7 +61,5 @@ public class CollisionUtil {
         return new RectF(left, top, right, bottom);
     }
 
-    private static boolean isFilled(int pixel) {
-        return pixel != Color.TRANSPARENT;
-    }
+    private static boolean isFilled(int pixel) {return pixel != Color.TRANSPARENT;}
 }
