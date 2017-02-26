@@ -64,9 +64,9 @@ public class StageLabel extends GameObject {
             }
         }
         else {
-            paint.setAlpha(alpha > 20 ? alpha-- : 20);
-            canvas.scale(0.8f, 0.8f, screenWidth/2, screenHeight/2);
-            canvas.translate(0, -screenHeight/4);
+            paint.setAlpha(100);
+            canvas.scale(0.4f, 0.4f, screenWidth/2, screenHeight/2);
+            canvas.translate(0, -screenHeight*0.9f);
             canvas.drawBitmap(bitmap, bodySrc, bodyDst, paint);
         }
         canvas.restoreToCount(save);
