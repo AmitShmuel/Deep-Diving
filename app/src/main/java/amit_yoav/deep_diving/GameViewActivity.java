@@ -24,7 +24,8 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
 
     private SensorManager sensorManager;
     private boolean firstSensorChanged = true, firstTime = true;
-    public static float xAccel, yAccel, ySensorOffset;
+    private float ySensorOffset;
+    public static float xAccel, yAccel;
     public static boolean sensorChanged, gameRunning, gamePaused;
     public static Random rand = new Random();
     private long startTime;
@@ -122,7 +123,7 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if(sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            yAccel = 4 * sensorEvent.values[0];
+            yAccel = 4 * sensorEvent.values[0] - ySensorOffset;
             xAccel = 4 * sensorEvent.values[1];
             if(firstSensorChanged) {
                 ySensorOffset = yAccel;
