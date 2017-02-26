@@ -48,24 +48,28 @@ public class StageLabel extends GameObject {
     @Override
     public void draw(Canvas canvas) {
 
-        canvas.drawBitmap(bitmap, bodySrc, bodyDst, paint);
-        if (!gamePaused) {
-            if (alpha > 0) paint.setAlpha(alpha--);
-            if(isNewRecordLabel) {
-                if (bodyDst.top > screenHeight/2) {
-                    bodyDst.offsetTo(bodyDst.left, bodyDst.top - 2);
-                } else {
-                    canDraw = false;
-                }
-            } else {
-                if (bodyDst.bottom < screenHeight/2) {
-                    bodyDst.offsetTo(bodyDst.left, bodyDst.top + 2);
-                } else {
-                    canDraw = false;
-                    stagePassed = false;
+        int save = canvas.save();
+
+        if(stagePassed) {
+            canvas.drawBitmap(bitmap, bodySrc, bodyDst, paint);
+            if (!gamePaused) {
+                if (alpha > 0) paint.setAlpha(alpha--);
+                if (isNewRecordLabel) {
+                    if (bodyDst.top > screenHeight / 2) bodyDst.offsetTo(bodyDst.left, bodyDst.top - 2);
+                    else canDraw = false;
+                } else { // NewLevelLabel
+                    if (bodyDst.bottom < screenHeight / 2) bodyDst.offsetTo(bodyDst.left, bodyDst.top + 2);
+                    else stagePassed = false;
                 }
             }
         }
+        else {
+            paint.setAlpha(alpha > 20 ? alpha-- : 20);
+            canvas.scale(0.8f, 0.8f, screenWidth/2, screenHeight/2);
+            canvas.translate(0, -screenHeight/4);
+            canvas.drawBitmap(bitmap, bodySrc, bodyDst, paint);
+        }
+        canvas.restoreToCount(save);
     }
 
     @Override
