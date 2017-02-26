@@ -217,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
             soundsMap.put(R.raw.level_complete, soundPool.load(appContext, R.raw.level_complete, 1));
             soundsMap.put(R.raw.new_record, soundPool.load(appContext, R.raw.new_record, 1));
             soundsMap.put(R.raw.extra_life, soundPool.load(appContext, R.raw.extra_life, 1));
+            soundsMap.put(R.raw.gun_collect, soundPool.load(appContext, R.raw.gun_collect, 1));
         }
 
         public void play(int soundKey) {

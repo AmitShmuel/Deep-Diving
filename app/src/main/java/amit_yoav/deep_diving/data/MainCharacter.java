@@ -1,11 +1,14 @@
 package amit_yoav.deep_diving.data;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import amit_yoav.deep_diving.R;
 import amit_yoav.deep_diving.utilities.MillisecondsCounter;
 
 import static amit_yoav.deep_diving.GameView.screenHeight;
@@ -30,18 +33,21 @@ public class MainCharacter extends GameObject implements Collidable {
     private MillisecondsCounter frameCounter = new MillisecondsCounter();
     private Paint blinker = new Paint();
 
+    private Bitmap gunBitmap, diverBitmap;
 
     public boolean canGetHit() { return canGetHit; }
     public void setCanGetHit(boolean value) { this.canGetHit = value; }
 
 
-    public static MainCharacter prepareMainChar(Bitmap bitmap) {
+    public static MainCharacter prepareMainChar(Bitmap diverBitmap, Bitmap gunBitmap) {
 
         MainCharacter mainChar = new MainCharacter();
-        int charWidth = (bitmap.getWidth()) / 4;
-        int charHeight = (bitmap.getHeight()) / 4;
+        int charWidth = (diverBitmap.getWidth()) / 4;
+        int charHeight = (diverBitmap.getHeight()) / 4;
         int i = 0;
-        mainChar.setBitmap(bitmap);
+        mainChar.setBitmap(diverBitmap);
+        mainChar.diverBitmap = diverBitmap;
+        mainChar.gunBitmap = gunBitmap;
         mainChar.setSize(charWidth, charHeight);
         for (int y = 0; y < 4; y++) { // bitmap row
             for (int x = 0; x < 4; x++) { // bitmap column
@@ -49,6 +55,7 @@ public class MainCharacter extends GameObject implements Collidable {
                 i++;
             }
         }
+
         return mainChar;
     }
 
@@ -115,5 +122,10 @@ public class MainCharacter extends GameObject implements Collidable {
     @Override
     public Bitmap getBitmap() {
         return bitmap;
+    }
+
+    public void setGunBitmap(boolean withGun) {
+        if(withGun) setBitmap(gunBitmap);
+        else setBitmap(diverBitmap);
     }
 }

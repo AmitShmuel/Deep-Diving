@@ -14,6 +14,7 @@ import amit_yoav.deep_diving.data.Background;
 import amit_yoav.deep_diving.data.BackgroundObject;
 import amit_yoav.deep_diving.data.Character;
 import amit_yoav.deep_diving.data.Coin;
+import amit_yoav.deep_diving.data.Gun;
 import amit_yoav.deep_diving.data.Life;
 import amit_yoav.deep_diving.data.MainCharacter;
 import amit_yoav.deep_diving.data.StageLabel;
@@ -44,8 +45,10 @@ public class GameView extends View {
     private MainCharacter mainChar;
     private Coin coin;
     private Life life;
+    private Gun gun;
     private StageLabel[] stageLabels;
     private final int newRecordIndex = 10;
+    private int mainCharResource, mainCharGunResource;
 
     /*
      * Stage related types
@@ -61,7 +64,7 @@ public class GameView extends View {
      */
     public static int score;
     private boolean scoreChanged = true, isBestScoreUsed;
-    private int bestScore, mainCharResource;
+    private int bestScore;
     private Rect scoreRect = new Rect();
     private Paint scorePaint = new Paint(), alphaLifePaint = new Paint();
     public static StringBuilder sbScore = Util.acquireStringBuilder();
@@ -94,6 +97,7 @@ public class GameView extends View {
                     mainChar.update();
                     coin.update();
                     life.update();
+                    gun.update();
                     detectCollisions();
                     continue; // no need to go down..
                 }
@@ -117,6 +121,19 @@ public class GameView extends View {
 
         mainCharResource = ((GameViewActivity) context).getMainCharResource();
 
+        switch(mainCharResource) {
+            case R.drawable.black_diver:
+                mainCharGunResource = R.drawable.black_diver_gun;
+                break;
+            case R.drawable.magenta_diver:
+                mainCharGunResource = R.drawable.magenta_diver_gun;
+                break;
+            case R.drawable.pink_diver:
+                mainCharGunResource = R.drawable.pink_diver_gun;
+                break;
+            default: break;
+        }
+
         initDrawObjects();
 
         initPaints();
@@ -129,7 +146,8 @@ public class GameView extends View {
     private void initDrawObjects() {
         waterBackground = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background_water), WATER_SPEED);
         sandBackground = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background_sand), SAND_SPEED);
-        mainChar = MainCharacter.prepareMainChar(BitmapFactory.decodeResource(getResources(), mainCharResource));
+        mainChar = MainCharacter.prepareMainChar(BitmapFactory.decodeResource(getResources(), mainCharResource),
+                BitmapFactory.decodeResource(getResources(), mainCharGunResource));
         characters = Character.prepareCharacters(
                 BitmapFactory.decodeResource(getResources(), R.drawable.fish_green),
                 BitmapFactory.decodeResource(getResources(), R.drawable.fish_shark),
@@ -147,6 +165,7 @@ public class GameView extends View {
                 BitmapFactory.decodeResource(getResources(), R.drawable.fishes_background));
         coin = Coin.prepareCoin(BitmapFactory.decodeResource(getResources(), R.drawable.coin));
         life = Life.prepareLife(BitmapFactory.decodeResource(getResources(), R.drawable.life));
+        gun = Gun.prepareGun(BitmapFactory.decodeResource(getResources(), R.drawable.gun));
         stageLabels = StageLabel.prepareStageLabels(BitmapFactory.decodeResource(getResources(), R.drawable.stage_labels));
     }
 
@@ -195,6 +214,7 @@ public class GameView extends View {
         for (int i = 0; i < BackgroundObject.BUBBLE_LENGTH; i++) objects[i].draw(canvas);
         sandBackground.draw(canvas);
         life.draw(canvas);
+        gun.draw(canvas);
 
         drawScore(canvas);
         drawLife(canvas);
@@ -267,6 +287,10 @@ public class GameView extends View {
             MainActivity.soundEffectsUtil.play(R.raw.extra_life);
             life.setLife( (life.getLife() == 3) ? 3 : life.getLife()+1 );
             life.collected();
+        }
+        if(CollisionUtil.isCollisionDetected(gun, mainChar)) {
+            MainActivity.soundEffectsUtil.play(R.raw.gun_collect);
+            mainChar.setGunBitmap(true);
         }
     }
 
