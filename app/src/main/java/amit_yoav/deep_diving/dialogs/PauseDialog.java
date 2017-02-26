@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
 
+import amit_yoav.deep_diving.GameViewActivity;
 import amit_yoav.deep_diving.MainActivity;
 import amit_yoav.deep_diving.R;
 
@@ -35,9 +37,11 @@ public class PauseDialog extends Dialog implements
 
         Button resumeBtn = (Button) findViewById(R.id.resume_button);
         Button quitBtn = (Button) findViewById(R.id.quit_button);
+        ImageButton settingsBtn = (ImageButton) findViewById(R.id.pause_settings_button);
 
         resumeBtn.setOnClickListener(this);
         quitBtn.setOnClickListener(this);
+        settingsBtn.setOnClickListener(this);
     }
 
 
@@ -47,11 +51,8 @@ public class PauseDialog extends Dialog implements
         switch (v.getId()) {
 
             case R.id.quit_button:
-
                 MainActivity.soundEffectsUtil.play(R.raw.quit_dialog);
-//                dismiss();
                 gameViewActivity.finish();
-
                 MainActivity.musicPlayer.stopMusic(false);
                 gamePaused = false;
                 break;
@@ -61,6 +62,11 @@ public class PauseDialog extends Dialog implements
                 dismiss();
                 gamePaused = false;
                 MainActivity.musicPlayer.startMusic(true);
+                break;
+
+            case R.id.pause_settings_button:
+                ((GameViewActivity) (gameViewActivity)).showSettings();
+//                ((MainActivity) getParent()).settingsDialog.show();
                 break;
 
             default:

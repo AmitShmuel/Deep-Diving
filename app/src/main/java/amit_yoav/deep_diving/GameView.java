@@ -61,7 +61,7 @@ public class GameView extends View {
      */
     public static int score;
     private boolean scoreChanged = true, isBestScoreUsed;
-    private int bestScore;
+    private int bestScore, mainCharResource;
     private Rect scoreRect = new Rect();
     private Paint scorePaint = new Paint(), alphaLifePaint = new Paint();
     public static StringBuilder sbScore = Util.acquireStringBuilder();
@@ -115,6 +115,8 @@ public class GameView extends View {
 
         bestScore = ((GameViewActivity) context).getBestScore();
 
+        mainCharResource = ((GameViewActivity) context).getMainCharResource();
+
         initDrawObjects();
 
         initPaints();
@@ -127,7 +129,7 @@ public class GameView extends View {
     private void initDrawObjects() {
         waterBackground = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background_water), WATER_SPEED);
         sandBackground = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background_sand), SAND_SPEED);
-        mainChar = MainCharacter.prepareMainChar(BitmapFactory.decodeResource(getResources(), R.drawable.diver));
+        mainChar = MainCharacter.prepareMainChar(BitmapFactory.decodeResource(getResources(), mainCharResource));
         characters = Character.prepareCharacters(
                 BitmapFactory.decodeResource(getResources(), R.drawable.fish_green),
                 BitmapFactory.decodeResource(getResources(), R.drawable.fish_shark),
@@ -278,6 +280,15 @@ public class GameView extends View {
     private void levelUp() {
         stagePassed = true;
         currentStage++;
+
+        if(currentStage == 4) {
+            MainActivity.musicPlayer.switchMusic(R.raw.music_2);
+        }
+
+        if(currentStage == 8) {
+            MainActivity.musicPlayer.switchMusic(R.raw.music_3);
+        }
+
         isStagedPlayedSound = false;
         for (int i = 0; i < stageMobs[currentStage]; i++) {
             characters[i].setFirstPopulation(true);

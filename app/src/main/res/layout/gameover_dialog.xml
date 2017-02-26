@@ -24,9 +24,9 @@
         android:shadowColor="@android:color/black" />
 
     <Button
-        android:text="@string/quit"
+        android:text="RESTART"
         android:onClick="restartPressed"
-        android:id="@+id/back_main_menu_button"
+        android:id="@+id/restart_game_button"
         android:fontFamily="casual"
         android:background="@drawable/general_button"
         android:textColor="@android:color/black"
@@ -41,17 +41,17 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
     <Button
-        android:text="Restart"
-        android:id="@+id/restart_game_button"
+        android:text="@string/quit"
+        android:id="@+id/back_main_menu_button"
         android:fontFamily="casual"
         android:background="@drawable/general_button"
         android:textColor="@android:color/black"
         android:textStyle="normal|bold"
         android:textAlignment="center"
         android:textSize="24sp"
-        android:layout_marginStart="48dp"
+        android:layout_marginStart="40dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="48dp"
+        android:layout_marginLeft="40dp"
         android:layout_width="139dp"
         android:layout_height="60dp"
         android:layout_marginTop="16dp"

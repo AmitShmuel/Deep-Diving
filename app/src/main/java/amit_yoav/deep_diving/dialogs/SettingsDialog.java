@@ -97,6 +97,19 @@ public class SettingsDialog extends Dialog {
         });
     }
 
+
+    public int getMainCharacter() {return preferences.getInt("main_character",R.drawable.black_diver);}
+    public void setMainCharacter(final int mainCharacter) {
+        AsyncHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                editor.putInt("main_character", mainCharacter);
+                editor.commit();
+            }
+        });
+    }
+
+
     @Override
     public void onBackPressed() {
         mainActivity.closeDialog(null);

@@ -2,13 +2,16 @@ package amit_yoav.deep_diving;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.ndk.CrashlyticsNdk;
@@ -31,7 +34,22 @@ public class MainActivity extends AppCompatActivity {
     public static MySFxRunnable soundEffectsUtil;
 
     private static float volume = 0;
-    private static boolean isSoundOn, gameStarted, isBackPressed;
+    private static boolean isSoundOn, gameStarted, isBackPressed, isFinished;
+
+    private int[] divers = {
+      R.drawable.background_black, R.drawable.background_magenta, R.drawable.background_pink
+    };
+    private int diverPointer = 0;
+    View mainActivityLayout = null;
+    ImageButton leftArrow = null;
+
+    public void setDiver(View v) {
+        soundEffectsUtil.play(R.raw.open_dialog);
+        if(leftArrow == v) diverPointer = --diverPointer == -1 ? 2 : diverPointer;
+        else diverPointer = (++diverPointer) % 3;
+        mainActivityLayout.setBackgroundResource(divers[diverPointer]);
+        settingsDialog.setMainCharacter(diverPointer);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +75,16 @@ public class MainActivity extends AppCompatActivity {
         if (soundEffectsUtil == null) {
             soundEffectsUtil = new MySFxRunnable(this);
         }
-
-//        musicPlayer.switchMusic(true);
+        mainActivityLayout = (View) (this.findViewById(R.id.activity_main));
+        leftArrow = (ImageButton) (this.findViewById(R.id.leftArrow));
+        diverPointer = settingsDialog.getMainCharacter();
+        mainActivityLayout.setBackgroundResource(divers[diverPointer]);
     }
 
     public void startGame(View view) {
         soundEffectsUtil.play(R.raw.start_bubble);
         gameStarted = true;
-        musicPlayer.switchMusic(false);
+        musicPlayer.switchMusic(R.raw.game);
         Intent intent = new Intent(this, GameViewActivity.class);
         startActivity(intent);
 
@@ -77,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
     public void quitGame(View view) {
         soundEffectsUtil.play(R.raw.quit_dialog);
         quitDialog.dismiss();
+        isFinished = true;
         finish();
     }
 
@@ -93,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         else quitDialog.dismiss();
     }
 
-    public void playToggleSoundEffect(boolean on) {
+    public static void playToggleSoundEffect(boolean on) {
         boolean tmp = isSoundOn;
         isSoundOn = true;
         if(on) soundEffectsUtil.play(R.raw.toggle_on);
@@ -101,22 +122,24 @@ public class MainActivity extends AppCompatActivity {
         isSoundOn = tmp;
     }
 
-    public void setVolumeMusic(float volume) {
-        musicPlayer.mPlayer.setVolume((this.volume = volume), volume);
+    public static void setVolumeMusic(float newVolume) {
+        musicPlayer.mPlayer.setVolume((volume = newVolume), newVolume);
     }
 
-    public void setIsSoundOn(boolean sound) {
+    public static void setIsSoundOn(boolean sound) {
         isSoundOn = sound;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        if(isFinished) android.os.Process.killProcess(android.os.Process.myPid());
 //        System.out.println("onResume");
         gameStarted = false;
-        musicPlayer.switchMusic(true);
+        musicPlayer.switchMusic(R.raw.welcome_screen);
         if(musicPlayer.mPlayer != null)
             musicPlayer.startMusic(true);
+        settingsDialog = new SettingsDialog(this);
     }
 
     @Override
@@ -206,7 +229,8 @@ public class MainActivity extends AppCompatActivity {
         Context appContext;
         MediaPlayer mPlayer;
         private boolean musicIsPlaying = false;
-        private boolean isMainMenu = true;
+//        private boolean isMainMenu = true;
+        private int currentMusicPlaying = R.raw.welcome_screen;
 
         public MyMusicRunnable(Context c) {
             // be careful not to leak the activity context.
@@ -273,11 +297,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        private void switchMusic(boolean isMenu) {
+        public void switchMusic(int id) {
             if(musicIsPlaying) {
-                if(isMainMenu == isMenu) return;
-                isMainMenu = isMenu;
-                int id = isMainMenu? R.raw.welcome_screen : R.raw.game;
+                if(currentMusicPlaying == id) return;
+                currentMusicPlaying = id;
                 mPlayer.stop();
                 mPlayer.release();
                 mPlayer = MediaPlayer.create(appContext, id);
