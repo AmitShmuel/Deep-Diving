@@ -20,7 +20,7 @@ import static amit_yoav.deep_diving.GameViewActivity.rand;
  */
 public class Character extends GameObject implements Collidable{
 
-    public RectF bodyDst = new RectF();
+    private RectF bodyDst = new RectF();
     private Rect[] bodySrc;
     private float scale, speed;
     private MillisecondsCounter frameCounter = new MillisecondsCounter();
@@ -28,6 +28,7 @@ public class Character extends GameObject implements Collidable{
     private MillisecondsCounter firstPopulateCounter = new MillisecondsCounter();
     private int populateDuration, frameDuration, frame;
     private boolean firstPopulation = true, waitOnFirstPopulation;
+    public boolean killed;
 
     private Character(float speed, float scale, int populateDuration) {
         this.speed = speed;
@@ -95,8 +96,14 @@ public class Character extends GameObject implements Collidable{
 
         if(!firstPopulation) { // just draw..
             canvas.scale(scale, scale, screenWidth / 2, screenHeight / 2);
+            if(killed) canvas.rotate(180, bodyDst.centerX(), bodyDst.centerY());
             canvas.drawBitmap(bitmap, bodySrc[frame], bodyDst, null);
-            if (!gamePaused) bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top);
+            if (!gamePaused) {
+                if(!killed) bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top);
+                else {
+                    bodyDst.offsetTo(bodyDst.left, bodyDst.top + speed);
+                }
+            }
         } // wait before populate (new stage)
         else if (waitOnFirstPopulation || firstPopulateCounter.timePassed(4000)) {
             // after 4 seconds we want to go inside and wait populateDuration time
@@ -112,7 +119,7 @@ public class Character extends GameObject implements Collidable{
     @Override
     public void update() {
 
-        if(bodyDst.right < 0) {
+        if(bodyDst.right < 0 || bodyDst.top > screenHeight) {
             if(populateCounter.timePassed(populateDuration)) populate();
         }
         // change frame each frameDuration milliseconds for animation
@@ -122,6 +129,7 @@ public class Character extends GameObject implements Collidable{
     private void populate() {
         float initY = rand.nextFloat()*(screenHeight - screenSand - height) + height;
         bodyDst.set(screenWidth, initY - height, screenWidth + width, initY);
+        killed = false;
     }
 
     public void stopTime(boolean isPaused) {

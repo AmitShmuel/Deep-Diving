@@ -33,6 +33,7 @@ public class BackgroundObject extends GameObject {
     static final int BUBBLE = 2;
     public static final int BUBBLE_LENGTH = 8;
 
+
     /*
      * ObjectKind
      * Differentiate between background objects kinds as integers

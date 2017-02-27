@@ -1,14 +1,11 @@
 package amit_yoav.deep_diving.data;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-import amit_yoav.deep_diving.R;
 import amit_yoav.deep_diving.utilities.MillisecondsCounter;
 
 import static amit_yoav.deep_diving.GameView.screenHeight;
@@ -16,6 +13,7 @@ import static amit_yoav.deep_diving.GameView.screenSand;
 import static amit_yoav.deep_diving.GameView.screenWidth;
 import static amit_yoav.deep_diving.GameViewActivity.gamePaused;
 import static amit_yoav.deep_diving.GameViewActivity.sensorChanged;
+import static amit_yoav.deep_diving.GameViewActivity.shoot;
 import static amit_yoav.deep_diving.GameViewActivity.xAccel;
 import static amit_yoav.deep_diving.GameViewActivity.yAccel;
 
@@ -27,16 +25,15 @@ public class MainCharacter extends GameObject implements Collidable {
 
     private RectF bodyDst = new RectF();
     private Rect[] bodySrc = new Rect[16]; // 16 frames for the diver
+    private Gun gun;
+    private Arrow arrow;
     private float sensorX, sensorY, frameDuration = 150;
-    private boolean canGetHit = true, populated;
+    private boolean populated;
+    public boolean hasShield, canGetHit = true;
     private int frame;
     private MillisecondsCounter frameCounter = new MillisecondsCounter();
     private Paint blinker = new Paint();
-
     private Bitmap gunBitmap, diverBitmap;
-
-    public boolean canGetHit() { return canGetHit; }
-    public void setCanGetHit(boolean value) { this.canGetHit = value; }
 
 
     public static MainCharacter prepareMainChar(Bitmap diverBitmap, Bitmap gunBitmap) {
@@ -55,7 +52,6 @@ public class MainCharacter extends GameObject implements Collidable {
                 i++;
             }
         }
-
         return mainChar;
     }
 
@@ -75,6 +71,12 @@ public class MainCharacter extends GameObject implements Collidable {
 
         // block the edges for the main character
         blockEdges();
+
+        // turns true when user presses the shoot button on the screen (checked in GameViewActivity)
+        if(shoot) {
+            shoot();
+            shoot = false;
+        }
 
         // change frame each frameDuration milliseconds for animation
         if(frameCounter.timePassed((long)frameDuration)) frame = (++frame == 16 ? 0 : frame);
@@ -124,8 +126,16 @@ public class MainCharacter extends GameObject implements Collidable {
         return bitmap;
     }
 
-    public void setGunBitmap(boolean withGun) {
-        if(withGun) setBitmap(gunBitmap);
+    public void setGun(Gun gun, Arrow arrow) {
+        if(gun != null) setBitmap(gunBitmap);
         else setBitmap(diverBitmap);
+        this.gun = gun;
+        this.arrow = arrow;
+    }
+
+    private void shoot() {
+        arrow.populate(bodyDst.centerX(), bodyDst.centerY());
+        gun.restart();
+        setGun(null, null);
     }
 }

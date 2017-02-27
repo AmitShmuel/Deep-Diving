@@ -98,7 +98,7 @@ public class SettingsDialog extends Dialog {
     }
 
 
-    public int getMainCharacter() {return preferences.getInt("main_character",R.drawable.black_diver);}
+    public int getMainCharacter() {return preferences.getInt("main_character", 0);}
     public void setMainCharacter(final int mainCharacter) {
         AsyncHandler.post(new Runnable() {
             @Override

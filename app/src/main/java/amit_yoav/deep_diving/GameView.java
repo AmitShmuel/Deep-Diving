@@ -5,13 +5,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
 
+import amit_yoav.deep_diving.data.Arrow;
 import amit_yoav.deep_diving.data.Background;
 import amit_yoav.deep_diving.data.BackgroundObject;
+import amit_yoav.deep_diving.data.Shield;
 import amit_yoav.deep_diving.data.Character;
 import amit_yoav.deep_diving.data.Coin;
 import amit_yoav.deep_diving.data.Gun;
@@ -22,6 +23,8 @@ import amit_yoav.deep_diving.utilities.AsyncHandler;
 import amit_yoav.deep_diving.utilities.CollisionUtil;
 import amit_yoav.deep_diving.utilities.MillisecondsCounter;
 import amit_yoav.deep_diving.utilities.Util;
+
+import static amit_yoav.deep_diving.GameViewActivity.canShoot;
 
 /**
  *
@@ -45,10 +48,17 @@ public class GameView extends View {
     private MainCharacter mainChar;
     private Coin coin;
     private Life life;
+    private Shield shield;
     private Gun gun;
+    private Arrow arrow;
     private StageLabel[] stageLabels;
     private final int newRecordIndex = 10;
     private int mainCharResource, mainCharGunResource;
+
+    /*
+     * Features
+     */
+    public static boolean hit;
 
     /*
      * Stage related types
@@ -72,7 +82,9 @@ public class GameView extends View {
     /*
      * Time management
      */
-    MillisecondsCounter mCounter = new MillisecondsCounter();
+    MillisecondsCounter protectCounter = new MillisecondsCounter();
+    MillisecondsCounter shieldCounter = new MillisecondsCounter();
+    MillisecondsCounter shieldBlinkCounter = new MillisecondsCounter();
     private boolean stopTimeFlag = true;
 
     /*
@@ -90,11 +102,13 @@ public class GameView extends View {
                 if (screenWidth != 0 && !GameViewActivity.gamePaused && stopTimeFlag) {
                     waterBackground.update();
                     sandBackground.update();
+                    arrow.update();
                     for (int i = 0; i < stageMobs[currentStage]; i++) characters[i].update();
                     for (BackgroundObject ob : objects) ob.update();
                     stageLabels[currentStage].update();
                     stageLabels[newRecordIndex].update();
                     mainChar.update();
+                    shield.update();
                     coin.update();
                     life.update();
                     gun.update();
@@ -166,6 +180,8 @@ public class GameView extends View {
         coin = Coin.prepareCoin(BitmapFactory.decodeResource(getResources(), R.drawable.coin));
         life = Life.prepareLife(BitmapFactory.decodeResource(getResources(), R.drawable.life));
         gun = Gun.prepareGun(BitmapFactory.decodeResource(getResources(), R.drawable.gun));
+        arrow = Arrow.prepareArrow(BitmapFactory.decodeResource(getResources(), R.drawable.arrow));
+        shield = Shield.prepareShield(BitmapFactory.decodeResource(getResources(), R.drawable.shield), mainChar.getBody());
         stageLabels = StageLabel.prepareStageLabels(BitmapFactory.decodeResource(getResources(), R.drawable.stage_labels));
     }
 
@@ -208,8 +224,10 @@ public class GameView extends View {
         // drawing small fishes (start after bubbles index)
         for (int i = BackgroundObject.BUBBLE_LENGTH; i < objects.length; i++) objects[i].draw(canvas);
         coin.draw(canvas);
+        arrow.draw(canvas);
         for (int i = 0; i < stageMobs[currentStage]; i++) characters[i].draw(canvas);
         mainChar.draw(canvas);
+        shield.draw(canvas);
         // we want bubbles to come behind the sand
         for (int i = 0; i < BackgroundObject.BUBBLE_LENGTH; i++) objects[i].draw(canvas);
         sandBackground.draw(canvas);
@@ -260,18 +278,38 @@ public class GameView extends View {
 
     void detectCollisions() {
         for (int i = 0; i < stageMobs[currentStage]; i++) {
-            if(mainChar.canGetHit()) {
-                if(CollisionUtil.isCollisionDetected(characters[i], mainChar)) {
+            if (mainChar.canGetHit) {
+                if (!characters[i].killed && CollisionUtil.isCollisionDetected(characters[i], mainChar)) {
                     MainActivity.soundEffectsUtil.play(R.raw.hit);
-                    mainChar.setCanGetHit(false);
-                    life.setLife( life.getLife() == 0 ? 0 : life.getLife()-1 );
+                    mainChar.canGetHit = false;
+                    life.setLife(life.getLife() == 0 ? 0 : life.getLife() - 1);
                 }
-            } // after 2 seconds can get hit again
-            else if(mCounter.timePassed(2000)) {
-                mainChar.makeVisible();
-                mainChar.setCanGetHit(true);
             }
-            else mainChar.blink();
+            else {
+                if (mainChar.hasShield) {
+                    mainChar.makeVisible(); // if we got shield while we were blinking..
+                    if(shieldCounter.timePassed(7000)) {
+                        mainChar.hasShield = false;
+                        mainChar.canGetHit = true;
+                        shield.restart();
+                        protectCounter.restartCount();
+                        shieldBlinkCounter.restartCount();
+                    }
+                    else if(shieldBlinkCounter.timePassed(5000)) {
+                        shield.blink = true;
+                    }
+                } // we're not hasShield, but we cannot get hit for 2sec after hit a fish
+                else if (protectCounter.timePassed(2000)) { // after 2 seconds can get hit again
+                    mainChar.makeVisible();
+                    mainChar.canGetHit = true;
+                }
+                else mainChar.blink();
+            }
+
+            if (CollisionUtil.isCollisionDetected(characters[i], arrow)) {
+                hit = true;
+                characters[i].killed = true;
+            }
         }
         if(CollisionUtil.isCollisionDetected(coin, mainChar)) {
             if(!coin.isCollected()) {
@@ -290,7 +328,15 @@ public class GameView extends View {
         }
         if(CollisionUtil.isCollisionDetected(gun, mainChar)) {
             MainActivity.soundEffectsUtil.play(R.raw.gun_collect);
-            mainChar.setGunBitmap(true);
+            mainChar.setGun(gun, arrow);
+            gun.collected();
+            canShoot = true;
+        }
+        if(!mainChar.hasShield && CollisionUtil.isCollisionDetected(shield, mainChar)) {
+            MainActivity.soundEffectsUtil.play(R.raw.shield);
+            shield.collected();
+            mainChar.hasShield = true;
+            mainChar.canGetHit = false;
         }
     }
 
@@ -322,7 +368,12 @@ public class GameView extends View {
     }
 
     public void stopTime(boolean isPaused) {
+        gun.stopTime(isPaused);
+        life.stopTime(isPaused);
         coin.stopTime(isPaused);
+        protectCounter.stopTime(isPaused);
+        shieldCounter.stopTime(isPaused);
+        shieldBlinkCounter.stopTime(isPaused);
         for (int i = 0; i < stageMobs[currentStage]; i++) {
             characters[i].stopTime(isPaused);
         }

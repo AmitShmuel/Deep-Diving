@@ -14,7 +14,6 @@ import android.view.WindowManager;
 import amit_yoav.deep_diving.dialogs.GameOverDialog;
 import amit_yoav.deep_diving.dialogs.PauseDialog;
 import amit_yoav.deep_diving.dialogs.PauseSettingsDialog;
-import amit_yoav.deep_diving.dialogs.SettingsDialog;
 import amit_yoav.deep_diving.utilities.AsyncHandler;
 
 import java.util.Random;
@@ -25,15 +24,13 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     private PauseDialog pauseDialog;
     private PauseSettingsDialog pauseSettingsDialog;
 
-    private SettingsDialog settingsDialog;
-
     private GameOverDialog gameOverDialog;
 
     private SensorManager sensorManager;
     private boolean firstSensorChanged = true, firstTime = true;
     private float ySensorOffset;
     public static float xAccel, yAccel;
-    public static boolean sensorChanged, gameRunning, gamePaused;
+    public static boolean sensorChanged, gameRunning, gamePaused, canShoot, shoot;
     public static Random rand = new Random();
     private long startTime;
 
@@ -163,7 +160,11 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
-            if(firstTime || System.currentTimeMillis() - startTime > 1000) {
+            if(canShoot && event.getX() < 50 && event.getY() < 50) {
+                shoot = true;
+                canShoot = false;
+            }
+            else if(firstTime || System.currentTimeMillis() - startTime > 1000) {
                 togglePauseGame();
                 MainActivity.soundEffectsUtil.play(R.raw.open_dialog);
                 MainActivity.musicPlayer.stopMusic(true);

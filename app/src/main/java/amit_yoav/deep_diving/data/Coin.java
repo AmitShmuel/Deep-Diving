@@ -24,7 +24,7 @@ public class Coin extends GameObject implements Collidable{
 
     private Rect[] bodySrc = new Rect[10]; // ten frames for each sprite
     private Rect scoreDst = new Rect();
-    public RectF bodyDst = new RectF();
+    private RectF bodyDst = new RectF();
 
     private MillisecondsCounter frameCounter = new MillisecondsCounter();
     private MillisecondsCounter populationCounter = new MillisecondsCounter();

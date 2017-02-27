@@ -23,8 +23,8 @@ import static amit_yoav.deep_diving.GameViewActivity.rand;
 
 public class Life extends GameObject implements Collidable{
 
-    private Rect bodySrc = new Rect();
-    public RectF bodyDst = new RectF();
+    private Rect bodySrc;
+    private RectF bodyDst = new RectF();
     public Point lifePoint = new Point();
 
     private int life = 3;
@@ -94,4 +94,6 @@ public class Life extends GameObject implements Collidable{
     public Bitmap getBitmap() {
         return bitmap;
     }
+
+    public void stopTime(boolean isPaused) {populationCounter.stopTime(isPaused);}
 }

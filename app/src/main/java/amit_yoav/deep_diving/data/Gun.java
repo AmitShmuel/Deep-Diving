@@ -16,17 +16,16 @@ import static amit_yoav.deep_diving.GameViewActivity.rand;
 /**
  * Gun
  * This class represents the Gun of the main character
- * it draws the amount of Gun on the top right corner with the relevant bitmap
- * and also populated a Gun item in which the main character should collect in order to live longer
+ * populates a Gun item in which the main character can collect in order to shoot the fishes
  */
 
 public class Gun extends GameObject implements Collidable{
 
-    private Rect bodySrc = new Rect();
+    private Rect bodySrc;
     private RectF bodyDst = new RectF();
 
     private MillisecondsCounter populationCounter = new MillisecondsCounter();
-    private boolean canDraw, firstTime = true;
+    private boolean canDraw, collected, firstTime = true;
 
     public static Gun prepareGun(Bitmap bitmap) {
         Gun gun = new Gun();
@@ -35,6 +34,7 @@ public class Gun extends GameObject implements Collidable{
         gun.setBitmap(bitmap);
         gun.setSize(gunWidth, gunHeight);
         gun.bodySrc = new Rect(0, 0, gunWidth, gunHeight);
+
         return gun;
     }
 
@@ -48,11 +48,12 @@ public class Gun extends GameObject implements Collidable{
 
     @Override
     public void update() {
-        if(populationCounter.timePassed(10000)) {
+        if(!collected && populationCounter.timePassed(5000)) {
             populate();
             canDraw = true;
         }
-        if(bodyDst.right < 0 && canDraw) collected();
+        // diver did not collect and the gun passes the screen, we want to restart the time.
+        if(bodyDst.right < 0 && canDraw) populationCounter.restartCount();
 
         if(firstTime) {
             bodyDst.set(-screenWidth, 0, -screenWidth+width, 0); // out of screen
@@ -65,10 +66,15 @@ public class Gun extends GameObject implements Collidable{
         bodyDst.set(screenWidth, initY - height, screenWidth + width, initY);
     }
 
-    private void collected() {
+    public void collected() {
         bodyDst.set(-screenWidth, 0, -screenWidth+width, 0); // out of screen
+        collected = true;
         canDraw = false;
+    }
+
+    void restart() {
         populationCounter.restartCount();
+        collected = false;
     }
 
     @Override
@@ -80,4 +86,6 @@ public class Gun extends GameObject implements Collidable{
     public Bitmap getBitmap() {
         return bitmap;
     }
+
+    public void stopTime(boolean isPaused) { populationCounter.stopTime(isPaused);}
 }
