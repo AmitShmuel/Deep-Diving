@@ -38,7 +38,7 @@ public class Arrow extends GameObject implements Collidable{
     public void draw(Canvas canvas) {
         if(canDraw) {
             canvas.drawBitmap(bitmap, bodySrc, bodyDst, null);
-            if(!gamePaused) bodyDst.offsetTo(bodyDst.left + 10, bodyDst.top);
+            if(!gamePaused) bodyDst.offsetTo(bodyDst.left + 17, bodyDst.top);
         }
     }
 

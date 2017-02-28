@@ -2,12 +2,10 @@ package amit_yoav.deep_diving;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.WindowManager;
@@ -219,6 +217,8 @@ public class MainActivity extends AppCompatActivity {
             soundsMap.put(R.raw.extra_life, soundPool.load(appContext, R.raw.extra_life, 1));
             soundsMap.put(R.raw.gun_collect, soundPool.load(appContext, R.raw.gun_collect, 1));
             soundsMap.put(R.raw.shield, soundPool.load(appContext, R.raw.shield, 1));
+            soundsMap.put(R.raw.shoot, soundPool.load(appContext, R.raw.shoot, 1));
+            soundsMap.put(R.raw.killed, soundPool.load(appContext, R.raw.killed, 1));
         }
 
         public void play(int soundKey) {

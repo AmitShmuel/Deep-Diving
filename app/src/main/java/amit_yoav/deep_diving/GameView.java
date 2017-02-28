@@ -309,6 +309,7 @@ public class GameView extends View {
             if (CollisionUtil.isCollisionDetected(characters[i], arrow)) {
                 hit = true;
                 characters[i].killed = true;
+                MainActivity.soundEffectsUtil.play(R.raw.killed);
             }
         }
         if(CollisionUtil.isCollisionDetected(coin, mainChar)) {

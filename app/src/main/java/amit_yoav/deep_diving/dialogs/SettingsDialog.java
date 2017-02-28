@@ -36,6 +36,9 @@ public class SettingsDialog extends Dialog {
         setContentView(R.layout.settings_dialog);
         this.setCanceledOnTouchOutside(false);
 
+        editor.putInt("best_score", -1);
+        editor.commit();
+
         switchSound = (Switch) this.findViewById(R.id.switchSound);
         seekbarMusic = (SeekBar) this.findViewById(R.id.seekbarMusic);
 
@@ -97,7 +100,6 @@ public class SettingsDialog extends Dialog {
         });
     }
 
-
     public int getMainCharacter() {return preferences.getInt("main_character", 0);}
     public void setMainCharacter(final int mainCharacter) {
         AsyncHandler.post(new Runnable() {
@@ -108,7 +110,6 @@ public class SettingsDialog extends Dialog {
             }
         });
     }
-
 
     @Override
     public void onBackPressed() {
