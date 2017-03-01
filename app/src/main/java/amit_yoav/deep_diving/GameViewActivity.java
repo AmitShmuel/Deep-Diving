@@ -1,10 +1,12 @@
 package amit_yoav.deep_diving;
 
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,6 +27,8 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     private PauseSettingsDialog pauseSettingsDialog;
 
     private GameOverDialog gameOverDialog;
+
+    public Vibrator vibrator;
 
     private SensorManager sensorManager;
     private boolean firstSensorChanged = true, firstTime = true;
@@ -62,7 +66,7 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
         else if(charIndex == 1) mainCharacterBitmap = R.drawable.magenta_diver;
         else mainCharacterBitmap = R.drawable.pink_diver;
 
-
+        vibrator = (Vibrator) this.getBaseContext().getSystemService(Context.VIBRATOR_SERVICE);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         gameRunning = true;

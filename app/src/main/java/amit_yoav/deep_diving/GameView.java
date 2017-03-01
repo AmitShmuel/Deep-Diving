@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.os.Vibrator;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -61,6 +62,7 @@ public class GameView extends View {
      */
     public static boolean hit; // arrow hits character
     private Paint shootingCirclePaint = new Paint();
+    private Vibrator vibrator;
 
     /*
      * Stage related types
@@ -133,6 +135,8 @@ public class GameView extends View {
         setWillNotDraw(false);
 
         stagePassed = true;
+
+        vibrator = ((GameViewActivity) context).vibrator;
 
         bestScore = ((GameViewActivity) context).getBestScore();
 
@@ -293,6 +297,8 @@ public class GameView extends View {
         for (int i = 0; i < stageMobs[currentStage]; i++) {
              if (mainChar.canGetHit && characters[i].populated && !characters[i].killed &&
                     CollisionUtil.isCollisionDetected(characters[i], mainChar)) {
+                vibrator.vibrate(300);
+                waterBackground.isDark = true;  //REMOVE THIS LINE. IT'S JUST A TEST
                 MainActivity.soundEffectsUtil.play(R.raw.hit);
                 mainChar.canGetHit = false;
                 life.setLife(life.getLife() == 0 ? 0 : life.getLife() - 1);
