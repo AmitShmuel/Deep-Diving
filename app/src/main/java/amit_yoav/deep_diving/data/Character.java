@@ -28,7 +28,7 @@ public class Character extends GameObject implements Collidable{
     private MillisecondsCounter firstPopulateCounter = new MillisecondsCounter();
     private int populateDuration, frameDuration, frame;
     private boolean firstPopulation = true, waitOnFirstPopulation;
-    public boolean killed;
+    public boolean killed, populated;
 
     private Character(float speed, float scale, int populateDuration) {
         this.speed = speed;
@@ -120,6 +120,7 @@ public class Character extends GameObject implements Collidable{
     public void update() {
 
         if(bodyDst.right < 0 || bodyDst.top > screenHeight) {
+            populated = false;
             if(populateCounter.timePassed(populateDuration)) populate();
         }
         // change frame each frameDuration milliseconds for animation
@@ -130,6 +131,7 @@ public class Character extends GameObject implements Collidable{
         float initY = rand.nextFloat()*(screenHeight - screenSand - height) + height;
         bodyDst.set(screenWidth, initY - height, screenWidth + width, initY);
         killed = false;
+        populated = true;
     }
 
     public void stopTime(boolean isPaused) {

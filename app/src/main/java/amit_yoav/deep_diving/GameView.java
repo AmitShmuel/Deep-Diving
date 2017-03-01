@@ -110,6 +110,7 @@ public class GameView extends View {
                     stageLabels[currentStage].update();
                     stageLabels[newRecordIndex].update();
                     mainChar.update();
+                    updateMainCharVulnerability();
                     shield.update();
                     coin.update();
                     life.update();
@@ -223,7 +224,6 @@ public class GameView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-
         waterBackground.draw(canvas);
         // drawing small fishes (start after bubbles index)
         for (int i = BackgroundObject.BUBBLE_LENGTH; i < objects.length; i++) objects[i].draw(canvas);
@@ -240,9 +240,7 @@ public class GameView extends View {
 
         drawScore(canvas);
         drawLife(canvas);
-        if(mainChar.hasGun) {
-            drawShootingButton(canvas);
-        }
+        if(mainChar.hasGun) drawShootingButton(canvas);
 
         if(stagePassed && stageLabels[currentStage].canDraw) {
             if(currentStage != 0 && !isStagedPlayedSound) {
@@ -293,32 +291,11 @@ public class GameView extends View {
 
     void detectCollisions() {
         for (int i = 0; i < stageMobs[currentStage]; i++) {
-            if (mainChar.canGetHit) {
-                if (!characters[i].killed && CollisionUtil.isCollisionDetected(characters[i], mainChar)) {
-                    MainActivity.soundEffectsUtil.play(R.raw.hit);
-                    mainChar.canGetHit = false;
-                    life.setLife(life.getLife() == 0 ? 0 : life.getLife() - 1);
-                }
-            }
-            else {
-                if (mainChar.hasShield) {
-                    mainChar.makeVisible(); // if we got shield while we were blinking..
-                    if(shieldCounter.timePassed(7000)) {
-                        mainChar.hasShield = false;
-                        mainChar.canGetHit = true;
-                        shield.restart();
-                        protectCounter.restartCount();
-                        shieldBlinkCounter.restartCount();
-                    }
-                    else if(shieldBlinkCounter.timePassed(5000)) {
-                        shield.blink = true;
-                    }
-                } // we're not hasShield, but we cannot get hit for 2sec after hit a fish
-                else if (protectCounter.timePassed(2000)) { // after 2 seconds can get hit again
-                    mainChar.makeVisible();
-                    mainChar.canGetHit = true;
-                }
-                else mainChar.blink();
+             if (mainChar.canGetHit && characters[i].populated && !characters[i].killed &&
+                    CollisionUtil.isCollisionDetected(characters[i], mainChar)) {
+                MainActivity.soundEffectsUtil.play(R.raw.hit);
+                mainChar.canGetHit = false;
+                life.setLife(life.getLife() == 0 ? 0 : life.getLife() - 1);
             }
             if (arrow.populated && CollisionUtil.isCollisionDetected(characters[i], arrow)) {
                 hit = true;
@@ -355,6 +332,27 @@ public class GameView extends View {
         }
     }
 
+    private void updateMainCharVulnerability() {
+        if(!mainChar.canGetHit) {
+            if (mainChar.hasShield) {
+                mainChar.makeVisible(); // if we got shield while we were blinking..
+                if (shieldCounter.timePassed(7000)) {
+                    mainChar.hasShield = false;
+                    mainChar.canGetHit = true;
+                    shield.restart();
+                    protectCounter.restartCount();
+                    shieldBlinkCounter.restartCount();
+                } else if (shieldBlinkCounter.timePassed(5000)) {
+                    shield.blink = true;
+                }
+            } // we're not hasShield, but we cannot get hit for 2sec after hit a fish
+            else if (protectCounter.timePassed(2000)) { // after 2 seconds can get hit again
+                mainChar.makeVisible();
+                mainChar.canGetHit = true;
+            } else mainChar.blink();
+        }
+    }
+
     private void bestScore() {
         isBestScoreUsed = true;
         MainActivity.soundEffectsUtil.play(R.raw.new_record);
@@ -365,15 +363,8 @@ public class GameView extends View {
     private void levelUp() {
         stagePassed = true;
         currentStage++;
-
-        if(currentStage == 4) {
-            MainActivity.musicPlayer.switchMusic(R.raw.music_2);
-        }
-
-        if(currentStage == 8) {
-            MainActivity.musicPlayer.switchMusic(R.raw.music_3);
-        }
-
+        if(currentStage == 4) MainActivity.musicPlayer.switchMusic(R.raw.music_2);
+        if(currentStage == 8) MainActivity.musicPlayer.switchMusic(R.raw.music_3);
         isStagedPlayedSound = false;
         for (int i = 0; i < stageMobs[currentStage]; i++) {
             characters[i].setFirstPopulation(true);
