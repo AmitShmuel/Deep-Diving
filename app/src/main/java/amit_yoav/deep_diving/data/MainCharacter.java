@@ -29,7 +29,7 @@ public class MainCharacter extends GameObject implements Collidable {
     private Arrow arrow;
     private float sensorX, sensorY, frameDuration = 150;
     private boolean populated;
-    public boolean hasShield, canGetHit = true;
+    public boolean hasShield, hasGun, canGetHit = true;
     private int frame;
     private MillisecondsCounter frameCounter = new MillisecondsCounter();
     private Paint blinker = new Paint();
@@ -127,8 +127,14 @@ public class MainCharacter extends GameObject implements Collidable {
     }
 
     public void setGun(Gun gun, Arrow arrow) {
-        if(gun != null) setBitmap(gunBitmap);
-        else setBitmap(diverBitmap);
+        if(gun != null) {
+            setBitmap(gunBitmap);
+            hasGun = true;
+        }
+        else {
+            setBitmap(diverBitmap);
+            hasGun = false;
+        }
         this.gun = gun;
         this.arrow = arrow;
     }

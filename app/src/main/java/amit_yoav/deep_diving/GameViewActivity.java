@@ -160,7 +160,7 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
-            if(canShoot && event.getX() < 50 && event.getY() < 50) {
+            if(canShoot && event.getX() < 100 && event.getY() < 100) {
                 MainActivity.soundEffectsUtil.play(R.raw.shoot);
                 shoot = true;
                 canShoot = false;

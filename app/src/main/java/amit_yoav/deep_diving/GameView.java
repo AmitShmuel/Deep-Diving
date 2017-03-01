@@ -3,6 +3,7 @@ package amit_yoav.deep_diving;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -58,7 +59,8 @@ public class GameView extends View {
     /*
      * Features
      */
-    public static boolean hit;
+    public static boolean hit; // arrow hits character
+    private Paint shootingCirclePaint = new Paint();
 
     /*
      * Stage related types
@@ -191,6 +193,8 @@ public class GameView extends View {
         scorePaint.setTypeface(Typeface.DEFAULT_BOLD);
         scorePaint.setColor(0xff_dd_c4_52);
         alphaLifePaint.setAlpha(50);
+        shootingCirclePaint.setColor(0xff_ff_00_00);
+        shootingCirclePaint.setAntiAlias(true);
     }
 
     private void updateScore(int newScore) {
@@ -236,6 +240,10 @@ public class GameView extends View {
 
         drawScore(canvas);
         drawLife(canvas);
+        if(mainChar.hasGun) {
+            drawShootingButton(canvas);
+        }
+
         if(stagePassed && stageLabels[currentStage].canDraw) {
             if(currentStage != 0 && !isStagedPlayedSound) {
                 MainActivity.soundEffectsUtil.play(R.raw.level_complete);
@@ -247,6 +255,13 @@ public class GameView extends View {
         postInvalidateOnAnimation();
     }
 
+    private void drawShootingButton(Canvas canvas) {
+        shootingCirclePaint.setStyle(Paint.Style.FILL);
+        canvas.drawCircle(50, 50, 20, shootingCirclePaint);
+        shootingCirclePaint.setStyle(Paint.Style.STROKE);
+        shootingCirclePaint.setStrokeWidth(4);
+        canvas.drawCircle(50, 50, 25, shootingCirclePaint);
+    }
 
     private void drawScore(Canvas canvas) {
         if(scoreChanged) {
