@@ -22,6 +22,7 @@ public class Arrow extends GameObject implements Collidable{
     private RectF bodyDst = new RectF();
 
     private boolean canDraw;
+    public boolean populated;
 
     public static Arrow prepareArrow(Bitmap bitmap) {
         Arrow arrow = new Arrow();
@@ -45,8 +46,7 @@ public class Arrow extends GameObject implements Collidable{
     @Override
     public void update() {
         if(hit || bodyDst.left > screenWidth) {
-            canDraw = false;
-            hit = false;
+            canDraw = populated = hit = false;
             bodyDst.set(-screenWidth, 0, -screenWidth+width, 0); // out of screen
         }
     }
@@ -54,6 +54,7 @@ public class Arrow extends GameObject implements Collidable{
     void populate(float x, float y) {
         bodyDst.set(x, y, x + width, y + height);
         canDraw = true;
+        populated = true;
     }
 
     @Override

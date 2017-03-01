@@ -305,8 +305,7 @@ public class GameView extends View {
                 }
                 else mainChar.blink();
             }
-
-            if (CollisionUtil.isCollisionDetected(characters[i], arrow)) {
+            if (arrow.populated && CollisionUtil.isCollisionDetected(characters[i], arrow)) {
                 hit = true;
                 characters[i].killed = true;
                 MainActivity.soundEffectsUtil.play(R.raw.killed);
@@ -322,18 +321,18 @@ public class GameView extends View {
             }
             coin.collected();
         }
-        if(CollisionUtil.isCollisionDetected(life, mainChar)) {
+        if(life.populated && CollisionUtil.isCollisionDetected(life, mainChar)) {
             MainActivity.soundEffectsUtil.play(R.raw.extra_life);
             life.setLife( (life.getLife() == 3) ? 3 : life.getLife()+1 );
             life.collected();
         }
-        if(CollisionUtil.isCollisionDetected(gun, mainChar)) {
+        if(gun.populated && CollisionUtil.isCollisionDetected(gun, mainChar)) {
             MainActivity.soundEffectsUtil.play(R.raw.gun_collect);
             mainChar.setGun(gun, arrow);
             gun.collected();
             canShoot = true;
         }
-        if(!mainChar.hasShield && CollisionUtil.isCollisionDetected(shield, mainChar)) {
+        if(shield.populated && CollisionUtil.isCollisionDetected(shield, mainChar)) {
             MainActivity.soundEffectsUtil.play(R.raw.shield);
             shield.collected();
             mainChar.hasShield = true;

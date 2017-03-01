@@ -31,6 +31,7 @@ public class Life extends GameObject implements Collidable{
 
     private MillisecondsCounter populationCounter = new MillisecondsCounter();
     private boolean canDraw, firstTime = true;
+    public boolean populated;
 
     public int getLife() { return life; }
     public void setLife(int life) { this.life = life; }
@@ -72,11 +73,12 @@ public class Life extends GameObject implements Collidable{
     private void populate() {
         float initY = rand.nextFloat()*(screenHeight-screenSand-height) + height;
         bodyDst.set(screenWidth, initY - height, screenWidth + width, initY);
+        populated = true;
     }
 
     public void collected() {
         bodyDst.set(-screenWidth, 0, -screenWidth+width, 0); // out of screen
-        canDraw = false;
+        canDraw = populated = false;
         populationCounter.restartCount();
     }
 

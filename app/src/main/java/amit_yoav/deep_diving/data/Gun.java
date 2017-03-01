@@ -26,6 +26,7 @@ public class Gun extends GameObject implements Collidable{
 
     private MillisecondsCounter populationCounter = new MillisecondsCounter();
     private boolean canDraw, collected, firstTime = true;
+    public boolean populated;
 
     public static Gun prepareGun(Bitmap bitmap) {
         Gun gun = new Gun();
@@ -53,7 +54,10 @@ public class Gun extends GameObject implements Collidable{
             canDraw = true;
         }
         // diver did not collect and the gun passes the screen, we want to restart the time.
-        if(bodyDst.right < 0 && canDraw) populationCounter.restartCount();
+        if(bodyDst.right < 0 && canDraw) {
+            populationCounter.restartCount();
+            populated = false;
+        }
 
         if(firstTime) {
             bodyDst.set(-screenWidth, 0, -screenWidth+width, 0); // out of screen
@@ -64,6 +68,7 @@ public class Gun extends GameObject implements Collidable{
     private void populate() {
         float initY = rand.nextFloat()*(screenHeight-screenSand-height) + height;
         bodyDst.set(screenWidth, initY - height, screenWidth + width, initY);
+        populated = true;
     }
 
     public void collected() {

@@ -50,7 +50,7 @@ public class StageLabel extends GameObject {
 
         int save = canvas.save();
 
-        if(stagePassed) {
+        if(stagePassed || isNewRecordLabel) {
             canvas.drawBitmap(bitmap, bodySrc, bodyDst, paint);
             if (!gamePaused) {
                 if (alpha > 0) paint.setAlpha(alpha--);
@@ -63,7 +63,7 @@ public class StageLabel extends GameObject {
                 }
             }
         }
-        else {
+        else { // put each stage label on top of the screen
             paint.setAlpha(100);
             canvas.scale(0.4f, 0.4f, screenWidth/2, screenHeight/2);
             canvas.translate(0, -screenHeight*0.9f);

@@ -27,6 +27,7 @@ public class Shield extends GameObject implements Collidable{
 
     private MillisecondsCounter populationCounter = new MillisecondsCounter();
     private boolean canDraw, collected;
+    public boolean populated;
 
     private float scale[] = {1,1.02f,1.04f,1.06f,1.08f,1.1f};
     private int scaleIndex, maxScaleIndex = 5, scalingInterval, indexChanger = 1;
@@ -81,7 +82,7 @@ public class Shield extends GameObject implements Collidable{
         // diver did not collect and the shield passes the screen, we want to restart the time.
         if(bodyDst.bottom < 0 && canDraw) {
             populationCounter.restartCount();
-            canDraw = blink = false;
+            canDraw = blink = populated = false;
         }
 
         if(blink) blink();
@@ -90,12 +91,13 @@ public class Shield extends GameObject implements Collidable{
     private void populate() {
         float initX = rand.nextFloat()*(screenWidth-width) + width;
         float initY = screenHeight + height;
-
         bodyDst.set(initX - width, initY - height, initX, initY);
+        populated = true;
     }
 
     public void collected() {
         collected = true;
+        populated = false;
     }
 
     public void restart() {

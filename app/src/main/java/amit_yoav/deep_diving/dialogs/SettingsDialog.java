@@ -36,9 +36,6 @@ public class SettingsDialog extends Dialog {
         setContentView(R.layout.settings_dialog);
         this.setCanceledOnTouchOutside(false);
 
-        editor.putInt("best_score", -1);
-        editor.commit();
-
         switchSound = (Switch) this.findViewById(R.id.switchSound);
         seekbarMusic = (SeekBar) this.findViewById(R.id.seekbarMusic);
 
