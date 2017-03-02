@@ -1,9 +1,9 @@
 package amit_yoav.deep_diving;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -14,12 +14,12 @@ import android.view.View;
 import amit_yoav.deep_diving.data.Arrow;
 import amit_yoav.deep_diving.data.Background;
 import amit_yoav.deep_diving.data.BackgroundObject;
-import amit_yoav.deep_diving.data.Shield;
 import amit_yoav.deep_diving.data.Character;
 import amit_yoav.deep_diving.data.Coin;
 import amit_yoav.deep_diving.data.Gun;
 import amit_yoav.deep_diving.data.Life;
 import amit_yoav.deep_diving.data.MainCharacter;
+import amit_yoav.deep_diving.data.Shield;
 import amit_yoav.deep_diving.data.StageLabel;
 import amit_yoav.deep_diving.utilities.AsyncHandler;
 import amit_yoav.deep_diving.utilities.CollisionUtil;
@@ -58,17 +58,17 @@ public class GameView extends View {
     private int mainCharResource, mainCharGunResource;
 
     /*
-     * Features
+     * Other
      */
-    public static boolean hit; // arrow hits character
+    public static boolean hit, isDark; // arrow hits character
     private Paint shootingCirclePaint = new Paint();
     private Vibrator vibrator;
 
     /*
      * Stage related types
      */
-    private int currentStage;
-    private int[] stageMobs = {3,4,5,6,7,7,8,9,10,11};         //Final Version
+    private int currentStage, mobsStartIndex;
+    private int[] stageMobs = {3,4,5,6,7,7,8,9,10,/*11*/};         //Final Version
     //    private int[] stageMobs = {11,3,3,4,5,6,7,8,9/*,10,11,12,13*/}; //DEBUG
     public static boolean stagePassed = true;
     private boolean isStagedPlayedSound;
@@ -107,7 +107,7 @@ public class GameView extends View {
                     waterBackground.update();
                     sandBackground.update();
                     arrow.update();
-                    for (int i = 0; i < stageMobs[currentStage]; i++) characters[i].update();
+                    for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++) characters[i].update();
                     for (BackgroundObject ob : objects) ob.update();
                     stageLabels[currentStage].update();
                     stageLabels[newRecordIndex].update();
@@ -180,7 +180,10 @@ public class GameView extends View {
                 BitmapFactory.decodeResource(getResources(), R.drawable.fish_dog),
                 BitmapFactory.decodeResource(getResources(), R.drawable.fish_lion),
                 BitmapFactory.decodeResource(getResources(), R.drawable.fish_sword),
-                BitmapFactory.decodeResource(getResources(), R.drawable.fish_cat));
+                BitmapFactory.decodeResource(getResources(), R.drawable.fish_cat),
+                BitmapFactory.decodeResource(getResources(), R.drawable.fish_octopus_swim),
+                BitmapFactory.decodeResource(getResources(), R.drawable.fish_octopus_attack),
+                BitmapFactory.decodeResource(getResources(), R.drawable.octopus_ink));
         objects = BackgroundObject.prepareBackgroundObjects(
                 BitmapFactory.decodeResource(getResources(), R.drawable.bubbles),
                 BitmapFactory.decodeResource(getResources(), R.drawable.fishes_background));
@@ -233,7 +236,7 @@ public class GameView extends View {
         for (int i = BackgroundObject.BUBBLE_LENGTH; i < objects.length; i++) objects[i].draw(canvas);
         coin.draw(canvas);
         arrow.draw(canvas);
-        for (int i = 0; i < stageMobs[currentStage]; i++) characters[i].draw(canvas);
+        for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++) characters[i].draw(canvas);
         mainChar.draw(canvas);
         shield.draw(canvas);
         // we want bubbles to come behind the sand
@@ -263,6 +266,7 @@ public class GameView extends View {
         shootingCirclePaint.setStyle(Paint.Style.STROKE);
         shootingCirclePaint.setStrokeWidth(4);
         canvas.drawCircle(50, 50, 25, shootingCirclePaint);
+        canvas.drawCircle(50, 50, 33, shootingCirclePaint);
     }
 
     private void drawScore(Canvas canvas) {
@@ -294,11 +298,10 @@ public class GameView extends View {
     }
 
     void detectCollisions() {
-        for (int i = 0; i < stageMobs[currentStage]; i++) {
+        for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++) {
              if (mainChar.canGetHit && characters[i].populated && !characters[i].killed &&
                     CollisionUtil.isCollisionDetected(characters[i], mainChar)) {
                 vibrator.vibrate(300);
-                waterBackground.isDark = true;  //REMOVE THIS LINE. IT'S JUST A TEST
                 MainActivity.soundEffectsUtil.play(R.raw.hit);
                 mainChar.canGetHit = false;
                 life.setLife(life.getLife() == 0 ? 0 : life.getLife() - 1);
@@ -311,11 +314,11 @@ public class GameView extends View {
         }
         if(CollisionUtil.isCollisionDetected(coin, mainChar)) {
             if(!coin.isCollected()) {
-                updateScore(score+1); // could do score++ but the function makes more sense like that
+                updateScore(score+10); // could do score++ but the function makes more sense like that
                 MainActivity.soundEffectsUtil.play(R.raw.coin_collected);
 
                 if(!isBestScoreUsed && score > bestScore) bestScore();
-                if( (score == (currentStage+1) * 10) && (currentStage < 9) ) levelUp();
+                if( (score == (currentStage+1) * 10) && (currentStage < 8) ) levelUp();
             }
             coin.collected();
         }
@@ -369,10 +372,16 @@ public class GameView extends View {
     private void levelUp() {
         stagePassed = true;
         currentStage++;
-        if(currentStage == 4) MainActivity.musicPlayer.switchMusic(R.raw.music_2);
-        if(currentStage == 8) MainActivity.musicPlayer.switchMusic(R.raw.music_3);
-        isStagedPlayedSound = false;
-        for (int i = 0; i < stageMobs[currentStage]; i++) {
+        if(currentStage == 4) {
+            MainActivity.musicPlayer.switchMusic(R.raw.music_2);
+            mobsStartIndex += 2;
+        }
+        if(currentStage == 8) {
+            MainActivity.musicPlayer.switchMusic(R.raw.music_3);
+            mobsStartIndex += 2;
+        }
+        isStagedPlayedSound = isDark = false;
+        for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++) {
             characters[i].setFirstPopulation(true);
             characters[i].restartPopulation();
         }
@@ -386,7 +395,7 @@ public class GameView extends View {
         protectCounter.stopTime(isPaused);
         shieldCounter.stopTime(isPaused);
         shieldBlinkCounter.stopTime(isPaused);
-        for (int i = 0; i < stageMobs[currentStage]; i++) {
+        for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++) {
             characters[i].stopTime(isPaused);
         }
     }

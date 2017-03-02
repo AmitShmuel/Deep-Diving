@@ -66,7 +66,7 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
         else if(charIndex == 1) mainCharacterBitmap = R.drawable.magenta_diver;
         else mainCharacterBitmap = R.drawable.pink_diver;
 
-        vibrator = (Vibrator) this.getBaseContext().getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         gameRunning = true;

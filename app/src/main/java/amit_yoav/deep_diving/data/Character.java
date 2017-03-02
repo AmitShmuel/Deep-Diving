@@ -2,11 +2,13 @@ package amit_yoav.deep_diving.data;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
 import amit_yoav.deep_diving.utilities.MillisecondsCounter;
 
+import static amit_yoav.deep_diving.GameView.isDark;
 import static amit_yoav.deep_diving.GameView.screenHeight;
 import static amit_yoav.deep_diving.GameView.screenSand;
 import static amit_yoav.deep_diving.GameView.screenWidth;
@@ -29,6 +31,12 @@ public class Character extends GameObject implements Collidable{
     private int populateDuration, frameDuration, frame;
     private boolean firstPopulation = true, waitOnFirstPopulation;
     public boolean killed, populated;
+    /*octopus*/
+    private float stopGoDown, left, top;
+    private boolean isOctopus, drawInk, firstDraw;
+    private Bitmap attackBitmap, swimBitmap, inkBitmap;
+    private char alpha = 255;
+    private Paint inkPaint;
 
     private Character(float speed, float scale, int populateDuration) {
         this.speed = speed;
@@ -37,35 +45,44 @@ public class Character extends GameObject implements Collidable{
     }
 
     public static Character[] prepareCharacters(Bitmap greenFishBitmap,
-                    Bitmap hammerFishBitmap, Bitmap piranhaFishBitmap, Bitmap greatSharkFishBitmap,
-                    Bitmap redFishBitmap, Bitmap goldFishBitmap,Bitmap parrotFishBitmap,
-                    Bitmap dogFishBitmap, Bitmap lionFishBitmap, Bitmap swordFishBitmap,
-                    Bitmap catFishBitmap) {
+                    Bitmap hammerFishBitmap,Bitmap piranhaFishBitmap,   Bitmap greatSharkFishBitmap,
+                    Bitmap redFishBitmap,   Bitmap goldFishBitmap,      Bitmap parrotFishBitmap,
+                    Bitmap dogFishBitmap,   Bitmap lionFishBitmap,      Bitmap swordFishBitmap,
+                    Bitmap catFishBitmap,   Bitmap octopusSwimBitmap,   Bitmap octopusAttackBitmap,
+                    Bitmap octopusInkBitmap) {
 
         Character[] characters = new Character[]{
+                new Character(2.5f ,1f,1000)/*octopus*/,
                 new Character(3,1f,100)/*Gold Fish*/,
                 new Character(4.5f,1f,250)/*Dog Fish*/,
                 new Character(5,1f,500)/*Parrot Fish*/,
                 new Character(6,1f,800)/*Cat Fish*/,
-                new Character(6,1f,1000)/*Lion Fish*/,
-                new Character(7,1f,1500)/*Green fish*/,
+                new Character(6,1f,1500)/*Lion Fish*/,
+                new Character(7,1f,2000)/*Green fish*/,
                 new Character(9,1f,2500)/*Sword Fish*/,
-                new Character(10,1f,2000)/*Red Fish*/,
-                new Character(14,1f,3000)/*Piranha Fish*/,
-                new Character(15,1f,4000)/*Hammer Shark*/,
-                new Character(20,1f,7000)/*Great White Shark*/
+                new Character(10,1f,3000)/*Red Fish*/,
+                new Character(14,1f,4000)/*Piranha Fish*/,
+                new Character(15,1f,6000)/*Hammer Shark*/,
+                new Character(20,1f,10000)/*Great White Shark*/
         };
-        initSpecialFishes(characters, goldFishBitmap, 0, 5, 1, 60);
+        characters[0].isOctopus = true;
+        characters[0].inkPaint = new Paint();
+        characters[0].swimBitmap = octopusInkBitmap;
+        characters[0].swimBitmap = octopusSwimBitmap;
+        characters[0].attackBitmap = octopusAttackBitmap;
+        characters[0].inkBitmap = octopusInkBitmap;
+        initSpecialFishes(characters, goldFishBitmap, 6 , 5, 1, 60);
         initSpecialFishes(characters, dogFishBitmap, 1,5,1,60);
         initSpecialFishes(characters, parrotFishBitmap, 2, 5, 1, 60);
         initSpecialFishes(characters, catFishBitmap, 3, 5, 1, 60);
         initSpecialFishes(characters, lionFishBitmap, 4, 5, 1, 80);
         initSpecialFishes(characters, greenFishBitmap, 5, 6, 1, 50);
-        initSpecialFishes(characters, swordFishBitmap, 6, 4, 4, 100);
-        initSpecialFishes(characters, redFishBitmap, 7, 5, 1, 100);
-        initSpecialFishes(characters, piranhaFishBitmap, 8, 6, 1, 100);
-        initSpecialFishes(characters, hammerFishBitmap, 9, 4, 4, 120);
+        initSpecialFishes(characters, octopusSwimBitmap, 0, 4, 4, 200);
+        initSpecialFishes(characters, swordFishBitmap, 7, 4, 4, 100);
+        initSpecialFishes(characters, redFishBitmap, 8, 5, 1, 100);
+        initSpecialFishes(characters, piranhaFishBitmap, 9, 6, 1, 100);
         initSpecialFishes(characters, greatSharkFishBitmap, 10, 11, 1, 100);
+        initSpecialFishes(characters, hammerFishBitmap, 11, 4, 4, 120);
 
         return characters;
     }
@@ -95,13 +112,26 @@ public class Character extends GameObject implements Collidable{
         int save = canvas.save();
 
         if(!firstPopulation) { // just draw..
-            canvas.scale(scale, scale, screenWidth / 2, screenHeight / 2);
+//            canvas.scale(scale, scale, screenWidth / 2, screenHeight / 2); we aren't scaling.. but we have the option
+            if(drawInk && isOctopus && bodyDst.bottom >= stopGoDown) {
+                if(firstDraw) {
+                    left = bodyDst.left;
+                    top = bodyDst.top;
+                    firstDraw = false;
+                    isDark = true;
+                }
+                canvas.drawBitmap(inkBitmap, left, top, inkPaint);
+                inkPaint.setAlpha(--alpha);
+                if(alpha == 0) drawInk = false;
+            }
             if(killed) canvas.rotate(180, bodyDst.centerX(), bodyDst.centerY());
             canvas.drawBitmap(bitmap, bodySrc[frame], bodyDst, null);
             if (!gamePaused) {
-                if(!killed) bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top);
-                else {
+                if(killed || (isOctopus && bodyDst.bottom < stopGoDown)) {
                     bodyDst.offsetTo(bodyDst.left, bodyDst.top + speed);
+                }
+                else {
+                    bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top);
                 }
             }
         } // wait before populate (new stage)
@@ -121,15 +151,31 @@ public class Character extends GameObject implements Collidable{
 
         if(bodyDst.right < 0 || bodyDst.top > screenHeight) {
             populated = false;
+            if(isOctopus) isDark = false; // octopus isn't on screen so background back to light
             if(populateCounter.timePassed(populateDuration)) populate();
+        }
+        if(isOctopus && bodyDst.bottom >= stopGoDown) {
+            setBitmap(attackBitmap);
+            speed = 4;
+            frameDuration = 100;
         }
         // change frame each frameDuration milliseconds for animation
         if(frameCounter.timePassed(frameDuration)) frame = (++frame == bodySrc.length ? 0 : frame);
     }
 
     private void populate() {
-        float initY = rand.nextFloat()*(screenHeight - screenSand - height) + height;
-        bodyDst.set(screenWidth, initY - height, screenWidth + width, initY);
+        if(isOctopus) {
+            bodyDst.set(screenWidth - width*2, -height, screenWidth - width, 0);
+            stopGoDown = rand.nextFloat()*(screenHeight - screenSand - height) + height;
+            setBitmap(swimBitmap);
+            frameDuration = 150;
+            drawInk = firstDraw = true;
+            speed = 1.5f;
+            alpha = 255;
+        } else {
+            float initY = rand.nextFloat()*(screenHeight - screenSand - height) + height;
+            bodyDst.set(screenWidth, initY - height, screenWidth + width, initY);
+        }
         killed = false;
         populated = true;
     }
