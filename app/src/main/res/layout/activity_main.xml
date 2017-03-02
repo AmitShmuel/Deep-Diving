@@ -96,4 +96,17 @@
         android:layout_marginTop="24dp"
         app:layout_constraintTop_toBottomOf="@+id/deepDivingLogo" />
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/tropy_icon"
+        android:onClick="openAchievements"
+        android:id="@+id/trophyButton"
+        android:background="@android:color/transparent"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp" />
+
 </android.support.constraint.ConstraintLayout>

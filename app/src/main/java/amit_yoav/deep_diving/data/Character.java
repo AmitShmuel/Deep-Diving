@@ -69,7 +69,6 @@ public class Character extends GameObject implements Collidable{
         };
         characters[0].isOctopus = true;
         characters[0].inkPaint = new Paint();
-        characters[0].swimBitmap = octopusInkBitmap;
         characters[0].swimBitmap = octopusSwimBitmap;
         characters[0].attackBitmap = octopusAttackBitmap;
         characters[0].inkBitmap = octopusInkBitmap;

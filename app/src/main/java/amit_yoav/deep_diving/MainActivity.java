@@ -7,12 +7,17 @@ import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseIntArray;
+//import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.ndk.CrashlyticsNdk;
+//import com.google.android.gms.common.api.GoogleApiClient;
+//import com.google.android.gms.games.Games;
+//import com.google.android.gms.plus.Plus;
+
 import amit_yoav.deep_diving.compat.Compat;
 import amit_yoav.deep_diving.dialogs.InfoDialog;
 import amit_yoav.deep_diving.dialogs.QuitDialog;
@@ -41,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     View mainActivityLayout = null;
     ImageButton leftArrow = null;
 
+//    GoogleApiClient mGoogleApiClient = null;
+
     public void setDiver(View v) {
         soundEffectsUtil.play(R.raw.open_dialog);
         if(leftArrow == v) diverPointer = --diverPointer == -1 ? 2 : diverPointer;
@@ -53,6 +60,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
+
+
+//        mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+//                .enableAutoManage(this, this)
+//                .setGravityForPopups(Gravity.TOP | Gravity.CENTER_HORIZONTAL)
+//                .addOnConnectionFailedListener(this)
+//                .addApi(Games.API).addScope(Games.SCOPE_GAMES)
+//                .build();
+//
 
         setContentView(R.layout.activity_main);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -159,6 +175,11 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         soundEffectsUtil.play(R.raw.open_dialog);
         quitDialog.show();
+    }
+
+    public void openAchievements(View view) {
+//        startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),
+//                1);
     }
 
     public static class MySFxRunnable implements Runnable {
