@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 
@@ -22,21 +24,24 @@ public class Background extends GameObject{
 
     private float x, speed; // y doesn't change
     private Paint darkPaint = new Paint();
+    private boolean isWater;
 
-    public Background(Bitmap bitmap, float speed) {
+    public Background(Bitmap bitmap, float speed, boolean isWater) {
         this.speed = speed;
+        this.isWater = isWater;
         setBitmap(bitmap);
         setSize(bitmap.getWidth(), bitmap.getHeight());
 
-        ColorFilter filter = new LightingColorFilter(0xFF7F7F7F, 0x00000000);    // darken
+//        ColorFilter filter = new LightingColorFilter(0xFF7F7F7F, 0x00000000);    // darken - for later levels
+        ColorFilter filter = new LightingColorFilter(0x3333333, 0x00000000);    // ink - for octopus
         darkPaint.setColorFilter(filter);
+
     }
 
     @Override
     public void draw(Canvas canvas) {
         int save = canvas.save();
-        Paint paint = GameView.isDark ? darkPaint : null;
-
+        Paint paint = GameView.isDark && isWater ? darkPaint : null;
         // sand width is bigger
         if(speed == SAND_SPEED) canvas.scale(screenWidth/width*2, screenHeight/height);
         else canvas.scale(screenWidth/width, screenHeight/height);

@@ -135,7 +135,7 @@ public class GameView extends View {
         setWillNotDraw(false);
 
         stagePassed = true;
-
+        isDark = false; //isDark is static, so we have to initialize it back to false
         vibrator = ((GameViewActivity) context).vibrator;
 
         bestScore = ((GameViewActivity) context).getBestScore();
@@ -165,8 +165,8 @@ public class GameView extends View {
     }
 
     private void initDrawObjects() {
-        waterBackground = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background_water), WATER_SPEED);
-        sandBackground = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background_sand), SAND_SPEED);
+        waterBackground = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background_water), WATER_SPEED, true);
+        sandBackground = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background_sand), SAND_SPEED, false);
         mainChar = MainCharacter.prepareMainChar(BitmapFactory.decodeResource(getResources(), mainCharResource),
                 BitmapFactory.decodeResource(getResources(), mainCharGunResource));
         characters = Character.prepareCharacters(

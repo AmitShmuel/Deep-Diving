@@ -6,6 +6,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import amit_yoav.deep_diving.MainActivity;
+import amit_yoav.deep_diving.R;
 import amit_yoav.deep_diving.utilities.MillisecondsCounter;
 
 import static amit_yoav.deep_diving.GameView.isDark;
@@ -119,6 +121,7 @@ public class Character extends GameObject implements Collidable{
                     top = bodyDst.top;
                     firstDraw = false;
                     isDark = true;
+                    MainActivity.soundEffectsUtil.play(R.raw.drop_inks);
                 }
                 canvas.drawBitmap(inkBitmap, left, top, inkPaint);
                 inkPaint.setAlpha(--alpha);
@@ -148,7 +151,6 @@ public class Character extends GameObject implements Collidable{
 
     @Override
     public void update() {
-
         if(bodyDst.right < 0 || bodyDst.top > screenHeight) {
             populated = false;
             if(isOctopus) isDark = false; // octopus isn't on screen so background back to light
@@ -168,7 +170,7 @@ public class Character extends GameObject implements Collidable{
             bodyDst.set(screenWidth - width*2, -height, screenWidth - width, 0);
             stopGoDown = rand.nextFloat()*(screenHeight - screenSand - height) + height;
             setBitmap(swimBitmap);
-            frameDuration = 150;
+            frameDuration = 84;
             drawInk = firstDraw = true;
             speed = 1.5f;
             alpha = 255;
