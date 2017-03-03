@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.WindowManager;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
     //GOOGLE PLAY SERVICES RELATED TYPES
-    private GoogleApiClient mGoogleApiClient = null;
+    private GoogleApiClient mGoogleApiClient;
     private static final int REQUEST_ACHIEVEMENTS = 1;
 
     private static int RC_SIGN_IN = 9001;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
 
+        setContentView(R.layout.activity_main);
 
         // Create the Google Api Client with access to the Play Games services
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -88,9 +90,8 @@ public class MainActivity extends AppCompatActivity implements
 //                 add other APIs and scopes here as needed
                 .addApi(Drive.API).addScope(Drive.SCOPE_APPFOLDER) // Drive API
                 .build();
-
-
-        setContentView(R.layout.activity_main);
+        Log.d("BUDDY","BUDDY");
+        if(mGoogleApiClient == null) android.os.Process.killProcess(android.os.Process.myPid());
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
@@ -172,17 +173,17 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        if (!mInSignInFlow && !mExplicitSignOut) {
+        Log.d("ROBBEN", "ROBBEN");
+//        if (!mInSignInFlow && !mExplicitSignOut) {
 //             auto sign in
             mGoogleApiClient.connect();
-        }
+//        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
         if(isFinished) android.os.Process.killProcess(android.os.Process.myPid());
-//        System.out.println("onResume");
         gameStarted = false;
         musicPlayer.switchMusic(R.raw.welcome_screen);
         if(musicPlayer.mPlayer != null)
@@ -193,16 +194,12 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
-//        System.out.println("onStop");
-        if(!gameStarted) {
-            musicPlayer.stopMusic(true);
-        }
+        if (mGoogleApiClient.isConnected()) mGoogleApiClient.disconnect();
+        if(!gameStarted) musicPlayer.stopMusic(true);
     }
 
     @Override
     protected void onRestart() {
-//        System.out.println("onRestart");
         super.onRestart();
     }
 
@@ -223,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements
         // The player is signed in. Hide the sign-in button and allow the
         // player to proceed.
         // show sign-out button, hide the sign-in button
+        System.out.println("CONENCTION SUCCESS");
         findViewById(R.id.sign_in_button).setVisibility(View.GONE);
         findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
         findViewById(R.id.trophyButton).setVisibility(View.VISIBLE);
@@ -243,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements
             // already resolving
             return;
         }
-
+        System.out.println("CONENCTION FAILED");
         // if the sign-in button was clicked or if auto sign-in is enabled,
         // launch the sign-in flow
         if (mSignInClicked || mAutoStartSignInflow) {
@@ -268,8 +266,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == RC_SIGN_IN) {
-            mSignInClicked = false;
-            mResolvingConnectionFailure = false;
+            mSignInClicked = mResolvingConnectionFailure = false;
             if (resultCode == RESULT_OK) {
                 mGoogleApiClient.connect();
             } else {
@@ -308,7 +305,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
     }
-
 
     public static class MySFxRunnable implements Runnable {
         Context appContext;
