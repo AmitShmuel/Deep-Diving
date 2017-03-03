@@ -1,7 +1,6 @@
 package amit_yoav.deep_diving;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -380,7 +379,7 @@ public class GameView extends View {
             MainActivity.musicPlayer.switchMusic(R.raw.music_3);
             mobsStartIndex += 2;
         }
-        isStagedPlayedSound = isDark = false;
+        isStagedPlayedSound = isDark = characters[Character.octopusIndex].term = false;
         for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++) {
             characters[i].setFirstPopulation(true);
             characters[i].restartPopulation();

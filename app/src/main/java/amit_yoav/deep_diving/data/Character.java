@@ -39,6 +39,8 @@ public class Character extends GameObject implements Collidable{
     private Bitmap attackBitmap, swimBitmap, inkBitmap;
     private char alpha = 255;
     private Paint inkPaint;
+    public boolean term; // a helpful flag which helps to determine if we draw the ink
+    public static int octopusIndex = 0;
 
     private Character(float speed, float scale, int populateDuration) {
         this.speed = speed;
@@ -67,11 +69,11 @@ public class Character extends GameObject implements Collidable{
                 new Character(15,1f,6000)/*Hammer Shark*/,
                 new Character(20,1f,10000)/*Great White Shark*/
         };
-        characters[0].isOctopus = true;
-        characters[0].inkPaint = new Paint();
-        characters[0].swimBitmap = octopusSwimBitmap;
-        characters[0].attackBitmap = octopusAttackBitmap;
-        characters[0].inkBitmap = octopusInkBitmap;
+        characters[octopusIndex].isOctopus = true;
+        characters[octopusIndex].inkPaint = new Paint();
+        characters[octopusIndex].swimBitmap = octopusSwimBitmap;
+        characters[octopusIndex].attackBitmap = octopusAttackBitmap;
+        characters[octopusIndex].inkBitmap = octopusInkBitmap;
         initSpecialFishes(characters, goldFishBitmap, 6 , 5, 1, 60);
         initSpecialFishes(characters, dogFishBitmap, 1,5,1,60);
         initSpecialFishes(characters, parrotFishBitmap, 2, 5, 1, 60);
@@ -114,17 +116,18 @@ public class Character extends GameObject implements Collidable{
 
         if(!firstPopulation) { // just draw..
 //            canvas.scale(scale, scale, screenWidth / 2, screenHeight / 2); we aren't scaling.. but we have the option
-            if(drawInk && isOctopus && bodyDst.bottom >= stopGoDown) {
+            // once all "AND" conditions apply, term becomes the cond which determines if we enter this if or not
+            if(term || (drawInk && isOctopus && !killed && bodyDst.bottom >= stopGoDown)) {
                 if(firstDraw) {
                     left = bodyDst.left;
                     top = bodyDst.top;
                     firstDraw = false;
-                    isDark = true;
+                    isDark = term = true;
                     MainActivity.soundEffectsUtil.play(R.raw.drop_inks);
                 }
                 canvas.drawBitmap(inkBitmap, left, top, inkPaint);
                 inkPaint.setAlpha(--alpha);
-                if(alpha == 0) drawInk = false;
+                if(alpha == 0) drawInk = term = false;
             }
             if(killed) canvas.rotate(180, bodyDst.centerX(), bodyDst.centerY());
             canvas.drawBitmap(bitmap, bodySrc[frame], bodyDst, null);
@@ -152,7 +155,7 @@ public class Character extends GameObject implements Collidable{
     public void update() {
         if(bodyDst.right < 0 || bodyDst.top > screenHeight) {
             populated = false;
-            if(isOctopus) isDark = false; // octopus isn't on screen so background back to light
+            if(isOctopus) isDark = term = false; // octopus isn't on screen so background back to light
             if(populateCounter.timePassed(populateDuration)) populate();
         }
         if(isOctopus && bodyDst.bottom >= stopGoDown) {
