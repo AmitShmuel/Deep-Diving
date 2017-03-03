@@ -55,6 +55,7 @@ dependencies {
         transitive = true;
     }
 //    compile 'com.google.android.gms:play-services:10.2.0'
+    compile project(':BaseGameUtils')
 }
 
 crashlytics {

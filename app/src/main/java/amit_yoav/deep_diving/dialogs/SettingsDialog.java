@@ -44,8 +44,8 @@ public class SettingsDialog extends Dialog {
 
         switchSound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView,final boolean isChecked) {
-                mainActivity.playToggleSoundEffect(isChecked);
-                mainActivity.setIsSoundOn(isChecked);
+                MainActivity.playToggleSoundEffect(isChecked);
+                MainActivity.setIsSoundOn(isChecked);
 
                 AsyncHandler.post(new Runnable() {
                     @Override
@@ -76,7 +76,7 @@ public class SettingsDialog extends Dialog {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
 
-                mainActivity.setVolumeMusic((float)progress/100);
+                MainActivity.setVolumeMusic((float)progress/100);
             }
         });
     }

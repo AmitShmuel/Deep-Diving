@@ -17,7 +17,6 @@ import amit_yoav.deep_diving.utilities.AsyncHandler;
 public class PauseSettingsDialog extends Dialog {
 
     private GameViewActivity gameViewActivity;
-    private MainActivity mainActivity;
     private Switch switchSound;
     private SeekBar seekbarMusic;
 
@@ -47,8 +46,8 @@ public class PauseSettingsDialog extends Dialog {
         switchSound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView,final boolean isChecked) {
 //                mainActivity.playToggleSoundEffect(isChecked);
-                ((MainActivity) gameViewActivity.getParent()).playToggleSoundEffect(isChecked);
-                ((MainActivity) gameViewActivity.getParent()).setIsSoundOn(isChecked);
+                MainActivity.playToggleSoundEffect(isChecked);
+                MainActivity.setIsSoundOn(isChecked);
 
                 AsyncHandler.post(new Runnable() {
                     @Override
@@ -79,16 +78,16 @@ public class PauseSettingsDialog extends Dialog {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
 
-                mainActivity.setVolumeMusic((float)progress/100);
-                ((MainActivity) gameViewActivity.getParent()).setVolumeMusic((float)progress/100);
+                MainActivity.setVolumeMusic((float)progress/100);
+//                ((MainActivity) gameViewActivity.getParent()).setVolumeMusic((float)progress/100);
             }
         });
     }
 
-    public float getVolume() {
-        return (float)(preferences.getInt("music",99))/100;
-    }
-    public boolean getSound() {return preferences.getBoolean("sound",true);}
+//    public float getVolume() {
+//        return (float)(preferences.getInt("music",99))/100;
+//    }
+//    public boolean getSound() {return preferences.getBoolean("sound",true);}
 
     @Override
     public void onBackPressed() {
