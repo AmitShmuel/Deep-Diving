@@ -1,6 +1,5 @@
 package amit_yoav.deep_diving;
 
-import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -10,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseIntArray;
-//import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -27,15 +25,16 @@ import amit_yoav.deep_diving.utilities.AsyncHandler;
 import io.fabric.sdk.android.Fabric;
 import java.io.IOException;
 
-import com.google.android.gms.*;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.drive.Drive;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameUtils;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,
+        View.OnClickListener {
 
     public InfoDialog infoDialog;
     public static SettingsDialog settingsDialog;
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements
     public static MySFxRunnable soundEffectsUtil;
 
     private static float volume = 0;
-    private static boolean isSoundOn, gameStarted, isBackPressed, isFinished;
+    private static boolean isSoundOn, gameStarted, isFinished;
 
     private int[] divers = {
       R.drawable.background_black, R.drawable.background_magenta, R.drawable.background_pink
@@ -63,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements
     private boolean mResolvingConnectionFailure = false;
     private boolean mAutoStartSignInflow = true;
     private boolean mSignInClicked = false;
+
+    boolean mExplicitSignOut = false;
+    boolean mInSignInFlow = false;
 
     public void setDiver(View v) {
         soundEffectsUtil.play(R.raw.open_dialog);
@@ -83,10 +85,16 @@ public class MainActivity extends AppCompatActivity implements
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
-                // add other APIs and scopes here as needed
+//                 add other APIs and scopes here as needed
+                .addApi(Drive.API).addScope(Drive.SCOPE_APPFOLDER) // Drive API
                 .build();
 
+
         setContentView(R.layout.activity_main);
+
+        findViewById(R.id.sign_in_button).setOnClickListener(this);
+        findViewById(R.id.sign_out_button).setOnClickListener(this);
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         if(getSupportActionBar() != null) getSupportActionBar().hide();
 
@@ -105,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements
         if (soundEffectsUtil == null) {
             soundEffectsUtil = new MySFxRunnable(this);
         }
-        mainActivityLayout = (View) (this.findViewById(R.id.activity_main));
+        mainActivityLayout = this.findViewById(R.id.activity_main);
         leftArrow = (ImageButton) (this.findViewById(R.id.leftArrow));
         diverPointer = settingsDialog.getMainCharacter();
         mainActivityLayout.setBackgroundResource(divers[diverPointer]);
@@ -164,8 +172,10 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
-        System.out.println("BLA BLA " + mGoogleApiClient.isConnected());
+        if (!mInSignInFlow && !mExplicitSignOut) {
+//             auto sign in
+            mGoogleApiClient.connect();
+        }
     }
 
     @Override
@@ -212,6 +222,12 @@ public class MainActivity extends AppCompatActivity implements
             //TODO
         // The player is signed in. Hide the sign-in button and allow the
         // player to proceed.
+        // show sign-out button, hide the sign-in button
+        findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+        findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
+        findViewById(R.id.trophyButton).setVisibility(View.VISIBLE);
+
+        // (your code here: update UI, enable functionality that depends on sign in, etc)
     }
 
     @Override
@@ -221,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         //TODO
         if (mResolvingConnectionFailure) {
             // already resolving
@@ -261,22 +277,36 @@ public class MainActivity extends AppCompatActivity implements
                 // failed. The R.string.signin_failure should reference an error
                 // string in your strings.xml file that tells the user they
                 // could not be signed in, such as "Unable to sign in."
-                BaseGameUtils.showActivityResultError(this,
-                        requestCode, resultCode, R.string.signin_failure);
+                BaseGameUtils.showActivityResultError(this, requestCode, resultCode,
+                        R.string.signin_failure);
             }
         }
     }
 
-    // Call when the sign-in button is clicked
-    private void signInClicked() {
-        mSignInClicked = true;
-        mGoogleApiClient.connect();
-    }
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.sign_in_button) {
+            // start the asynchronous sign in flow
+            mSignInClicked = true;
+            mGoogleApiClient.connect();
+        }
+        else if (view.getId() == R.id.sign_out_button) {
+            // sign out.
+            mSignInClicked = false;
+            Games.signOut(mGoogleApiClient);
 
-    // Call when the sign-out button is clicked
-    private void signOutClicked() {
-        mSignInClicked = false;
-        Games.signOut(mGoogleApiClient);
+            // show sign-in button, hide the sign-out button
+            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+            findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+
+
+            // user explicitly signed out, so turn off auto sign in
+            mExplicitSignOut = true;
+            if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+                Games.signOut(mGoogleApiClient);
+                mGoogleApiClient.disconnect();
+            }
+        }
     }
 
 
@@ -289,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements
         SparseIntArray soundsMap = new SparseIntArray();
         private boolean prepared = false;
 
-        public MySFxRunnable(Context c) {
+        MySFxRunnable(Context c) {
             // be careful not to leak the activity context.
             // can keep the app context instead.
             appContext = c.getApplicationContext();
@@ -354,7 +384,7 @@ public class MainActivity extends AppCompatActivity implements
 //        private boolean isMainMenu = true;
         private int currentMusicPlaying = R.raw.welcome_screen;
 
-        public MyMusicRunnable(Context c) {
+        MyMusicRunnable(Context c) {
             // be careful not to leak the activity context.
             // can keep the app context instead.
             appContext = c.getApplicationContext();
@@ -379,7 +409,7 @@ public class MainActivity extends AppCompatActivity implements
         /**
          * MediaPlayer.OnCompletionListener callback
          *
-         * @param mp
+         * @param mp - this is the MediaPlayer
          */
         @Override
         public void onCompletion(MediaPlayer mp) {
@@ -419,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
 
-        public void switchMusic(int id) {
+        void switchMusic(int id) {
             if(musicIsPlaying) {
                 if(currentMusicPlaying == id) return;
                 currentMusicPlaying = id;
