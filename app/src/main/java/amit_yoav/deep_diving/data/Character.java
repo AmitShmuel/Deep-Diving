@@ -26,7 +26,7 @@ public class Character extends GameObject implements Collidable{
 
     private RectF bodyDst = new RectF();
     private Rect[] bodySrc;
-    private float scale, speed;
+    private float speed;
     private MillisecondsCounter frameCounter = new MillisecondsCounter();
     private MillisecondsCounter populateCounter = new MillisecondsCounter();
     private MillisecondsCounter firstPopulateCounter = new MillisecondsCounter();
@@ -35,16 +35,15 @@ public class Character extends GameObject implements Collidable{
     public boolean killed, populated;
     /*octopus*/
     private float stopGoDown, left, top;
-    private boolean isOctopus, drawInk, firstDraw;
+    private boolean isOctopus, drawInk, firstDraw, playSound;
     private Bitmap attackBitmap, swimBitmap, inkBitmap;
     private char alpha = 255;
     private Paint inkPaint;
     public boolean term; // a helpful flag which helps to determine if we draw the ink
     public static int octopusIndex = 0;
 
-    private Character(float speed, float scale, int populateDuration) {
+    private Character(float speed, int populateDuration) {
         this.speed = speed;
-        this.scale = scale;
         this.populateDuration = populateDuration;
     }
 
@@ -56,18 +55,18 @@ public class Character extends GameObject implements Collidable{
                     Bitmap octopusInkBitmap) {
 
         Character[] characters = new Character[]{
-                new Character(2.5f ,1f,1000)/*octopus*/,
-                new Character(3,1f,100)/*Gold Fish*/,
-                new Character(4.5f,1f,250)/*Dog Fish*/,
-                new Character(5,1f,500)/*Parrot Fish*/,
-                new Character(6,1f,800)/*Cat Fish*/,
-                new Character(6,1f,1500)/*Lion Fish*/,
-                new Character(7,1f,2000)/*Green fish*/,
-                new Character(9,1f,2500)/*Sword Fish*/,
-                new Character(10,1f,3000)/*Red Fish*/,
-                new Character(14,1f,4000)/*Piranha Fish*/,
-                new Character(15,1f,6000)/*Hammer Shark*/,
-                new Character(20,1f,10000)/*Great White Shark*/
+                new Character(2.5f, 1000)/*octopus*/,
+                new Character(3, 100)/*Gold Fish*/,
+                new Character(4.5f ,250)/*Dog Fish*/,
+                new Character(5 ,500)/*Parrot Fish*/,
+                new Character(6 ,800)/*Cat Fish*/,
+                new Character(6, 1500)/*Lion Fish*/,
+                new Character(7, 2000)/*Green fish*/,
+                new Character(9, 2500)/*Sword Fish*/,
+                new Character(10, 3000)/*Red Fish*/,
+                new Character(14, 4000)/*Piranha Fish*/,
+                new Character(15, 6000)/*Hammer Shark*/,
+                new Character(20, 10000)/*Great White Shark*/
         };
         characters[octopusIndex].isOctopus = true;
         characters[octopusIndex].inkPaint = new Paint();
@@ -115,20 +114,21 @@ public class Character extends GameObject implements Collidable{
         int save = canvas.save();
 
         if(!firstPopulation) { // just draw..
-//            canvas.scale(scale, scale, screenWidth / 2, screenHeight / 2); we aren't scaling.. but we have the option
-            // once all "AND" conditions apply, term becomes the cond which determines if we enter this if or not
+            /* Octopus
+             * once all "AND" conditions apply, term becomes the cond which determines if we enter this if or not
+             */
             if(term || (drawInk && isOctopus && !killed && bodyDst.bottom >= stopGoDown)) {
                 if(firstDraw) {
                     left = bodyDst.left;
                     top = bodyDst.top;
                     firstDraw = false;
-                    isDark = term = true;
-                    MainActivity.soundEffectsUtil.play(R.raw.drop_inks);
+                    isDark = term = playSound = true;
                 }
                 canvas.drawBitmap(inkBitmap, left, top, inkPaint);
                 inkPaint.setAlpha(--alpha);
                 if(alpha == 0) drawInk = term = false;
             }
+
             if(killed) canvas.rotate(180, bodyDst.centerX(), bodyDst.centerY());
             canvas.drawBitmap(bitmap, bodySrc[frame], bodyDst, null);
             if (!gamePaused) {
@@ -162,6 +162,10 @@ public class Character extends GameObject implements Collidable{
             setBitmap(attackBitmap);
             speed = 4;
             frameDuration = 100;
+        }
+        if(playSound) {
+            MainActivity.soundEffectsUtil.play(R.raw.drop_inks);
+            playSound = false;
         }
         // change frame each frameDuration milliseconds for animation
         if(frameCounter.timePassed(frameDuration)) frame = (++frame == bodySrc.length ? 0 : frame);
