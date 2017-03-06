@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.WindowManager;
@@ -28,7 +27,6 @@ import java.io.IOException;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.drive.Drive;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameUtils;
 
@@ -57,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements
 
     //GOOGLE PLAY SERVICES RELATED TYPES
     private GoogleApiClient mGoogleApiClient;
-    private static final int REQUEST_ACHIEVEMENTS = 1;
+    private static final int REQUEST_ACHIEVEMENTS = 5001, REQUEST_LEADERBOARD = 5001;
 
     private static int RC_SIGN_IN = 9001;
     private boolean mResolvingConnectionFailure = false;
@@ -88,10 +86,8 @@ public class MainActivity extends AppCompatActivity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
 //                 add other APIs and scopes here as needed
-                .addApi(Drive.API).addScope(Drive.SCOPE_APPFOLDER) // Drive API
+//                .addApi(Drive.API).addScope(Drive.SCOPE_APPFOLDER) // Drive API
                 .build();
-        Log.d("BUDDY","BUDDY");
-        if(mGoogleApiClient == null) android.os.Process.killProcess(android.os.Process.myPid());
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
@@ -144,6 +140,10 @@ public class MainActivity extends AppCompatActivity implements
         soundEffectsUtil.play(R.raw.open_dialog);
         if(findViewById(R.id.infoButton) == view) infoDialog.show();
         else settingsDialog.show();
+//        Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_kill_pirahna));
+        //Games.Achievements.increment(mGoogleApiClient, "my_incremental_achievment_id", 1);
+//        Games.Achievements.reveal(mGoogleApiClient, "CgkI1a6Zr7UcEAIQBQ");
+        //Games.Leaderboards.submitScore(mGoogleApiClient, LEADERBOARD_ID, UPDATED_SCORE);
     }
 
     public void closeDialog(View view) {
@@ -173,11 +173,10 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d("ROBBEN", "ROBBEN");
-//        if (!mInSignInFlow && !mExplicitSignOut) {
+        if (!mInSignInFlow && !mExplicitSignOut) {
 //             auto sign in
             mGoogleApiClient.connect();
-//        }
+        }
     }
 
     @Override
@@ -210,20 +209,33 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void openAchievements(View view) {
-        startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),
-                REQUEST_ACHIEVEMENTS);
+        if(isSignedIn()) {
+            startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),
+                    REQUEST_ACHIEVEMENTS);
+        }
+        else {
+            BaseGameUtils.makeSimpleDialog(this, getString(R.string.achievements_not_available)).show();
+        }
+    }
+
+    public void openLeaderboard(View view) {
+        if(isSignedIn()) {
+            startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mGoogleApiClient,
+                    getString(R.string.leaderboard_top_divers)),
+                    REQUEST_LEADERBOARD);
+        }
+        else {
+            BaseGameUtils.makeSimpleDialog(this, getString(R.string.leaderboard_not_available)).show();
+        }
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-            //TODO
         // The player is signed in. Hide the sign-in button and allow the
         // player to proceed.
         // show sign-out button, hide the sign-in button
-        System.out.println("CONENCTION SUCCESS");
         findViewById(R.id.sign_in_button).setVisibility(View.GONE);
         findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
-        findViewById(R.id.trophyButton).setVisibility(View.VISIBLE);
 
         // (your code here: update UI, enable functionality that depends on sign in, etc)
     }
@@ -236,12 +248,10 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        //TODO
         if (mResolvingConnectionFailure) {
             // already resolving
             return;
         }
-        System.out.println("CONENCTION FAILED");
         // if the sign-in button was clicked or if auto sign-in is enabled,
         // launch the sign-in flow
         if (mSignInClicked || mAutoStartSignInflow) {
@@ -264,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    protected void onActivityResult(final int requestCode,final int resultCode,final Intent intent) {
         if (requestCode == RC_SIGN_IN) {
             mSignInClicked = mResolvingConnectionFailure = false;
             if (resultCode == RESULT_OK) {
@@ -296,14 +306,17 @@ public class MainActivity extends AppCompatActivity implements
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_button).setVisibility(View.GONE);
 
-
             // user explicitly signed out, so turn off auto sign in
             mExplicitSignOut = true;
-            if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            if (isSignedIn()) {
                 Games.signOut(mGoogleApiClient);
                 mGoogleApiClient.disconnect();
             }
         }
+    }
+
+    public boolean isSignedIn() {
+        return (mGoogleApiClient != null && mGoogleApiClient.isConnected());
     }
 
     public static class MySFxRunnable implements Runnable {
@@ -334,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements
 
             soundPool = Compat.createSoundPool();
 
-            /**
+            /*
              * a callback when prepared -- we need to prevent playing before prepared
              */
             soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
@@ -344,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
             });
 
-            /**
+            /*
              * the load() returns a stream id that can be used to play the sound.
              * I use the "R.raw.xyz" integer as key, because it's useless to invent new keys for
              * them

@@ -20,7 +20,8 @@
         android:textColor="@android:color/black"
         android:elevation="0dp"
         android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        tools:ignore="RtlHardcoded" />
 
     <TextView
         android:id="@+id/txt_dia"
@@ -52,7 +53,8 @@
         android:layout_marginEnd="16dp"
         tools:layout_editor_absoluteY="0dp"
         tools:layout_editor_absoluteX="0dp"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        android:contentDescription="" />
 
     <SeekBar
         android:layout_width="288dp"
@@ -76,7 +78,8 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="16dp" />
+        android:layout_marginLeft="16dp"
+        tools:ignore="RtlHardcoded" />
 
 
 </android.support.constraint.ConstraintLayout>

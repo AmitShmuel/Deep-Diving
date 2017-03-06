@@ -22,8 +22,8 @@ android {
         applicationId "amit_yoav.deep_diving"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 2
-        versionName "1.1"
+        versionCode 1
+        versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -46,7 +46,6 @@ dependencies {
     })
 //    compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     compile 'com.android.support:support-v4:25.1.0'
     compile 'com.android.support:support-vector-drawable:25.1.0'
     testCompile 'junit:junit:4.12'
@@ -58,6 +57,7 @@ dependencies {
     }
 //    compile 'com.google.android.gms:play-services:10.2.0'
     compile project(':BaseGameUtils')
+    compile 'com.android.support.constraint:constraint-layout:1.0.1'
 }
 
 crashlytics {

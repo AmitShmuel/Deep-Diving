@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Google Play game services IDs.
+Save this file as res/values/games-ids.xml in your project.
+-->
+<resources>
+    <string name="package_name">amit_yoav.deep_diving</string>
+    <string name="achievement_kill_octopus">CgkI1a6Zr7UcEAIQAw</string>
+    <string name="achievement_kill_pirahna">CgkI1a6Zr7UcEAIQBQ</string>
+    <string name="achievement_kill_the_great_white_shark">CgkI1a6Zr7UcEAIQBA</string>
+    <string name="achievement_kill_hammer_shark">CgkI1a6Zr7UcEAIQCA</string>
+    <string name="achievement_complete_stage_3">CgkI1a6Zr7UcEAIQAA</string>
+    <string name="achievement_complete_stage_4">CgkI1a6Zr7UcEAIQAg</string>
+    <string name="achievement_complete_stage_5">CgkI1a6Zr7UcEAIQCQ</string>
+    <string name="achievement_complete_stage_6">CgkI1a6Zr7UcEAIQCg</string>
+    <string name="achievement_complete_stage_7">CgkI1a6Zr7UcEAIQCw</string>
+    <string name="achievement_complete_stage_8">CgkI1a6Zr7UcEAIQDA</string>
+    <string name="achievement_complete_stage_9">CgkI1a6Zr7UcEAIQDQ</string>
+    <string name="achievement_complete_stage_10">CgkI1a6Zr7UcEAIQDg</string>
+    <string name="achievement_defender">CgkI1a6Zr7UcEAIQDw</string>
+    <string name="achievement_protector">CgkI1a6Zr7UcEAIQEA</string>
+    <string name="achievement_invincible">CgkI1a6Zr7UcEAIQEQ</string>
+    <string name="achievement_fisherman">CgkI1a6Zr7UcEAIQEg</string>
+    <string name="achievement_expert_fisherman">CgkI1a6Zr7UcEAIQEw</string>
+    <string name="achievement_killer_diver">CgkI1a6Zr7UcEAIQFA</string>
+    <string name="achievement_life_saver">CgkI1a6Zr7UcEAIQFQ</string>
+    <string name="achievement_survivor">CgkI1a6Zr7UcEAIQFg</string>
+    <string name="achievement_life_expert">CgkI1a6Zr7UcEAIQFw</string>
+    <string name="achievement_beginner_collector">CgkI1a6Zr7UcEAIQGA</string>
+    <string name="achievement_amateur_collector">CgkI1a6Zr7UcEAIQGQ</string>
+    <string name="achievement_pro_collector">CgkI1a6Zr7UcEAIQGg</string>
+    <string name="achievement_expert_collector">CgkI1a6Zr7UcEAIQGw</string>
+    <string name="achievement_treasure_collector">CgkI1a6Zr7UcEAIQHA</string>
+    <string name="achievement_deep_diver_collector">CgkI1a6Zr7UcEAIQHQ</string>
+    <string name="leaderboard_top_divers">CgkI1a6Zr7UcEAIQBg</string>
+</resources>

@@ -82,4 +82,9 @@
     <string name="signin_failure">Unable to sign in.</string>
 
     <string name="app_id">976398735189</string>
+    <string name="achievements_not_available">In order to see your achievements, you must log in</string>
+    <string name="settings">Settings</string>
+    <string name="music">Music</string>
+    <string name="sound">Sound</string>
+    <string name="leaderboard_not_available">In order to see leaderboard, you must log in</string>
 </resources>
