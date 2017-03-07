@@ -10,7 +10,6 @@ import android.os.Vibrator;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -217,23 +216,6 @@ public class GameView extends View {
 
         mGoogleApiClient = ((GameViewActivity) context).mGoogleApiClient;
 
-        if(isSignedIn()) {
-            Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,
-                    getResources().getString(R.string.leaderboard_top_divers),
-                    LeaderboardVariant.TIME_SPAN_ALL_TIME, LeaderboardVariant.COLLECTION_PUBLIC)
-                    .setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
-
-                        @Override
-                        public void onResult(final Leaderboards.LoadPlayerScoreResult scoreResult) {
-                            if (isScoreResultValid(scoreResult)) {
-                                //Getting the score of client
-                                leaderboardScore = scoreResult.getScore().getRawScore();
-                            }
-                        }
-                    });
-        }
-        Log.d("CURRENT LEADERBOARD:", String.valueOf(leaderboardScore));
-
         initAchs();
 
         initPaints();
@@ -386,9 +368,7 @@ public class GameView extends View {
             canvas.drawBitmap(life.bitmap, life.lifePoint.x - coin.getWidth(), life.lifePoint.y, alphaLifePaint);
             canvas.drawBitmap(life.bitmap, life.lifePoint.x - coin.getWidth()*2, life.lifePoint.y, alphaLifePaint);
         } else if(life.getLife() == 0) {
-            if(isSignedIn() && leaderboardScore < score) {
-                Games.Leaderboards.submitScore(mGoogleApiClient, getResources().getString(R.string.leaderboard_top_divers), score);
-            }
+            updateLeaderBoards(score);
             ((GameViewActivity) getContext()).gameOver(score);
             life.setLife(-1);
         }
@@ -562,11 +542,29 @@ public class GameView extends View {
             characters[i].stopTime(isPaused);
     }
 
+    private void updateLeaderBoards(final int finishedScore) {
+        if(isSignedIn()) {
+            Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,
+                    getResources().getString(R.string.leaderboard_top_divers),
+                    LeaderboardVariant.TIME_SPAN_ALL_TIME, LeaderboardVariant.COLLECTION_PUBLIC)
+                    .setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+
+                        @Override
+                        public void onResult(@NonNull Leaderboards.LoadPlayerScoreResult arg0) {
+                            if(isScoreResultValid(arg0)) {
+                                leaderboardScore = arg0.getScore().getRawScore();
+                                if(leaderboardScore < finishedScore) {
+                                    Games.Leaderboards.submitScore(mGoogleApiClient, getResources().getString(R.string.leaderboard_top_divers), finishedScore);
+                                }
+                            }
+                        }
+                    });
+        }
+    }
 
     public boolean isSignedIn() {
         return (mGoogleApiClient != null && mGoogleApiClient.isConnected());
     }
-
 
     static final int INC = 1;
     static final int REVEAL = 2;
@@ -596,7 +594,6 @@ public class GameView extends View {
             default: break;
         }
     }
-
 
     private class AchievementClass implements ResultCallback<Achievements.LoadAchievementsResult> {
 
