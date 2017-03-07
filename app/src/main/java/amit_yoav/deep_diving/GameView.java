@@ -253,11 +253,11 @@ public class GameView extends View {
 
         Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClassCoin);
 
-        Games.Achievements.load(mGoogleApiClient, false).setResultCallback(achievementClassShield);
+        Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClassShield);
 
-        Games.Achievements.load(mGoogleApiClient, false).setResultCallback(achievementClassLife);
+        Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClassLife);
 
-        Games.Achievements.load(mGoogleApiClient, false).setResultCallback(achievementClassFish);
+        Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClassFish);
     }
 
     private void initPaints() {
@@ -572,6 +572,7 @@ public class GameView extends View {
 
         final @AchCollectorKind int achievementKind;
         boolean firstTime = true;
+        String achievementId;
 
         AchievementClass(@AchCollectorKind int achievementKind) {
             this.achievementKind = achievementKind;
@@ -581,9 +582,14 @@ public class GameView extends View {
         public void onResult(@NonNull Achievements.LoadAchievementsResult result) {
             AchievementBuffer aBuffer = result.getAchievements();
 
+            if(achievementKind == COIN) achievementId = achievementIdCoin;
+            else if(achievementKind == SHIELD) achievementId = achievementIdShield;
+            else if(achievementKind == LIFE) achievementId = achievementIdLife;
+            else achievementId = achievementIdFish;
+
             for(;;) {
                 for (Achievement ach : aBuffer) {
-                    if (achievementIdCoin.equals(ach.getAchievementId())) {
+                    if (achievementId.equals(ach.getAchievementId())) {
                         if (ach.getState() == Achievement.STATE_UNLOCKED) {
                             switch (achievementKind) {
                                 case COIN:
@@ -640,12 +646,12 @@ public class GameView extends View {
                         } else {
                             firstTime = false;
                         }
-                        aBuffer.release();
-                        break;
                     }
                 }
-                if(firstTime) continue;
-                else break;
+                if(!firstTime) {
+                    aBuffer.release();
+                    break;
+                }
             }
         }
     }
