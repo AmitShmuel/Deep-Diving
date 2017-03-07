@@ -334,6 +334,7 @@ public class GameView extends View {
                 MainActivity.soundEffectsUtil.play(R.raw.killed);
 
                 if(isSignedIn()) {  //INSERT ACHIEVEMENT HERE
+                    Log.d("i (Character Index) = ", String.valueOf(i));
                     switch(i) {
                         case octopusIndex:
                             actionAchievement(UNLOCK, getResources().getString(R.string.achievement_kill_octopus));
@@ -363,6 +364,9 @@ public class GameView extends View {
                 if(isSignedIn()) {
                     actionAchievement(INC, achievementId);
                     Games.Achievements.load(mGoogleApiClient, false).setResultCallback(achievementClass);
+                }
+                else {
+                    Log.d("YOAV SAROYA", "BONGOBONGOBONGOBONGOBONGOBONGO");
                 }
             }
             coin.collected();
@@ -477,6 +481,8 @@ public class GameView extends View {
 
 
     public boolean isSignedIn() {
+        if(mGoogleApiClient == null)     Log.d("AMIT: ", "IT IS NULL");
+        else if(mGoogleApiClient.isConnected()) Log.d("AMIT: ", "IT IS CONNECTED...!");
         return (mGoogleApiClient != null && mGoogleApiClient.isConnected());
     }
 
@@ -495,20 +501,28 @@ public class GameView extends View {
     public void actionAchievement(@ActionKind int code, String achievementId) {
         switch(code) {
             case INC:
-                Games.Achievements.incrementImmediate(mGoogleApiClient, achievementId, 1);
+                Log.d("actionAchievement: ", "INC CASE");
+
+                Games.Achievements.increment(mGoogleApiClient, achievementId, 1);
                 break;
 
             case REVEAL:
+                Log.d("actionAchievement: ", "REVEAL CASE");
+
                 Games.Achievements.reveal(mGoogleApiClient, achievementId);
                 break;
 
             case UNLOCK:
+                Log.d("actionAchievement: ", "UNLOCK CASE");
+
                 Games.Achievements.unlock(mGoogleApiClient, achievementId);
                 break;
 
-            default: break;
+            default:
+                Log.d("actionAchievement: ", "DEFAULT CASE");
+                break;
+            }
         }
-    }
 
     private String achievementId = getResources().getString(R.string.achievement_beginner_collector);
     private String nextAchievementId = getResources().getString(R.string.achievement_amateur_collector);

@@ -80,6 +80,7 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
                 .build();
+        mGoogleApiClient.connect();
 
         gameRunning = true;
 
