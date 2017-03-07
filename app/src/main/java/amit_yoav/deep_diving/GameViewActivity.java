@@ -6,18 +6,25 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.IntDef;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
+
 import amit_yoav.deep_diving.dialogs.GameOverDialog;
 import amit_yoav.deep_diving.dialogs.PauseDialog;
 import amit_yoav.deep_diving.dialogs.PauseSettingsDialog;
 import amit_yoav.deep_diving.utilities.AsyncHandler;
 
+import java.lang.annotation.Retention;
 import java.util.Random;
+
+import static java.lang.annotation.RetentionPolicy.CLASS;
 
 public class GameViewActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -41,6 +48,8 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     public int getBestScore() {return bestScore;}
     public int getMainCharResource() {return mainCharacterBitmap;}
 
+    public GoogleApiClient mGoogleApiClient;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +66,7 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
         pauseSettingsDialog = new PauseSettingsDialog(this);
 
         gameOverDialog = new GameOverDialog(this);
-        bestScore = ((MainActivity) getParent()).settingsDialog.getBestScore();
+        bestScore = MainActivity.settingsDialog.getBestScore();
 
         //getting the color of the diver
         int charIndex = ((MainActivity) getParent()).settingsDialog.getMainCharacter();
@@ -74,6 +83,8 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
         view = (GameView) findViewById(R.id.activity_game_view);
 
         gameOverDialog.setBestScore(bestScore);
+
+        mGoogleApiClient = ((MainActivity) getParent()).mGoogleApiClient;
     }
 
     public void showSettings() {
@@ -186,4 +197,6 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     public void onAccuracyChanged(Sensor sensor, int i) {}
 
     public void togglePauseGame() { gamePaused = !gamePaused; }
+
+
 }

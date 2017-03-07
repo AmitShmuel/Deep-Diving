@@ -1,14 +1,31 @@
 package amit_yoav.deep_diving;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Vibrator;
+import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesStatusCodes;
+import com.google.android.gms.games.achievement.Achievement;
+import com.google.android.gms.games.achievement.AchievementBuffer;
+import com.google.android.gms.games.achievement.AchievementEntity;
+import com.google.android.gms.games.achievement.Achievements;
+import com.google.android.gms.games.internal.constants.AchievementState;
+
+import java.lang.annotation.Retention;
+import java.util.Iterator;
 
 import amit_yoav.deep_diving.data.Arrow;
 import amit_yoav.deep_diving.data.Background;
@@ -26,6 +43,7 @@ import amit_yoav.deep_diving.utilities.MillisecondsCounter;
 import amit_yoav.deep_diving.utilities.Util;
 
 import static amit_yoav.deep_diving.GameViewActivity.canShoot;
+import static java.lang.annotation.RetentionPolicy.CLASS;
 
 /**
  *
@@ -55,6 +73,8 @@ public class GameView extends View {
     private StageLabel[] stageLabels;
     private final int newRecordIndex = 10;
     private int mainCharResource, mainCharGunResource;
+    private final int octopusIndex = 0, piranhaIndex = 9,
+            whiteSharkIndex = 11, hammerSharkIndex = 10;
 
     /*
      * Other
@@ -62,6 +82,7 @@ public class GameView extends View {
     public static boolean hit, isDark; // arrow hits character
     private Paint shootingCirclePaint = new Paint();
     private Vibrator vibrator;
+    private GoogleApiClient mGoogleApiClient;
 
     /*
      * Stage related types
@@ -161,6 +182,8 @@ public class GameView extends View {
         updateScore(0);
 
         runUpdater();
+
+        mGoogleApiClient = ((GameViewActivity) context).mGoogleApiClient;
     }
 
     private void initDrawObjects() {
@@ -309,15 +332,38 @@ public class GameView extends View {
                 hit = true;
                 characters[i].killed = true;
                 MainActivity.soundEffectsUtil.play(R.raw.killed);
+
+                if(isSignedIn()) {  //INSERT ACHIEVEMENT HERE
+                    switch(i) {
+                        case octopusIndex:
+                            actionAchievement(UNLOCK, getResources().getString(R.string.achievement_kill_octopus));
+                            break;
+                        case piranhaIndex:
+                            actionAchievement(UNLOCK, getResources().getString(R.string.achievement_kill_pirahna));
+                            break;
+                        case hammerSharkIndex:
+                            actionAchievement(UNLOCK, getResources().getString(R.string.achievement_kill_hammer_shark));
+                            break;
+                        case whiteSharkIndex:
+                            actionAchievement(UNLOCK, getResources().getString(R.string.achievement_kill_the_great_white_shark));
+                            break;
+                        default: break;
+                    }
+                }
             }
         }
         if(CollisionUtil.isCollisionDetected(coin, mainChar)) {
             if(!coin.isCollected()) {
-                updateScore(score+10); // could do score++ but the function makes more sense like that
+                updateScore(score+1); // could do score++ but the function makes more sense like that
                 MainActivity.soundEffectsUtil.play(R.raw.coin_collected);
 
                 if(!isBestScoreUsed && score > bestScore) bestScore();
                 if( (score == (currentStage+1) * 10) && (currentStage < 8) ) levelUp();
+
+                if(isSignedIn()) {
+                    actionAchievement(INC, achievementId);
+                    Games.Achievements.load(mGoogleApiClient, false).setResultCallback(achievementClass);
+                }
             }
             coin.collected();
         }
@@ -385,6 +431,37 @@ public class GameView extends View {
             characters[i].restartPopulation();
         }
         stageLabels[currentStage].setToPopulate(true);
+
+        if(currentStage > 2 && isSignedIn()) {
+            switch (currentStage+1) {
+                case 3:
+                    actionAchievement(UNLOCK, getResources().getString(R.string.achievement_complete_stage_3));
+                    break;
+                case 4:
+                    actionAchievement(UNLOCK, getResources().getString(R.string.achievement_complete_stage_4));
+                    break;
+                case 5:
+                    actionAchievement(UNLOCK, getResources().getString(R.string.achievement_complete_stage_5));
+                    break;
+                case 6:
+                    actionAchievement(UNLOCK, getResources().getString(R.string.achievement_complete_stage_6));
+                    break;
+                case 7:
+                    actionAchievement(UNLOCK, getResources().getString(R.string.achievement_complete_stage_7));
+                    break;
+                case 8:
+                    actionAchievement(UNLOCK, getResources().getString(R.string.achievement_complete_stage_8));
+                    break;
+                case 9:
+                    actionAchievement(UNLOCK, getResources().getString(R.string.achievement_complete_stage_9));
+                    break;
+                case 10:
+                    actionAchievement(UNLOCK, getResources().getString(R.string.achievement_complete_stage_10));
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     public void stopTime(boolean isPaused) {
@@ -394,8 +471,103 @@ public class GameView extends View {
         protectCounter.stopTime(isPaused);
         shieldCounter.stopTime(isPaused);
         shieldBlinkCounter.stopTime(isPaused);
-        for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++) {
+        for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++)
             characters[i].stopTime(isPaused);
+    }
+
+
+    public boolean isSignedIn() {
+        return (mGoogleApiClient != null && mGoogleApiClient.isConnected());
+    }
+
+
+    static final int INC = 1;
+    static final int REVEAL = 2;
+    static final int UNLOCK = 3;
+    @Retention(CLASS)
+    @IntDef({
+            INC,
+            REVEAL,
+            UNLOCK
+    })
+    @interface ActionKind {}
+
+    public void actionAchievement(@ActionKind int code, String achievementId) {
+        switch(code) {
+            case INC:
+                Games.Achievements.incrementImmediate(mGoogleApiClient, achievementId, 1);
+                break;
+
+            case REVEAL:
+                Games.Achievements.reveal(mGoogleApiClient, achievementId);
+                break;
+
+            case UNLOCK:
+                Games.Achievements.unlock(mGoogleApiClient, achievementId);
+                break;
+
+            default: break;
+        }
+    }
+
+    private String achievementId = getResources().getString(R.string.achievement_beginner_collector);
+    private String nextAchievementId = getResources().getString(R.string.achievement_amateur_collector);
+    private AchievementClass achievementClass = new AchievementClass();
+
+    public class AchievementClass implements ResultCallback<Achievements.LoadAchievementsResult> {
+
+        @Override
+        public void onResult(@NonNull Achievements.LoadAchievementsResult result) {
+            AchievementBuffer aBuffer = result.getAchievements();
+
+            for (Achievement ach : aBuffer) {
+                if (achievementId.equals(ach.getAchievementId())) {
+                    if (ach.getState() == Achievement.STATE_UNLOCKED) {
+                        // it is unlocked
+                        actionAchievement(REVEAL, nextAchievementId);
+                        if(achievementId == getResources().getString(R.string.achievement_beginner_collector)) {
+                            achievementId = nextAchievementId;
+                            nextAchievementId = getResources().getString(R.string.achievement_pro_collector);
+                        }
+                        else if(achievementId == getResources().getString(R.string.achievement_amateur_collector)) {
+                            achievementId = nextAchievementId;
+                            nextAchievementId = getResources().getString(R.string.achievement_expert_collector);
+                        }
+                        else if(achievementId == getResources().getString(R.string.achievement_pro_collector)) {
+                            achievementId = nextAchievementId;
+                            nextAchievementId = getResources().getString(R.string.achievement_treasure_collector);
+                        }
+                        else if(achievementId == getResources().getString(R.string.achievement_expert_collector)) {
+                            achievementId = nextAchievementId;
+                            nextAchievementId = getResources().getString(R.string.achievement_deep_diver_collector);
+                        }
+                        else if(achievementId == getResources().getString(R.string.achievement_treasure_collector)) {
+                            achievementId = nextAchievementId;
+                        }
+                    }
+                    aBuffer.release();
+                    break;
+                }
+            }
         }
     }
 }
+
+/*
+                Games.Achievements.incrementImmediate(mGoogleApiClient, achievementId, 1)
+                        .setResultCallback(new ResultCallback<Achievements.UpdateAchievementResult>() {
+                            @Override
+                            public void onResult(Achievements.UpdateAchievementResult result) {
+                                Log.d("Amit", String.valueOf(result.getStatus().getStatusCode()));
+                                if(result.getAchievementId() == getResources().getString(R.string.achievement_beginner_collector)) {
+                                    if (result.getStatus().getStatusCode() == Achievement.STATE_UNLOCKED) {
+                                        Games.Achievements.reveal(mGoogleApiClient, getResources().getString(R.string.achievement_amateur_collector));
+                                        actionAchievement(INC, );
+                                    }
+                                }
+                                else if(result.getAchievementId() == getResources().getString(R.string.achievement_beginner_collector)) {
+
+
+                                }
+                        });
+ */

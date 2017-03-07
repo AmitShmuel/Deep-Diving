@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
     //GOOGLE PLAY SERVICES RELATED TYPES
-    private GoogleApiClient mGoogleApiClient;
+    public GoogleApiClient mGoogleApiClient;
     private static final int REQUEST_ACHIEVEMENTS = 5001, REQUEST_LEADERBOARD = 5001;
 
     private static int RC_SIGN_IN = 9001;
