@@ -79,6 +79,7 @@ public class GameView extends View {
     private Vibrator vibrator;
     private GoogleApiClient mGoogleApiClient;
 
+
     /*
      * Stage related types
      */
@@ -145,6 +146,42 @@ public class GameView extends View {
     };
 
 
+    /*
+     * Achievements
+     */
+    private String achievementIdCoin = getResources().getString(R.string.achievement_beginner_collector);
+    private String nextAchievementIdCoin = getResources().getString(R.string.achievement_amateur_collector);
+
+    private String achievementIdShield = getResources().getString(R.string.achievement_defender);
+    private String nextAchievementIdShield  = getResources().getString(R.string.achievement_protector);
+
+    private String achievementIdLife = getResources().getString(R.string.achievement_life_saver);
+    private String nextAchievementIdLife  = getResources().getString(R.string.achievement_life_expert);
+
+    private String achievementIdFish = getResources().getString(R.string.achievement_fisherman);
+    private String nextAchievementIdFish  = getResources().getString(R.string.achievement_expert_fisherman);
+
+    private boolean firstTimeCoin = true, firstTimeShield = true, firstTimeLife = true,
+            firstTimeFish = true, initAchs;
+
+    private AchievementClass achievementClass = new AchievementClass();
+    static final int COIN = 1;
+    static final int FISH = 2;
+    static final int SHIELD = 3;
+    static final int LIFE = 4;
+    @Retention(CLASS)
+    @IntDef({
+            COIN,
+            FISH,
+            SHIELD,
+            LIFE
+    })
+    @interface AchCollectorKind {}
+
+    private @GameView.AchCollectorKind int achCollectorKind;
+
+
+
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(false);
@@ -172,14 +209,17 @@ public class GameView extends View {
 
         initDrawObjects();
 
+        mGoogleApiClient = ((GameViewActivity) context).mGoogleApiClient;
+
+        initAchs();
+
         initPaints();
 
         updateScore(0);
 
         runUpdater();
-
-        mGoogleApiClient = ((GameViewActivity) context).mGoogleApiClient;
     }
+
 
     private void initDrawObjects() {
         waterBackground = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background_water), WATER_SPEED, true);
@@ -210,6 +250,25 @@ public class GameView extends View {
         arrow = Arrow.prepareArrow(BitmapFactory.decodeResource(getResources(), R.drawable.arrow));
         shield = Shield.prepareShield(BitmapFactory.decodeResource(getResources(), R.drawable.shield), mainChar.getBody());
         stageLabels = StageLabel.prepareStageLabels(BitmapFactory.decodeResource(getResources(), R.drawable.stage_labels));
+    }
+
+    private void initAchs() {
+
+        initAchs = true;
+
+        achCollectorKind = COIN;
+        while(firstTimeCoin) Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClass);
+
+        achCollectorKind = SHIELD;
+        while(firstTimeShield) Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClass);
+
+        achCollectorKind = LIFE;
+        while(firstTimeLife) Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClass);
+
+        achCollectorKind = FISH;
+        while(firstTimeFish) Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClass);
+
+        initAchs = false;
     }
 
     private void initPaints() {
@@ -329,9 +388,9 @@ public class GameView extends View {
                 MainActivity.soundEffectsUtil.play(R.raw.killed);
 
                 if(isSignedIn()) {
-                    achCollectorKind = FISH;
-                    Games.Achievements.load(mGoogleApiClient, false).setResultCallback(achievementClass);
                     actionAchievement(INC, achievementIdFish);
+                    achCollectorKind = FISH;
+                    Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClass);
                     switch(i) {
                         case octopusIndex:
                             actionAchievement(UNLOCK, getResources().getString(R.string.achievement_kill_octopus));
@@ -359,9 +418,9 @@ public class GameView extends View {
                 if( (score == (currentStage+1) * 10) && (currentStage < 8) ) levelUp();
 
                 if(isSignedIn()) {
+                    actionAchievement(INC, achievementIdCoin);
                     achCollectorKind = COIN;
                     Games.Achievements.load(mGoogleApiClient, false).setResultCallback(achievementClass);
-                    actionAchievement(INC, achievementIdCoin);
                 }
             }
             coin.collected();
@@ -372,9 +431,9 @@ public class GameView extends View {
             life.collected();
 
             if(isSignedIn()) {
-                achCollectorKind = LIFE;
-                Games.Achievements.load(mGoogleApiClient, false).setResultCallback(achievementClass);
                 actionAchievement(INC, achievementIdLife);
+                achCollectorKind = LIFE;
+                Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClass);
             }
         }
         if(gun.populated && CollisionUtil.isCollisionDetected(gun, mainChar)) {
@@ -390,9 +449,9 @@ public class GameView extends View {
             mainChar.canGetHit = false;
 
             if(isSignedIn()) {
-                achCollectorKind = SHIELD;
-                Games.Achievements.load(mGoogleApiClient, false).setResultCallback(achievementClass);
                 actionAchievement(INC, achievementIdShield);
+                achCollectorKind = SHIELD;
+                Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClass);
             }
         }
     }
@@ -523,37 +582,6 @@ public class GameView extends View {
             }
         }
 
-    private String achievementIdCoin = getResources().getString(R.string.achievement_beginner_collector);
-    private String nextAchievementIdCoin = getResources().getString(R.string.achievement_amateur_collector);
-
-    private String achievementIdShield = getResources().getString(R.string.achievement_defender);
-    private String nextAchievementIdShield  = getResources().getString(R.string.achievement_protector);
-
-    private String achievementIdLife = getResources().getString(R.string.achievement_life_saver);
-    private String nextAchievementIdLife  = getResources().getString(R.string.achievement_life_expert);
-
-    private String achievementIdFish = getResources().getString(R.string.achievement_fisherman);
-    private String nextAchievementIdFish  = getResources().getString(R.string.achievement_expert_fisherman);
-
-    private boolean firstTimeCoin = true, firstTimeShield = true, firstTimeLife = true,
-            firstTimeFish = true;
-
-    private AchievementClass achievementClass = new AchievementClass();
-    static final int COIN = 1;
-    static final int FISH = 2;
-    static final int SHIELD = 3;
-    static final int LIFE = 4;
-    @Retention(CLASS)
-    @IntDef({
-            COIN,
-            FISH,
-            SHIELD,
-            LIFE
-    })
-    @interface AchCollectorKind {}
-
-    private @GameView.AchCollectorKind int achCollectorKind;
-
     private class AchievementClass implements ResultCallback<Achievements.LoadAchievementsResult> {
 
         @Override
@@ -586,7 +614,6 @@ public class GameView extends View {
                                 else if(achievementIdCoin.equals(getResources().getString(R.string.achievement_treasure_collector))) {
                                     achievementIdCoin = nextAchievementIdCoin;
                                 }
-                                if(firstTimeCoin) onResult(result);
                                 break;
 
                             case SHIELD:
@@ -598,7 +625,6 @@ public class GameView extends View {
                                 else if(achievementIdShield.equals(getResources().getString(R.string.achievement_protector))) {
                                     achievementIdShield = nextAchievementIdShield;
                                 }
-                                if(firstTimeShield) onResult(result);
                                 break;
 
                             case LIFE:
@@ -610,7 +636,6 @@ public class GameView extends View {
                                 else if(achievementIdLife.equals(getResources().getString(R.string.achievement_life_expert))) {
                                     achievementIdLife = nextAchievementIdLife;
                                 }
-                                if(firstTimeLife) onResult(result);
                                 break;
 
                             case FISH:
@@ -622,18 +647,15 @@ public class GameView extends View {
                                 else if(achievementIdFish.equals(getResources().getString(R.string.achievement_expert_fisherman))) {
                                     achievementIdFish = nextAchievementIdFish;
                                 }
-                                if(firstTimeFish) onResult(result);
                                 break;
                             default: break;
                         }
                     }
-                    else {
-                        switch(achCollectorKind) {
-                            case COIN: firstTimeCoin = false; break;
-                            case SHIELD: firstTimeShield = false; break;
-                            case LIFE: firstTimeLife = false; break;
-                            case FISH: firstTimeFish = false; break;
-                        }
+                    else if(initAchs){
+                        if(firstTimeFish) firstTimeFish = false;
+                        if(firstTimeCoin) firstTimeCoin = false;
+                        if(firstTimeLife) firstTimeLife = false;
+                        if(firstTimeShield) firstTimeShield = false;
                     }
                     aBuffer.release();
                     break;
