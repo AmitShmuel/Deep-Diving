@@ -66,7 +66,7 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
         pauseSettingsDialog = new PauseSettingsDialog(this);
 
         gameOverDialog = new GameOverDialog(this);
-        bestScore = MainActivity.settingsDialog.getBestScore();
+        bestScore = ((MainActivity) getParent()).settingsDialog.getBestScore();
 
         //getting the color of the diver
         int charIndex = ((MainActivity) getParent()).settingsDialog.getMainCharacter();
@@ -77,14 +77,16 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Games.API).addScope(Games.SCOPE_GAMES)
+                .build();
+
         gameRunning = true;
 
         setContentView(R.layout.activity_game_view);
         view = (GameView) findViewById(R.id.activity_game_view);
 
         gameOverDialog.setBestScore(bestScore);
-
-        mGoogleApiClient = ((MainActivity) getParent()).mGoogleApiClient;
     }
 
     public void showSettings() {
