@@ -161,10 +161,11 @@ public class GameView extends View {
     private String achievementIdFish = getResources().getString(R.string.achievement_fisherman);
     private String nextAchievementIdFish  = getResources().getString(R.string.achievement_expert_fisherman);
 
-    private boolean firstTimeCoin = true, firstTimeShield = true, firstTimeLife = true,
-            firstTimeFish = true, initAchs;
+    private AchievementClass achievementClassCoin = new AchievementClass(COIN);
+    private AchievementClass achievementClassFish = new AchievementClass(FISH);
+    private AchievementClass achievementClassShield = new AchievementClass(SHIELD);
+    private AchievementClass achievementClassLife = new AchievementClass(LIFE);
 
-    private AchievementClass achievementClass = new AchievementClass();
     static final int COIN = 1;
     static final int FISH = 2;
     static final int SHIELD = 3;
@@ -177,10 +178,6 @@ public class GameView extends View {
             LIFE
     })
     @interface AchCollectorKind {}
-
-    private @GameView.AchCollectorKind int achCollectorKind;
-
-
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -254,21 +251,13 @@ public class GameView extends View {
 
     private void initAchs() {
 
-        initAchs = true;
+        Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClassCoin);
 
-        achCollectorKind = COIN;
-        while(firstTimeCoin) Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClass);
+        Games.Achievements.load(mGoogleApiClient, false).setResultCallback(achievementClassShield);
 
-        achCollectorKind = SHIELD;
-        while(firstTimeShield) Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClass);
+        Games.Achievements.load(mGoogleApiClient, false).setResultCallback(achievementClassLife);
 
-        achCollectorKind = LIFE;
-        while(firstTimeLife) Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClass);
-
-        achCollectorKind = FISH;
-        while(firstTimeFish) Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClass);
-
-        initAchs = false;
+        Games.Achievements.load(mGoogleApiClient, false).setResultCallback(achievementClassFish);
     }
 
     private void initPaints() {
@@ -389,8 +378,7 @@ public class GameView extends View {
 
                 if(isSignedIn()) {
                     actionAchievement(INC, achievementIdFish);
-                    achCollectorKind = FISH;
-                    Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClass);
+                    Games.Achievements.load(mGoogleApiClient, false).setResultCallback(achievementClassFish);
                     switch(i) {
                         case octopusIndex:
                             actionAchievement(UNLOCK, getResources().getString(R.string.achievement_kill_octopus));
@@ -419,8 +407,7 @@ public class GameView extends View {
 
                 if(isSignedIn()) {
                     actionAchievement(INC, achievementIdCoin);
-                    achCollectorKind = COIN;
-                    Games.Achievements.load(mGoogleApiClient, false).setResultCallback(achievementClass);
+                    Games.Achievements.load(mGoogleApiClient, false).setResultCallback(achievementClassCoin);
                 }
             }
             coin.collected();
@@ -432,8 +419,7 @@ public class GameView extends View {
 
             if(isSignedIn()) {
                 actionAchievement(INC, achievementIdLife);
-                achCollectorKind = LIFE;
-                Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClass);
+                Games.Achievements.load(mGoogleApiClient, false).setResultCallback(achievementClassLife);
             }
         }
         if(gun.populated && CollisionUtil.isCollisionDetected(gun, mainChar)) {
@@ -450,8 +436,7 @@ public class GameView extends View {
 
             if(isSignedIn()) {
                 actionAchievement(INC, achievementIdShield);
-                achCollectorKind = SHIELD;
-                Games.Achievements.load(mGoogleApiClient, true).setResultCallback(achievementClass);
+                Games.Achievements.load(mGoogleApiClient, false).setResultCallback(achievementClassShield);
             }
         }
     }
@@ -582,84 +567,85 @@ public class GameView extends View {
             }
         }
 
+
     private class AchievementClass implements ResultCallback<Achievements.LoadAchievementsResult> {
+
+        final @AchCollectorKind int achievementKind;
+        boolean firstTime = true;
+
+        AchievementClass(@AchCollectorKind int achievementKind) {
+            this.achievementKind = achievementKind;
+        }
 
         @Override
         public void onResult(@NonNull Achievements.LoadAchievementsResult result) {
             AchievementBuffer aBuffer = result.getAchievements();
 
-            for (Achievement ach : aBuffer) {
-                if (achievementIdCoin.equals(ach.getAchievementId())) {
-                    if (ach.getState() == Achievement.STATE_UNLOCKED) {
-                        switch(achCollectorKind) {
-                            case COIN:
-                                actionAchievement(REVEAL, nextAchievementIdCoin);
+            for(;;) {
+                for (Achievement ach : aBuffer) {
+                    if (achievementIdCoin.equals(ach.getAchievementId())) {
+                        if (ach.getState() == Achievement.STATE_UNLOCKED) {
+                            switch (achievementKind) {
+                                case COIN:
+                                    actionAchievement(REVEAL, nextAchievementIdCoin);
+                                    if (achievementIdCoin.equals(getResources().getString(R.string.achievement_beginner_collector))) {
+                                        achievementIdCoin = nextAchievementIdCoin;
+                                        nextAchievementIdCoin = getResources().getString(R.string.achievement_pro_collector);
+                                    } else if (achievementIdCoin.equals(getResources().getString(R.string.achievement_amateur_collector))) {
+                                        achievementIdCoin = nextAchievementIdCoin;
+                                        nextAchievementIdCoin = getResources().getString(R.string.achievement_expert_collector);
+                                    } else if (achievementIdCoin.equals(getResources().getString(R.string.achievement_pro_collector))) {
+                                        achievementIdCoin = nextAchievementIdCoin;
+                                        nextAchievementIdCoin = getResources().getString(R.string.achievement_treasure_collector);
+                                    } else if (achievementIdCoin.equals(getResources().getString(R.string.achievement_expert_collector))) {
+                                        achievementIdCoin = nextAchievementIdCoin;
+                                        nextAchievementIdCoin = getResources().getString(R.string.achievement_deep_diver_collector);
+                                    } else if (achievementIdCoin.equals(getResources().getString(R.string.achievement_treasure_collector))) {
+                                        achievementIdCoin = nextAchievementIdCoin;
+                                    }
+                                    break;
 
-                                if(achievementIdCoin.equals(getResources().getString(R.string.achievement_beginner_collector))) {
-                                    achievementIdCoin = nextAchievementIdCoin;
-                                    nextAchievementIdCoin = getResources().getString(R.string.achievement_pro_collector);
-                                }
-                                else if(achievementIdCoin.equals(getResources().getString(R.string.achievement_amateur_collector))) {
-                                    achievementIdCoin = nextAchievementIdCoin;
-                                    nextAchievementIdCoin = getResources().getString(R.string.achievement_expert_collector);
-                                }
-                                else if(achievementIdCoin.equals(getResources().getString(R.string.achievement_pro_collector))) {
-                                    achievementIdCoin = nextAchievementIdCoin;
-                                    nextAchievementIdCoin = getResources().getString(R.string.achievement_treasure_collector);
-                                }
-                                else if(achievementIdCoin.equals(getResources().getString(R.string.achievement_expert_collector))) {
-                                    achievementIdCoin = nextAchievementIdCoin;
-                                    nextAchievementIdCoin = getResources().getString(R.string.achievement_deep_diver_collector);
-                                }
-                                else if(achievementIdCoin.equals(getResources().getString(R.string.achievement_treasure_collector))) {
-                                    achievementIdCoin = nextAchievementIdCoin;
-                                }
-                                break;
+                                case SHIELD:
+                                    actionAchievement(REVEAL, nextAchievementIdShield);
+                                    if (achievementIdShield.equals(getResources().getString(R.string.achievement_defender))) {
+                                        achievementIdShield = nextAchievementIdShield;
+                                        nextAchievementIdShield = getResources().getString(R.string.achievement_invincible);
+                                    } else if (achievementIdShield.equals(getResources().getString(R.string.achievement_protector))) {
+                                        achievementIdShield = nextAchievementIdShield;
+                                    }
+                                    break;
 
-                            case SHIELD:
-                                actionAchievement(REVEAL, nextAchievementIdShield);
-                                if(achievementIdShield.equals(getResources().getString(R.string.achievement_defender))) {
-                                    achievementIdShield = nextAchievementIdShield;
-                                    nextAchievementIdShield = getResources().getString(R.string.achievement_invincible);
-                                }
-                                else if(achievementIdShield.equals(getResources().getString(R.string.achievement_protector))) {
-                                    achievementIdShield = nextAchievementIdShield;
-                                }
-                                break;
+                                case LIFE:
+                                    actionAchievement(REVEAL, nextAchievementIdLife);
+                                    if (achievementIdLife.equals(getResources().getString(R.string.achievement_life_saver))) {
+                                        achievementIdLife = nextAchievementIdLife;
+                                        nextAchievementIdLife = getResources().getString(R.string.achievement_survivor);
+                                    } else if (achievementIdLife.equals(getResources().getString(R.string.achievement_life_expert))) {
+                                        achievementIdLife = nextAchievementIdLife;
+                                    }
+                                    break;
 
-                            case LIFE:
-                                actionAchievement(REVEAL, nextAchievementIdLife);
-                                if(achievementIdLife.equals(getResources().getString(R.string.achievement_life_saver))) {
-                                    achievementIdLife = nextAchievementIdLife;
-                                    nextAchievementIdLife = getResources().getString(R.string.achievement_survivor);
-                                }
-                                else if(achievementIdLife.equals(getResources().getString(R.string.achievement_life_expert))) {
-                                    achievementIdLife = nextAchievementIdLife;
-                                }
-                                break;
-
-                            case FISH:
-                                actionAchievement(REVEAL, nextAchievementIdFish);
-                                if(achievementIdFish.equals(getResources().getString(R.string.achievement_fisherman))) {
-                                    achievementIdFish = nextAchievementIdFish;
-                                    nextAchievementIdFish = getResources().getString(R.string.achievement_killer_diver);
-                                }
-                                else if(achievementIdFish.equals(getResources().getString(R.string.achievement_expert_fisherman))) {
-                                    achievementIdFish = nextAchievementIdFish;
-                                }
-                                break;
-                            default: break;
+                                case FISH:
+                                    actionAchievement(REVEAL, nextAchievementIdFish);
+                                    if (achievementIdFish.equals(getResources().getString(R.string.achievement_fisherman))) {
+                                        achievementIdFish = nextAchievementIdFish;
+                                        nextAchievementIdFish = getResources().getString(R.string.achievement_killer_diver);
+                                    } else if (achievementIdFish.equals(getResources().getString(R.string.achievement_expert_fisherman))) {
+                                        achievementIdFish = nextAchievementIdFish;
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        } else {
+                            firstTime = false;
                         }
+                        aBuffer.release();
+                        break;
                     }
-                    else if(initAchs){
-                        if(firstTimeFish) firstTimeFish = false;
-                        if(firstTimeCoin) firstTimeCoin = false;
-                        if(firstTimeLife) firstTimeLife = false;
-                        if(firstTimeShield) firstTimeShield = false;
-                    }
-                    aBuffer.release();
-                    break;
                 }
+                if(firstTime) continue;
+                else break;
             }
         }
     }
