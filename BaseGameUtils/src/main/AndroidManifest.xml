@@ -22,7 +22,9 @@
 
 
     <application>
-        <meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true" />
+        <meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true"
+        android:screenOrientation="landscape"/>
+
     </application>
 
 </manifest>

@@ -10,7 +10,6 @@ import android.os.Vibrator;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -357,6 +356,9 @@ public class GameView extends View {
             canvas.drawBitmap(life.bitmap, life.lifePoint.x - coin.getWidth(), life.lifePoint.y, alphaLifePaint);
             canvas.drawBitmap(life.bitmap, life.lifePoint.x - coin.getWidth()*2, life.lifePoint.y, alphaLifePaint);
         } else if(life.getLife() == 0) {
+            if(isSignedIn() && isBestScoreUsed) {
+                Games.Leaderboards.submitScore(mGoogleApiClient, getResources().getString(R.string.leaderboard_top_divers), score);
+            }
             ((GameViewActivity) getContext()).gameOver(score);
             life.setLife(-1);
         }
@@ -532,8 +534,6 @@ public class GameView extends View {
 
 
     public boolean isSignedIn() {
-        if(mGoogleApiClient == null)     Log.d("AMIT: ", "IT IS NULL");
-        else if(mGoogleApiClient.isConnected()) Log.d("AMIT: ", "IT IS CONNECTED...!");
         return (mGoogleApiClient != null && mGoogleApiClient.isConnected());
     }
 
