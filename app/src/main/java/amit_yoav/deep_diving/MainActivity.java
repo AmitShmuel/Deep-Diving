@@ -141,9 +141,6 @@ public class MainActivity extends AppCompatActivity implements
         soundEffectsUtil.play(R.raw.open_dialog);
         if(findViewById(R.id.infoButton) == view) infoDialog.show();
         else settingsDialog.show();
-//        Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_kill_pirahna));
-        //Games.Achievements.increment(mGoogleApiClient, "my_incremental_achievment_id", 1);
-//        Games.Achievements.reveal(mGoogleApiClient, "CgkI1a6Zr7UcEAIQBQ");
         //Games.Leaderboards.submitScore(mGoogleApiClient, LEADERBOARD_ID, UPDATED_SCORE);
     }
 
