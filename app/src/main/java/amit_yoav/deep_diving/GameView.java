@@ -595,49 +595,49 @@ public class GameView extends View {
                                 case COIN:
                                     actionAchievement(REVEAL, nextAchievementIdCoin);
                                     if (achievementIdCoin.equals(getResources().getString(R.string.achievement_beginner_collector))) {
-                                        achievementIdCoin = nextAchievementIdCoin;
+                                        achievementId = achievementIdCoin = nextAchievementIdCoin;
                                         nextAchievementIdCoin = getResources().getString(R.string.achievement_pro_collector);
                                     } else if (achievementIdCoin.equals(getResources().getString(R.string.achievement_amateur_collector))) {
-                                        achievementIdCoin = nextAchievementIdCoin;
+                                        achievementId = achievementIdCoin = nextAchievementIdCoin;
                                         nextAchievementIdCoin = getResources().getString(R.string.achievement_expert_collector);
                                     } else if (achievementIdCoin.equals(getResources().getString(R.string.achievement_pro_collector))) {
-                                        achievementIdCoin = nextAchievementIdCoin;
+                                        achievementId = achievementIdCoin = nextAchievementIdCoin;
                                         nextAchievementIdCoin = getResources().getString(R.string.achievement_treasure_collector);
                                     } else if (achievementIdCoin.equals(getResources().getString(R.string.achievement_expert_collector))) {
-                                        achievementIdCoin = nextAchievementIdCoin;
+                                        achievementId = achievementIdCoin = nextAchievementIdCoin;
                                         nextAchievementIdCoin = getResources().getString(R.string.achievement_deep_diver_collector);
                                     } else if (achievementIdCoin.equals(getResources().getString(R.string.achievement_treasure_collector))) {
-                                        achievementIdCoin = nextAchievementIdCoin;
+                                        achievementId = achievementIdCoin = nextAchievementIdCoin;
                                     }
                                     break;
 
                                 case SHIELD:
                                     actionAchievement(REVEAL, nextAchievementIdShield);
                                     if (achievementIdShield.equals(getResources().getString(R.string.achievement_defender))) {
-                                        achievementIdShield = nextAchievementIdShield;
+                                        achievementId = achievementIdShield = nextAchievementIdShield;
                                         nextAchievementIdShield = getResources().getString(R.string.achievement_invincible);
                                     } else if (achievementIdShield.equals(getResources().getString(R.string.achievement_protector))) {
-                                        achievementIdShield = nextAchievementIdShield;
+                                        achievementId = achievementIdShield = nextAchievementIdShield;
                                     }
                                     break;
 
                                 case LIFE:
                                     actionAchievement(REVEAL, nextAchievementIdLife);
                                     if (achievementIdLife.equals(getResources().getString(R.string.achievement_life_saver))) {
-                                        achievementIdLife = nextAchievementIdLife;
+                                        achievementId = achievementIdLife = nextAchievementIdLife;
                                         nextAchievementIdLife = getResources().getString(R.string.achievement_survivor);
                                     } else if (achievementIdLife.equals(getResources().getString(R.string.achievement_life_expert))) {
-                                        achievementIdLife = nextAchievementIdLife;
+                                        achievementId = achievementIdLife = nextAchievementIdLife;
                                     }
                                     break;
 
                                 case FISH:
                                     actionAchievement(REVEAL, nextAchievementIdFish);
                                     if (achievementIdFish.equals(getResources().getString(R.string.achievement_fisherman))) {
-                                        achievementIdFish = nextAchievementIdFish;
+                                        achievementId = achievementIdFish = nextAchievementIdFish;
                                         nextAchievementIdFish = getResources().getString(R.string.achievement_killer_diver);
                                     } else if (achievementIdFish.equals(getResources().getString(R.string.achievement_expert_fisherman))) {
-                                        achievementIdFish = nextAchievementIdFish;
+                                        achievementId = achievementIdFish = nextAchievementIdFish;
                                     }
                                     break;
                                 default:
