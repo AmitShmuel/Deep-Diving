@@ -141,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements
         soundEffectsUtil.play(R.raw.open_dialog);
         if(findViewById(R.id.infoButton) == view) infoDialog.show();
         else settingsDialog.show();
-        //Games.Leaderboards.submitScore(mGoogleApiClient, LEADERBOARD_ID, UPDATED_SCORE);
     }
 
     public void closeDialog(View view) {

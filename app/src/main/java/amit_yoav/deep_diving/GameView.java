@@ -10,14 +10,18 @@ import android.os.Vibrator;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesStatusCodes;
 import com.google.android.gms.games.achievement.Achievement;
 import com.google.android.gms.games.achievement.AchievementBuffer;
 import com.google.android.gms.games.achievement.Achievements;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
+import com.google.android.gms.games.leaderboard.Leaderboards;
 
 import java.lang.annotation.Retention;
 
@@ -178,6 +182,12 @@ public class GameView extends View {
     })
     @interface AchCollectorKind {}
 
+
+    /*
+     * Leaderboard
+     */
+    private long leaderboardScore;
+
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(false);
@@ -207,6 +217,23 @@ public class GameView extends View {
 
         mGoogleApiClient = ((GameViewActivity) context).mGoogleApiClient;
 
+        if(isSignedIn()) {
+            Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,
+                    getResources().getString(R.string.leaderboard_top_divers),
+                    LeaderboardVariant.TIME_SPAN_ALL_TIME, LeaderboardVariant.COLLECTION_PUBLIC)
+                    .setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+
+                        @Override
+                        public void onResult(final Leaderboards.LoadPlayerScoreResult scoreResult) {
+                            if (isScoreResultValid(scoreResult)) {
+                                //Getting the score of client
+                                leaderboardScore = scoreResult.getScore().getRawScore();
+                            }
+                        }
+                    });
+        }
+        Log.d("CURRENT LEADERBOARD:", String.valueOf(leaderboardScore));
+
         initAchs();
 
         initPaints();
@@ -216,6 +243,9 @@ public class GameView extends View {
         runUpdater();
     }
 
+    private boolean isScoreResultValid(final Leaderboards.LoadPlayerScoreResult scoreResult) {
+        return scoreResult != null && GamesStatusCodes.STATUS_OK == scoreResult.getStatus().getStatusCode() && scoreResult.getScore() != null;
+    }
 
     private void initDrawObjects() {
         waterBackground = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background_water), WATER_SPEED, true);
@@ -356,7 +386,7 @@ public class GameView extends View {
             canvas.drawBitmap(life.bitmap, life.lifePoint.x - coin.getWidth(), life.lifePoint.y, alphaLifePaint);
             canvas.drawBitmap(life.bitmap, life.lifePoint.x - coin.getWidth()*2, life.lifePoint.y, alphaLifePaint);
         } else if(life.getLife() == 0) {
-            if(isSignedIn() && isBestScoreUsed) {
+            if(isSignedIn() && leaderboardScore < score) {
                 Games.Leaderboards.submitScore(mGoogleApiClient, getResources().getString(R.string.leaderboard_top_divers), score);
             }
             ((GameViewActivity) getContext()).gameOver(score);
@@ -366,7 +396,7 @@ public class GameView extends View {
 
     void detectCollisions() {
         for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++) {
-             if (mainChar.canGetHit && characters[i].populated && !characters[i].killed &&
+            if (mainChar.canGetHit && characters[i].populated && !characters[i].killed &&
                     CollisionUtil.isCollisionDetected(characters[i], mainChar)) {
                 vibrator.vibrate(300);
                 MainActivity.soundEffectsUtil.play(R.raw.hit);
@@ -564,8 +594,8 @@ public class GameView extends View {
                 break;
 
             default: break;
-            }
         }
+    }
 
 
     private class AchievementClass implements ResultCallback<Achievements.LoadAchievementsResult> {
