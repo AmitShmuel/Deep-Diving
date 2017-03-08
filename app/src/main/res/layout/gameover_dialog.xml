@@ -30,12 +30,12 @@
         android:textColor="@android:color/black"
         android:textStyle="normal|bold"
         android:textSize="24sp"
-        android:layout_marginEnd="0dp"
+        android:layout_marginEnd="16dp"
         android:layout_width="139dp"
         android:layout_height="60dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/imageView3"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="16dp"
         app:layout_constraintRight_toRightOf="@+id/game_over_text" />
 
     <Button
@@ -47,8 +47,8 @@
         android:textStyle="normal|bold"
         android:textAlignment="center"
         android:textSize="24sp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginStart="0dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_width="139dp"
         android:layout_height="60dp"
         android:layout_marginTop="8dp"
@@ -57,10 +57,10 @@
 
 
     <ImageView
+        android:id="@+id/game_over_text"
         android:layout_width="365dp"
         android:layout_height="127dp"
         app:srcCompat="@drawable/game_over"
-        android:id="@+id/game_over_text"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -74,14 +74,12 @@
         android:id="@+id/imageView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="0dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/game_over_text"
         app:srcCompat="@drawable/score_png"
-        android:layout_marginLeft="0dp"
+        android:layout_marginLeft="24dp"
         app:layout_constraintLeft_toLeftOf="@+id/game_over_text"
         app:layout_constraintHorizontal_bias="0.062" />
 
@@ -105,12 +103,12 @@
         android:id="@+id/imageView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
         android:layout_marginTop="4dp"
         app:layout_constraintTop_toBottomOf="@+id/imageView5"
         app:srcCompat="@drawable/best_score"
-        android:layout_marginLeft="0dp"
-        app:layout_constraintLeft_toLeftOf="@+id/game_over_text" />
+        app:layout_constraintLeft_toLeftOf="@+id/imageView5" />
 
 
 </android.support.constraint.ConstraintLayout>
