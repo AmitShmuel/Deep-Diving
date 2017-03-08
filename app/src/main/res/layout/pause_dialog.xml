@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="@drawable/sand_pattern"
     android:layout_width="450dp"
@@ -22,20 +21,22 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:text="Resume "
+        android:text="@string/resume"
         android:id="@+id/resume_button"
         android:fontFamily="casual"
         android:textColor="@android:color/black"
         android:background="@drawable/general_button"
-        android:layout_marginEnd="56dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="56dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
         android:layout_height="60dp"
         android:layout_width="139dp"
         android:textSize="24sp"
-        android:textStyle="normal|bold" />
+        android:textStyle="normal|bold"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/pause_settings_button"
+        app:layout_constraintLeft_toRightOf="@+id/pause_settings_button"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp" />
 
     <Button
         android:text="@string/quit"
@@ -45,13 +46,13 @@
         android:fontFamily="casual"
         android:textColor="@android:color/black"
         android:background="@drawable/general_button"
-        android:layout_marginStart="56dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="56dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+        android:layout_marginLeft="0dp"
+        android:layout_marginStart="0dp"
         android:textSize="24sp"
-        android:textStyle="normal|bold" />
+        android:textStyle="normal|bold"
+        app:layout_constraintRight_toLeftOf="@+id/pause_settings_button"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/pause_settings_button" />
 
     <ImageButton
         android:layout_width="wrap_content"

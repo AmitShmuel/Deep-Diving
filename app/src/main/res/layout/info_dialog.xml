@@ -29,16 +29,16 @@
 
     <ImageButton
         android:layout_width="34dp"
-        android:layout_height="34dp"
-        app:srcCompat="@drawable/close"
-        android:onClick="closeDialog"
-        android:id="@+id/imageButton"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@android:color/transparent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="16dp" />
+    android:layout_height="34dp"
+    app:srcCompat="@drawable/close"
+    android:onClick="closeDialog"
+    android:id="@+id/imageButton"
+    app:layout_constraintTop_toTopOf="parent"
+    android:background="@android:color/transparent"
+    app:layout_constraintRight_toRightOf="parent"
+    android:layout_marginEnd="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginRight="16dp" />
 
     <TextView
         android:text="© 2017 - The Dept. of Software Engineering,"

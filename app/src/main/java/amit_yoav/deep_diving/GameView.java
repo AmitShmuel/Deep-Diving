@@ -368,7 +368,7 @@ public class GameView extends View {
             canvas.drawBitmap(life.bitmap, life.lifePoint.x - coin.getWidth(), life.lifePoint.y, alphaLifePaint);
             canvas.drawBitmap(life.bitmap, life.lifePoint.x - coin.getWidth()*2, life.lifePoint.y, alphaLifePaint);
         } else if(life.getLife() == 0) {
-            updateLeaderBoards(score);
+            updateLeaderBoard(score);
             ((GameViewActivity) getContext()).gameOver(score);
             life.setLife(-1);
         }
@@ -542,7 +542,7 @@ public class GameView extends View {
             characters[i].stopTime(isPaused);
     }
 
-    private void updateLeaderBoards(final int finishedScore) {
+    private void updateLeaderBoard(final int finishedScore) {
         if(isSignedIn()) {
             Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,
                     getResources().getString(R.string.leaderboard_top_divers),
