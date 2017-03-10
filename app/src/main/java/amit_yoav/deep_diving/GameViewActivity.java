@@ -24,6 +24,8 @@ import amit_yoav.deep_diving.utilities.AsyncHandler;
 import java.lang.annotation.Retention;
 import java.util.Random;
 
+import static amit_yoav.deep_diving.GameView.pauseHeight;
+import static amit_yoav.deep_diving.GameView.pauseWidth;
 import static java.lang.annotation.RetentionPolicy.CLASS;
 
 public class GameViewActivity extends AppCompatActivity implements SensorEventListener {
@@ -177,17 +179,19 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
-            if(canShoot && event.getX() < 100 && event.getY() < 100) {
-                MainActivity.soundEffectsUtil.play(R.raw.shoot);
-                shoot = true;
-                canShoot = false;
-            }
-            else if(firstTime || System.currentTimeMillis() - startTime > 1000) {
+            if((firstTime || System.currentTimeMillis() - startTime > 1000) &&
+                    event.getX() <= pauseWidth && event.getY() <= pauseHeight)  {
+
                 togglePauseGame();
                 MainActivity.soundEffectsUtil.play(R.raw.open_dialog);
                 MainActivity.musicPlayer.stopMusic(true);
                 pauseDialog.show();
                 firstTime = false;
+            }
+            else if(canShoot) {
+                MainActivity.soundEffectsUtil.play(R.raw.shoot);
+                shoot = true;
+                canShoot = false;
             }
         }
         return true;

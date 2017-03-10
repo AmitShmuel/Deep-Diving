@@ -1,6 +1,7 @@
 package amit_yoav.deep_diving;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -53,11 +54,12 @@ public class GameView extends View {
      * View measurement values
      */
     public static final float WATER_SPEED = 0.3f, SAND_SPEED = 1.5f;
-    public static float screenWidth, screenHeight, screenSand;
+    public static float screenWidth, screenHeight, screenSand, pauseWidth, pauseHeight;
 
     /*
      * Draw objects
      */
+    private Bitmap pauseBitmap;
     private Background waterBackground, sandBackground;
     private BackgroundObject[] objects;
     private Character[] characters;
@@ -258,6 +260,9 @@ public class GameView extends View {
         arrow = Arrow.prepareArrow(BitmapFactory.decodeResource(getResources(), R.drawable.arrow));
         shield = Shield.prepareShield(BitmapFactory.decodeResource(getResources(), R.drawable.shield), mainChar.getBody());
         stageLabels = StageLabel.prepareStageLabels(BitmapFactory.decodeResource(getResources(), R.drawable.stage_labels));
+        pauseBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pause_button);
+        pauseHeight = pauseBitmap.getHeight();
+        pauseWidth = pauseBitmap.getWidth();
     }
 
     private void initAchs() {
@@ -308,6 +313,7 @@ public class GameView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         waterBackground.draw(canvas);
+        canvas.drawBitmap(pauseBitmap, 0, 0, null);
         // drawing small fishes (start after bubbles index)
         for (int i = BackgroundObject.BUBBLE_LENGTH; i < objects.length; i++) objects[i].draw(canvas);
         coin.draw(canvas);
@@ -323,7 +329,6 @@ public class GameView extends View {
 
         drawScore(canvas);
         drawLife(canvas);
-        if(mainChar.hasGun) drawShootingButton(canvas);
 
         if(stagePassed && stageLabels[currentStage].canDraw) {
             if(currentStage != 0 && !isStagedPlayedSound) {
@@ -334,16 +339,18 @@ public class GameView extends View {
         stageLabels[currentStage].draw(canvas);
         if(stageLabels[newRecordIndex].canDraw) stageLabels[newRecordIndex].draw(canvas);
         postInvalidateOnAnimation();
+
+//        if(mainChar.hasGun) drawShootingButton(canvas);
     }
 
-    private void drawShootingButton(Canvas canvas) {
-        shootingCirclePaint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle(50, 50, 20, shootingCirclePaint);
-        shootingCirclePaint.setStyle(Paint.Style.STROKE);
-        shootingCirclePaint.setStrokeWidth(4);
-        canvas.drawCircle(50, 50, 25, shootingCirclePaint);
-        canvas.drawCircle(50, 50, 33, shootingCirclePaint);
-    }
+//    private void drawShootingButton(Canvas canvas) {
+//        shootingCirclePaint.setStyle(Paint.Style.FILL);
+//        canvas.drawCircle(50, 50, 20, shootingCirclePaint);
+//        shootingCirclePaint.setStyle(Paint.Style.STROKE);
+//        shootingCirclePaint.setStrokeWidth(4);
+//        canvas.drawCircle(50, 50, 25, shootingCirclePaint);
+//        canvas.drawCircle(50, 50, 33, shootingCirclePaint);
+//    }
 
     private void drawScore(Canvas canvas) {
         if(scoreChanged) {

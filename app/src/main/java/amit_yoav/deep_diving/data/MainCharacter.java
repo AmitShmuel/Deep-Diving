@@ -74,9 +74,6 @@ public class MainCharacter extends GameObject implements Collidable {
         // turns true on onSensorChanged() callback in the activity
         if(sensorChanged) updateSpeed();
 
-        // block the edges for the main character
-//        blockEdges();
-
         // turns true when user presses the shoot button on the screen (checked in GameViewActivity)
         if(shoot) {
             shoot();
