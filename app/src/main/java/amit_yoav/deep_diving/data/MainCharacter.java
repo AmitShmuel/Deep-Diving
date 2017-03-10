@@ -58,7 +58,12 @@ public class MainCharacter extends GameObject implements Collidable {
     @Override
     public void draw(Canvas canvas) {
         canvas.drawBitmap(bitmap, bodySrc[frame], bodyDst, blinker);
-        if(!gamePaused) bodyDst.offsetTo(bodyDst.left + sensorX, bodyDst.top + sensorY);
+        if(!gamePaused) {
+            bodyDst.offsetTo(bodyDst.left + sensorX, bodyDst.top + sensorY);
+            // block the edges for the main character
+            blockEdges();
+        }
+
     }
 
     @Override
@@ -70,7 +75,7 @@ public class MainCharacter extends GameObject implements Collidable {
         if(sensorChanged) updateSpeed();
 
         // block the edges for the main character
-        blockEdges();
+//        blockEdges();
 
         // turns true when user presses the shoot button on the screen (checked in GameViewActivity)
         if(shoot) {

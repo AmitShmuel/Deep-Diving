@@ -2,10 +2,13 @@ package amit_yoav.deep_diving.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 
@@ -18,9 +21,14 @@ public class SettingsDialog extends Dialog {
     private MainActivity mainActivity;
     private Switch switchSound;
     private SeekBar seekbarMusic;
+    private ImageButton howToPlay;
+//    private static boolean isStarted = true;
 
     private SharedPreferences preferences;
     private final SharedPreferences.Editor editor;
+
+    private HowToPlayDialog howToPlayDialog;
+    public boolean showOnStart;
 
     public SettingsDialog(Activity a) {
         super(a);
@@ -28,6 +36,22 @@ public class SettingsDialog extends Dialog {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
         editor = preferences.edit();
+
+        howToPlayDialog = new HowToPlayDialog(mainActivity);
+        howToPlayDialog.setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if(showOnStart && !getHowToPlayUsed()) {
+                    showOnStart = false;
+                    setHowToPlayUsed(true);
+                    mainActivity.startGame(null);
+                }
+            }
+        });
+
+        //Use these lines to see How to play again
+//        editor.putBoolean("how_to_play", false);
+//        editor.commit();
     }
 
     @Override
@@ -38,6 +62,7 @@ public class SettingsDialog extends Dialog {
 
         switchSound = (Switch) this.findViewById(R.id.switchSound);
         seekbarMusic = (SeekBar) this.findViewById(R.id.seekbarMusic);
+        howToPlay = (ImageButton) this.findViewById(R.id.how_to_play_button);
 
         switchSound.setChecked(preferences.getBoolean("sound",true));
         seekbarMusic.setProgress(preferences.getInt("music", 99));
@@ -79,6 +104,13 @@ public class SettingsDialog extends Dialog {
                 MainActivity.setVolumeMusic((float)progress/100);
             }
         });
+
+        howToPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showHowToPlayDialog();
+            }
+        });
     }
 
     public float getVolume() {
@@ -108,8 +140,24 @@ public class SettingsDialog extends Dialog {
         });
     }
 
+    public boolean getHowToPlayUsed() {return preferences.getBoolean("how_to_play", false);}
+    public void setHowToPlayUsed(final boolean howToPlayUsed) {
+        AsyncHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                editor.putBoolean("how_to_play", howToPlayUsed);
+                editor.commit();
+            }
+        });
+    }
+
     @Override
     public void onBackPressed() {
         mainActivity.closeDialog(null);
+    }
+
+    public void showHowToPlayDialog() {
+        MainActivity.soundEffectsUtil.play(R.raw.open_dialog);
+        howToPlayDialog.show();
     }
 }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.WindowManager;
@@ -28,6 +29,8 @@ import java.io.IOException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.leaderboard.Leaderboard;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.example.games.basegameutils.BaseGameUtils;
 
 
@@ -44,7 +47,9 @@ public class MainActivity extends AppCompatActivity implements
     public static MySFxRunnable soundEffectsUtil;
 
     private static float volume = 0;
-    private static boolean isSoundOn, gameStarted, isFinished;
+    private static boolean isSoundOn, gameStarted, isFinished, isHowToPlayShown;
+
+    public boolean getIsHowToPlayShown() {return isHowToPlayShown;}
 
     private int[] divers = {
       R.drawable.background_black, R.drawable.background_magenta, R.drawable.background_pink
@@ -86,8 +91,6 @@ public class MainActivity extends AppCompatActivity implements
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
-//                 add other APIs and scopes here as needed
-//                .addApi(Drive.API).addScope(Drive.SCOPE_APPFOLDER) // Drive API
                 .build();
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
@@ -102,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements
 
         volume = settingsDialog.getVolume();
         isSoundOn = settingsDialog.getSound();
+        isHowToPlayShown = settingsDialog.getHowToPlayUsed();
 
         if (musicPlayer == null) {
             musicPlayer = new MyMusicRunnable(this);
@@ -118,16 +122,19 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void startGame(View view) {
-        soundEffectsUtil.play(R.raw.start_bubble);
-        gameStarted = true;
-        musicPlayer.switchMusic(R.raw.game);
-        Intent intent = new Intent(this, GameViewActivity.class);
-        startActivity(intent);
 
-        // Following the documentation, right after starting the activity
-        // we override the transition
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-
+        if(isHowToPlayShown) {
+            soundEffectsUtil.play(R.raw.start_bubble);
+            gameStarted = true;
+            musicPlayer.switchMusic(R.raw.game);
+            Intent intent = new Intent(this, GameViewActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        }
+        else {
+            isHowToPlayShown = settingsDialog.showOnStart = true;
+            settingsDialog.showHowToPlayDialog();
+        }
     }
 
     public void quitGame(View view) {
@@ -218,7 +225,9 @@ public class MainActivity extends AppCompatActivity implements
     public void openLeaderboard(View view) {
         if(isSignedIn()) {
             startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mGoogleApiClient,
-                    getString(R.string.leaderboard_top_divers)),
+                    getString(R.string.leaderboard_top_divers),
+                    LeaderboardVariant.TIME_SPAN_ALL_TIME,
+                    LeaderboardVariant.COLLECTION_PUBLIC),
                     REQUEST_LEADERBOARD);
         }
         else {
@@ -295,9 +304,6 @@ public class MainActivity extends AppCompatActivity implements
             mGoogleApiClient.connect();
         }
         else if (view.getId() == R.id.sign_out_button) {
-            // sign out.
-            mSignInClicked = false;
-            Games.signOut(mGoogleApiClient);
 
             // show sign-in button, hide the sign-out button
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
@@ -305,6 +311,7 @@ public class MainActivity extends AppCompatActivity implements
 
             // user explicitly signed out, so turn off auto sign in
             mExplicitSignOut = true;
+            mSignInClicked = false;
             if (isSignedIn()) {
                 Games.signOut(mGoogleApiClient);
                 mGoogleApiClient.disconnect();

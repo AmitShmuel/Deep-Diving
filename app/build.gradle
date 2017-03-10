@@ -45,10 +45,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 //    compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:support-v4:25.1.0'
-    compile 'com.android.support:support-vector-drawable:25.1.0'
-    testCompile 'junit:junit:4.12'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
         transitive = true;
     }
@@ -57,7 +53,11 @@ dependencies {
     }
 //    compile 'com.google.android.gms:play-services:10.2.0'
     compile project(':BaseGameUtils')
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:support-v4:25.1.0'
+    compile 'com.android.support:support-vector-drawable:25.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.1'
+    testCompile 'junit:junit:4.12'
 }
 
 crashlytics {

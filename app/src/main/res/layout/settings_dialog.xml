@@ -56,8 +56,6 @@
         android:layout_marginRight="16dp" />
 
 
-
-
     <SeekBar
         android:layout_width="288dp"
         android:layout_height="49dp"
@@ -81,6 +79,18 @@
         android:layout_marginStart="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="16dp" />
+
+    <ImageButton
+        android:id="@+id/how_to_play_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginStart="16dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/switchSound"
+        app:srcCompat="@drawable/how_to_play_button" />
 
 
 </android.support.constraint.ConstraintLayout>

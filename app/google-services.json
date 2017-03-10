@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "976398735189",
+    "firebase_url": "https://deep-diving-7245704.firebaseio.com",
+    "project_id": "deep-diving-7245704",
+    "storage_bucket": "deep-diving-7245704.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:976398735189:android:c0185a49286ceff8",
+        "android_client_info": {
+          "package_name": "amit_yoav.deep_diving"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "976398735189-nsogq2egr7h31kjec5no4jdv8bp6prff.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "976398735189-dvlluuker3bp6ef0ang617uh5lvmclj1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amit_yoav.deep_diving",
+            "certificate_hash": "f8c498fc588bda80098fe726bd6b7b7a3a007e96"
+          }
+        },
+        {
+          "client_id": "976398735189-edtk11i3stvkd3s6oqqel2rlqu83utpt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amit_yoav.deep_diving",
+            "certificate_hash": "3b8d4e51707506bf6e13acaaa97eedd744d00784"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGsEuJZxb8sS5_BDjgV6Wr9iqbx2JJbmo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "976398735189-nsogq2egr7h31kjec5no4jdv8bp6prff.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
