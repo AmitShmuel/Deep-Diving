@@ -5,135 +5,132 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="amit_yoav.deep_diving.MainActivity"
     android:background="@drawable/background_main"
-    android:elevation="2dp">
+    android:elevation="2dp"
+    tools:context="amit_yoav.deep_diving.MainActivity">
 
     <Button
         android:id="@+id/playButton"
-        android:text="@string/start_game"
         android:layout_width="254dp"
         android:layout_height="75dp"
-        android:textSize="36sp"
+        android:layout_marginTop="16dp"
+        android:allowUndo="false"
+        android:background="@drawable/general_button"
+        android:fontFamily="casual"
         android:onClick="startGame"
+        android:text="@string/start_game"
+        android:textColor="@android:color/white"
+        android:textSize="36sp"
+        android:textStyle="normal|bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/deepDivingLogo"
-        android:background="@drawable/general_button"
-        android:fontFamily="casual"
-        android:allowUndo="false"
-        android:textColor="@android:color/white"
-        android:textStyle="normal|bold"
-        android:layout_marginTop="16dp"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintLeft_creator="1" />
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1" />
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/settings_icon"
         android:id="@+id/settingsButton"
-        android:onClick="openDialog"
-        android:background="@android:color/transparent"
-        android:layout_marginStart="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/info_icon"
-        android:id="@+id/infoButton"
-        android:onClick="openDialog"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:onClick="openDialog"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/settings_icon" />
+
+    <ImageButton
+        android:id="@+id/infoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="16dp"
-        android:background="@android:color/transparent" />
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:onClick="openDialog"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/info_icon" />
 
     <ImageView
+        android:id="@+id/deepDivingLogo"
         android:layout_width="0dp"
         android:layout_height="158dp"
-        app:srcCompat="@drawable/logo"
-        android:id="@+id/deepDivingLogo"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="69dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="69dp"
         android:layout_marginEnd="69dp"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="69dp"
         android:layout_marginRight="69dp"
+        android:layout_marginStart="69dp"
         app:layout_constraintHorizontal_bias="0.55"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintLeft_creator="1" />
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/left_arrow"
-        android:onClick="setDiver"
-        android:id="@+id/leftArrow"
-        android:background="@android:color/transparent"
-        android:layout_marginStart="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@+id/deepDivingLogo" />
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/right_arrow"
-        android:onClick="setDiver"
-        android:id="@+id/rightArrow"
-        android:background="@android:color/transparent"
-        android:layout_marginStart="96dp"
-        app:layout_constraintLeft_toRightOf="@+id/leftArrow"
-        android:layout_marginLeft="96dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@+id/deepDivingLogo" />
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/tropy_icon"
-        android:onClick="openAchievements"
-        android:id="@+id/trophyButton"
-        android:background="@android:color/transparent"
-        android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="16dp"
-        />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1" />
 
     <ImageButton
+        android:id="@+id/leftArrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/leaderboard_icon"
-        android:onClick="openLeaderboard"
-        android:id="@+id/leaderboardButton"
-        android:background="@android:color/transparent"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="128dp" />
+        android:layout_marginTop="24dp"
+        android:background="@android:color/transparent"
+        android:onClick="setDiver"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deepDivingLogo"
+        app:srcCompat="@drawable/left_arrow" />
+
+    <ImageButton
+        android:id="@+id/rightArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="96dp"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="24dp"
+        android:background="@android:color/transparent"
+        android:onClick="setDiver"
+        app:layout_constraintLeft_toRightOf="@+id/leftArrow"
+        app:layout_constraintTop_toBottomOf="@+id/deepDivingLogo"
+        app:srcCompat="@drawable/right_arrow" />
+
+    <ImageButton
+        android:id="@+id/trophyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@android:color/transparent"
+        android:onClick="openAchievements"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/tropy_icon" />
+
+    <ImageButton
+        android:id="@+id/leaderboardButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="128dp"
+        android:background="@android:color/transparent"
+        android:onClick="openLeaderboard"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:srcCompat="@drawable/leaderboard_icon" />
 
     <!-- sign-in button -->
 
     <!-- sign-out button -->
     <ImageButton
         android:id="@+id/sign_out_button"
-        android:visibility="gone"
-        app:srcCompat="@drawable/sign_out_button"
-
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
@@ -141,13 +138,15 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:background="@android:color/transparent"
+        android:visibility="gone"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toRightOf="@+id/leaderboardButton"
         app:layout_constraintRight_toLeftOf="@+id/trophyButton"
         app:layout_constraintTop_toBottomOf="@+id/playButton"
-        tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintTop_creator="1"
         app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintHorizontal_bias="0.5" />
+        app:srcCompat="@drawable/sign_out_button"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
     <ImageButton
         android:id="@+id/sign_in_button"
@@ -160,13 +159,28 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:background="@android:color/transparent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toRightOf="@+id/leaderboardButton"
         app:layout_constraintRight_toLeftOf="@+id/trophyButton"
         app:layout_constraintTop_toBottomOf="@+id/playButton"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/sign_in_button"
         tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintTop_creator="1"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintHorizontal_bias="0.5" />
+        tools:layout_constraintTop_creator="1" />
+
+    <ImageView
+        android:id="@+id/diver_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toRightOf="@+id/leftArrow"
+        app:layout_constraintRight_toLeftOf="@+id/rightArrow"
+        app:layout_constraintTop_toBottomOf="@+id/deepDivingLogo"
+        app:srcCompat="@drawable/black_diver_select" />
 
 </android.support.constraint.ConstraintLayout>

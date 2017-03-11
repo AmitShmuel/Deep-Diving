@@ -13,6 +13,7 @@ import android.util.SparseIntArray;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.ndk.CrashlyticsNdk;
@@ -52,10 +53,10 @@ public class MainActivity extends AppCompatActivity implements
     public boolean getIsHowToPlayShown() {return isHowToPlayShown;}
 
     private int[] divers = {
-      R.drawable.background_black, R.drawable.background_magenta, R.drawable.background_pink
+      R.drawable.black_diver_select, R.drawable.magenta_diver_select, R.drawable.pink_diver_select
     };
     private int diverPointer = 0;
-    View mainActivityLayout = null;
+    ImageView mainActivityDiver = null;
     ImageButton leftArrow = null;
 
 
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements
         soundEffectsUtil.play(R.raw.open_dialog);
         if(leftArrow == v) diverPointer = --diverPointer == -1 ? 2 : diverPointer;
         else diverPointer = (++diverPointer) % 3;
-        mainActivityLayout.setBackgroundResource(divers[diverPointer]);
+        mainActivityDiver.setImageResource(divers[diverPointer]);
         settingsDialog.setMainCharacter(diverPointer);
     }
 
@@ -115,10 +116,10 @@ public class MainActivity extends AppCompatActivity implements
         if (soundEffectsUtil == null) {
             soundEffectsUtil = new MySFxRunnable(this);
         }
-        mainActivityLayout = this.findViewById(R.id.activity_main);
+        mainActivityDiver = (ImageView) this.findViewById(R.id.diver_select);
         leftArrow = (ImageButton) (this.findViewById(R.id.leftArrow));
         diverPointer = settingsDialog.getMainCharacter();
-        mainActivityLayout.setBackgroundResource(divers[diverPointer]);
+        mainActivityDiver.setImageResource(divers[diverPointer]);
     }
 
     public void startGame(View view) {
