@@ -463,7 +463,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
 
-        void switchMusic(int id) {
+        public void switchMusic(int id) {
             if(musicIsPlaying) {
                 if(currentMusicPlaying == id) return;
                 currentMusicPlaying = id;

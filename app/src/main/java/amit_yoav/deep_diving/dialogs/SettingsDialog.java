@@ -37,6 +37,9 @@ public class SettingsDialog extends Dialog {
         preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
         editor = preferences.edit();
 
+        editor.putInt("best_score", 3);
+        editor.commit();
+
         howToPlayDialog = new HowToPlayDialog(mainActivity);
         howToPlayDialog.setOnDismissListener(new OnDismissListener() {
             @Override

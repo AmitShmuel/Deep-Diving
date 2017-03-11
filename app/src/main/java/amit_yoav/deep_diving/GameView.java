@@ -88,7 +88,7 @@ public class GameView extends View {
      * Stage related types
      */
     private int currentStage, mobsStartIndex;
-    private int[] stageMobs = {3,4,5,6,7,8,8,10,11,12};         //Final Version
+    private int[] stageMobs = {4,5,6,7,8,8,9,9,11,12};         //Final Version
     //    private int[] stageMobs = {11,3,3,4,5,6,7,8,9/*,10,11,12,13*/}; //DEBUG
     public static boolean stagePassed = true;
     private boolean isStagedPlayedSound;
@@ -422,7 +422,7 @@ public class GameView extends View {
                 MainActivity.soundEffectsUtil.play(R.raw.coin_collected);
 
                 if(!isBestScoreUsed && score > bestScore) bestScore();
-                if( (score == (currentStage+1) * 10) && (currentStage < 8) ) levelUp();
+                if( (score == (currentStage+1) * 10) && (currentStage < 9) ) levelUp();
 
                 if(isSignedIn()) {
                     actionAchievement(INC, achievementIdCoin);
@@ -500,7 +500,7 @@ public class GameView extends View {
         }
         if(currentStage == 8) {
             MainActivity.musicPlayer.switchMusic(R.raw.music_3);
-            mobsStartIndex += 2;
+//            mobsStartIndex += 2;
             life.setSpeed(10);
             gun.setSpeed(11);
             shield.setSpeed(12);

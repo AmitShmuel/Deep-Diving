@@ -33,8 +33,8 @@ public class Character extends GameObject implements Collidable{
     private int populateDuration, frameDuration, frame;
     private boolean firstPopulation = true, waitOnFirstPopulation;
     public boolean killed, populated;
-    /*goldfish*/
-    private boolean isGoldFish, goingUp;
+    /*diagonal movement*/
+    private boolean isMovingDiagonally, goingUp;
     /*octopus*/
     private float stopGoDown, left, top;
     private boolean isOctopus, drawInk, firstDraw, playSound;
@@ -75,8 +75,8 @@ public class Character extends GameObject implements Collidable{
         characters[octopusIndex].swimBitmap = octopusSwimBitmap;
         characters[octopusIndex].attackBitmap = octopusAttackBitmap;
         characters[octopusIndex].inkBitmap = octopusInkBitmap;
-        characters[0].isGoldFish = true;
-        initSpecialFishes(characters, goldFishBitmap, 0 , 5, 1, 60);
+        characters[7].isMovingDiagonally = characters[9].isMovingDiagonally = true;
+        initSpecialFishes(characters, goldFishBitmap, 0, 5, 1, 60);
         initSpecialFishes(characters, dogFishBitmap, 1,5,1,60);
         initSpecialFishes(characters, parrotFishBitmap, 2, 5, 1, 60);
         initSpecialFishes(characters, catFishBitmap, 3, 5, 1, 60);
@@ -133,17 +133,25 @@ public class Character extends GameObject implements Collidable{
             }
 
             if(killed) canvas.rotate(180, bodyDst.centerX(), bodyDst.centerY());
-            canvas.drawBitmap(bitmap, bodySrc[frame], bodyDst, null);
+            try {
+                canvas.drawBitmap(bitmap, bodySrc[frame], bodyDst, null);
+            }
+            catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+                frame = 0;
+                System.out.println("speed =" +speed);
+                System.out.println("population =" +populateDuration);
+            }
             if (!gamePaused) {
                 if(killed || (isOctopus && bodyDst.bottom < stopGoDown)) {
                     bodyDst.offsetTo(bodyDst.left, bodyDst.top + speed);
                 }
                 else {
-                    if(isGoldFish){
+                    if(isMovingDiagonally){
                         if(goingUp) {
-                            bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top - speed/4);
+                            bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top - speed/12);
                         }
-                        else bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top + speed/4);
+                        else bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top + speed/12);
                     }
                     else bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top);
                 }
@@ -177,7 +185,7 @@ public class Character extends GameObject implements Collidable{
             playSound = false;
         }
         // change frame each frameDuration milliseconds for animation
-        if(frameCounter.timePassed(frameDuration)) frame = (++frame == bodySrc.length ? 0 : frame);
+        if(frameCounter.timePassed(frameDuration)) frame = (frame+1 == bodySrc.length ? 0 : ++frame);
     }
 
     private void populate() {
@@ -192,7 +200,7 @@ public class Character extends GameObject implements Collidable{
         } else {
             float initY = rand.nextFloat()*(screenHeight - screenSand - height) + height;
             bodyDst.set(screenWidth, initY - height, screenWidth + width, initY);
-            if(isGoldFish) goingUp = bodyDst.top > screenHeight / 2;
+            if(isMovingDiagonally) goingUp = bodyDst.top > screenHeight / 2;
         }
         killed = false;
         populated = true;
