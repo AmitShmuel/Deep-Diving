@@ -32,7 +32,9 @@ public class Life extends GameObject implements Collidable{
     private MillisecondsCounter populationCounter = new MillisecondsCounter();
     private boolean canDraw, firstTime = true;
     public boolean populated;
+    private float speed = 5;
 
+    public void setSpeed(float speed) {this.speed = speed;}
     public int getLife() { return life; }
     public void setLife(int life) { this.life = life; }
 
@@ -52,13 +54,13 @@ public class Life extends GameObject implements Collidable{
     public void draw(Canvas canvas) {
         if(canDraw) {
             canvas.drawBitmap(bitmap, bodySrc, bodyDst, null);
-            if(!gamePaused) bodyDst.offsetTo(bodyDst.left - 4f, bodyDst.top);
+            if(!gamePaused) bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top);
         }
     }
 
     @Override
     public void update() {
-        if(life < 3 && populationCounter.timePassed(50000)) {
+        if(life < 3 && populationCounter.timePassed(60000)) {
             populate();
             canDraw = true;
         }

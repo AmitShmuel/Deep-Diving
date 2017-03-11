@@ -33,6 +33,8 @@ public class Character extends GameObject implements Collidable{
     private int populateDuration, frameDuration, frame;
     private boolean firstPopulation = true, waitOnFirstPopulation;
     public boolean killed, populated;
+    /*goldfish*/
+    private boolean isGoldFish, goingUp;
     /*octopus*/
     private float stopGoDown, left, top;
     private boolean isOctopus, drawInk, firstDraw, playSound;
@@ -40,7 +42,7 @@ public class Character extends GameObject implements Collidable{
     private char alpha = 255;
     private Paint inkPaint;
     public boolean term; // a helpful flag which helps to determine if we draw the ink
-    public static int octopusIndex = 0;
+    public static int octopusIndex = 6;
 
     private Character(float speed, int populateDuration) {
         this.speed = speed;
@@ -55,36 +57,37 @@ public class Character extends GameObject implements Collidable{
                     Bitmap octopusInkBitmap) {
 
         Character[] characters = new Character[]{
-                new Character(2.5f, 1000)/*octopus*/,
-                new Character(3, 100)/*Gold Fish*/,
-                new Character(4.5f ,250)/*Dog Fish*/,
-                new Character(5 ,500)/*Parrot Fish*/,
-                new Character(6 ,800)/*Cat Fish*/,
-                new Character(6, 1500)/*Lion Fish*/,
-                new Character(7, 2000)/*Green fish*/,
-                new Character(9, 2500)/*Sword Fish*/,
-                new Character(10, 3000)/*Red Fish*/,
-                new Character(14, 4000)/*Piranha Fish*/,
-                new Character(15, 6000)/*Hammer Shark*/,
-                new Character(20, 10000)/*Great White Shark*/
+                new Character(4, 100)/*Gold Fish*/,
+                new Character(5.5f ,250)/*Dog Fish*/,
+                new Character(6 ,500)/*Parrot Fish*/,
+                new Character(7 ,800)/*Cat Fish*/,
+                new Character(7, 1500)/*Lion Fish*/,
+                new Character(8, 2000)/*Green fish*/,
+                new Character(3.5f, 12000)/*Octopus*/, //6
+                new Character(10, 2500)/*Sword Fish*/,
+                new Character(11, 3000)/*Red Fish*/,
+                new Character(15, 4000)/*Piranha Fish*/,
+                new Character(16, 6000)/*Hammer Shark*/,
+                new Character(21, 10000)/*Great White Shark*/
         };
         characters[octopusIndex].isOctopus = true;
         characters[octopusIndex].inkPaint = new Paint();
         characters[octopusIndex].swimBitmap = octopusSwimBitmap;
         characters[octopusIndex].attackBitmap = octopusAttackBitmap;
         characters[octopusIndex].inkBitmap = octopusInkBitmap;
-        initSpecialFishes(characters, goldFishBitmap, 6 , 5, 1, 60);
+        characters[0].isGoldFish = true;
+        initSpecialFishes(characters, goldFishBitmap, 0 , 5, 1, 60);
         initSpecialFishes(characters, dogFishBitmap, 1,5,1,60);
         initSpecialFishes(characters, parrotFishBitmap, 2, 5, 1, 60);
         initSpecialFishes(characters, catFishBitmap, 3, 5, 1, 60);
         initSpecialFishes(characters, lionFishBitmap, 4, 5, 1, 80);
         initSpecialFishes(characters, greenFishBitmap, 5, 6, 1, 50);
-        initSpecialFishes(characters, octopusSwimBitmap, 0, 4, 4, 200);
+        initSpecialFishes(characters, octopusSwimBitmap, 6, 4, 4, 200);
         initSpecialFishes(characters, swordFishBitmap, 7, 4, 4, 100);
         initSpecialFishes(characters, redFishBitmap, 8, 5, 1, 100);
         initSpecialFishes(characters, piranhaFishBitmap, 9, 6, 1, 100);
-        initSpecialFishes(characters, greatSharkFishBitmap, 10, 11, 1, 100);
-        initSpecialFishes(characters, hammerFishBitmap, 11, 4, 4, 120);
+        initSpecialFishes(characters, hammerFishBitmap, 10, 4, 4, 120);
+        initSpecialFishes(characters, greatSharkFishBitmap, 11, 11, 1, 100);
 
         return characters;
     }
@@ -136,7 +139,13 @@ public class Character extends GameObject implements Collidable{
                     bodyDst.offsetTo(bodyDst.left, bodyDst.top + speed);
                 }
                 else {
-                    bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top);
+                    if(isGoldFish){
+                        if(goingUp) {
+                            bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top - speed/4);
+                        }
+                        else bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top + speed/4);
+                    }
+                    else bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top);
                 }
             }
         } // wait before populate (new stage)
@@ -183,6 +192,7 @@ public class Character extends GameObject implements Collidable{
         } else {
             float initY = rand.nextFloat()*(screenHeight - screenSand - height) + height;
             bodyDst.set(screenWidth, initY - height, screenWidth + width, initY);
+            if(isGoldFish) goingUp = bodyDst.top > screenHeight / 2;
         }
         killed = false;
         populated = true;

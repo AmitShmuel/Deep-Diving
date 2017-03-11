@@ -33,6 +33,9 @@ public class Shield extends GameObject implements Collidable{
     private int scaleIndex, maxScaleIndex = 5, scalingInterval, indexChanger = 1;
     private Paint blinker = new Paint();
     public boolean blink;
+    private float speed = 7;
+
+    public void setSpeed(float speed) {this.speed = speed;}
 
     public static Shield prepareShield(Bitmap bitmap, RectF mainCharBody) {
         Shield shield = new Shield();
@@ -62,7 +65,7 @@ public class Shield extends GameObject implements Collidable{
             canvas.drawBitmap(bitmap, bodySrc, bodyDst, blinker);
             if (!gamePaused) {
                 if (!collected) {
-                    bodyDst.offsetTo(bodyDst.left, bodyDst.top - 10);
+                    bodyDst.offsetTo(bodyDst.left, bodyDst.top - speed);
                 } else {
                     bodyDst.set(mainCharBody.centerX() - width / 2, mainCharBody.centerY() - height / 2,
                             mainCharBody.centerX() + width / 2, mainCharBody.centerY() + height / 2);
@@ -74,7 +77,7 @@ public class Shield extends GameObject implements Collidable{
 
     @Override
     public void update() {
-        if(!collected && populationCounter.timePassed(5000)) {
+        if(!collected && populationCounter.timePassed(35000)) {
             populate();
             canDraw = true;
         }

@@ -27,6 +27,9 @@ public class Gun extends GameObject implements Collidable{
     private MillisecondsCounter populationCounter = new MillisecondsCounter();
     private boolean canDraw, collected, firstTime = true;
     public boolean populated;
+    private float speed = 6;
+
+    public void setSpeed(float speed) {this.speed = speed;}
 
     public static Gun prepareGun(Bitmap bitmap) {
         Gun gun = new Gun();
@@ -43,13 +46,13 @@ public class Gun extends GameObject implements Collidable{
     public void draw(Canvas canvas) {
         if(canDraw) {
             canvas.drawBitmap(bitmap, bodySrc, bodyDst, null);
-            if(!gamePaused) bodyDst.offsetTo(bodyDst.left - 4f, bodyDst.top);
+            if(!gamePaused) bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top);
         }
     }
 
     @Override
     public void update() {
-        if(!collected && populationCounter.timePassed(5000)) {
+        if(!collected && populationCounter.timePassed(25000)) {
             populate();
             canDraw = true;
         }

@@ -72,7 +72,7 @@ public class GameView extends View {
     private StageLabel[] stageLabels;
     private final int newRecordIndex = 10;
     private int mainCharResource, mainCharGunResource;
-    private final int octopusIndex = 0, piranhaIndex = 9,
+    private final int octopusIndex = 6, piranhaIndex = 9,
             whiteSharkIndex = 11, hammerSharkIndex = 10;
 
     /*
@@ -88,7 +88,7 @@ public class GameView extends View {
      * Stage related types
      */
     private int currentStage, mobsStartIndex;
-    private int[] stageMobs = {3,4,5,6,7,7,8,9,10,/*11*/};         //Final Version
+    private int[] stageMobs = {3,4,5,6,7,8,8,10,11,12};         //Final Version
     //    private int[] stageMobs = {11,3,3,4,5,6,7,8,9/*,10,11,12,13*/}; //DEBUG
     public static boolean stagePassed = true;
     private boolean isStagedPlayedSound;
@@ -491,13 +491,19 @@ public class GameView extends View {
     private void levelUp() {
         stagePassed = true;
         currentStage++;
+
         if(currentStage == 4) {
             MainActivity.musicPlayer.switchMusic(R.raw.music_2);
-            mobsStartIndex += 2;
+            life.setSpeed(8);
+            gun.setSpeed(9);
+            shield.setSpeed(10);
         }
         if(currentStage == 8) {
             MainActivity.musicPlayer.switchMusic(R.raw.music_3);
             mobsStartIndex += 2;
+            life.setSpeed(10);
+            gun.setSpeed(11);
+            shield.setSpeed(12);
         }
         isStagedPlayedSound = isDark = characters[Character.octopusIndex].term = false;
         for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++) {
