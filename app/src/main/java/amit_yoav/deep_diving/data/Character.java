@@ -42,7 +42,7 @@ public class Character extends GameObject implements Collidable{
     private char alpha = 255;
     private Paint inkPaint;
     public boolean term; // a helpful flag which helps to determine if we draw the ink
-    public static int octopusIndex = 6;
+    public static int octopusIndex = 10;
 
     private Character(float speed, int populateDuration) {
         this.speed = speed;
@@ -54,7 +54,8 @@ public class Character extends GameObject implements Collidable{
                     Bitmap redFishBitmap,   Bitmap goldFishBitmap,      Bitmap parrotFishBitmap,
                     Bitmap dogFishBitmap,   Bitmap lionFishBitmap,      Bitmap swordFishBitmap,
                     Bitmap catFishBitmap,   Bitmap octopusSwimBitmap,   Bitmap octopusAttackBitmap,
-                    Bitmap octopusInkBitmap) {
+                    Bitmap octopusInkBitmap, Bitmap angelFishBitmap, Bitmap clownFishBitmap,
+                    Bitmap surgeonFishBitmap, Bitmap needleFishBitmap) {
 
         Character[] characters = new Character[]{
                 new Character(4, 100)/*Gold Fish*/,
@@ -62,11 +63,15 @@ public class Character extends GameObject implements Collidable{
                 new Character(6 ,500)/*Parrot Fish*/,
                 new Character(7 ,800)/*Cat Fish*/,
                 new Character(7, 1500)/*Lion Fish*/,
-                new Character(8, 2000)/*Green fish*/,
-                new Character(3.5f, 12000)/*Octopus*/, //6
-                new Character(10, 2500)/*Sword Fish*/,
+                new Character(7, 1000)/*Angel Fish - NEW*/,
+                new Character(8, 600)/*Clown Fish - NEW*/,
+                new Character(9, 1100)/*Surgeon Fish - NEW*/,//7
+                new Character(12, 1500)/*Needle Fish - NEW*/,
+                new Character(8, 2000)/*Green fish*/, //9
+                new Character(3.5f, 12000)/*Octopus*/, //10
+                new Character(10, 2500)/*Sword Fish*/, //11
                 new Character(11, 3000)/*Red Fish*/,
-                new Character(15, 4000)/*Piranha Fish*/,
+                new Character(15, 4000)/*Piranha Fish*/, //13
                 new Character(16, 6000)/*Hammer Shark*/,
                 new Character(21, 10000)/*Great White Shark*/
         };
@@ -75,19 +80,23 @@ public class Character extends GameObject implements Collidable{
         characters[octopusIndex].swimBitmap = octopusSwimBitmap;
         characters[octopusIndex].attackBitmap = octopusAttackBitmap;
         characters[octopusIndex].inkBitmap = octopusInkBitmap;
-        characters[7].isMovingDiagonally = characters[9].isMovingDiagonally = true;
+        characters[7].isMovingDiagonally = characters[9].isMovingDiagonally = characters[11].isMovingDiagonally = characters[13].isMovingDiagonally = true;
         initSpecialFishes(characters, goldFishBitmap, 0, 5, 1, 60);
         initSpecialFishes(characters, dogFishBitmap, 1,5,1,60);
         initSpecialFishes(characters, parrotFishBitmap, 2, 5, 1, 60);
         initSpecialFishes(characters, catFishBitmap, 3, 5, 1, 60);
         initSpecialFishes(characters, lionFishBitmap, 4, 5, 1, 80);
-        initSpecialFishes(characters, greenFishBitmap, 5, 6, 1, 50);
-        initSpecialFishes(characters, octopusSwimBitmap, 6, 4, 4, 200);
-        initSpecialFishes(characters, swordFishBitmap, 7, 4, 4, 100);
-        initSpecialFishes(characters, redFishBitmap, 8, 5, 1, 100);
-        initSpecialFishes(characters, piranhaFishBitmap, 9, 6, 1, 100);
-        initSpecialFishes(characters, hammerFishBitmap, 10, 4, 4, 120);
-        initSpecialFishes(characters, greatSharkFishBitmap, 11, 11, 1, 100);
+        initSpecialFishes(characters, angelFishBitmap, 5, 5, 1, 50);  /*NEW*/
+        initSpecialFishes(characters, clownFishBitmap, 6, 5, 1, 70); /*NEW*/
+        initSpecialFishes(characters, surgeonFishBitmap, 7, 5, 1, 60);  /*NEW*/
+        initSpecialFishes(characters, needleFishBitmap, 8, 5, 1, 100); /*NEW*/
+        initSpecialFishes(characters, greenFishBitmap, 9, 6, 1, 50);
+        initSpecialFishes(characters, octopusSwimBitmap, 10, 4, 4, 200);
+        initSpecialFishes(characters, swordFishBitmap, 11, 4, 4, 100);
+        initSpecialFishes(characters, redFishBitmap, 12, 5, 1, 100);
+        initSpecialFishes(characters, piranhaFishBitmap, 13, 6, 1, 100);
+        initSpecialFishes(characters, hammerFishBitmap, 14, 4, 4, 120);
+        initSpecialFishes(characters, greatSharkFishBitmap, 15, 11, 1, 100);
 
         return characters;
     }

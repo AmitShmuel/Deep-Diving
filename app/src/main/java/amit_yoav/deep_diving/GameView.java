@@ -72,8 +72,8 @@ public class GameView extends View {
     private StageLabel[] stageLabels;
     private final int newRecordIndex = 10;
     private int mainCharResource, mainCharGunResource;
-    private final int octopusIndex = 6, piranhaIndex = 9,
-            whiteSharkIndex = 11, hammerSharkIndex = 10;
+    private final int octopusIndex = 10, piranhaIndex = 13,
+            whiteSharkIndex = 15, hammerSharkIndex = 14;
 
     /*
      * Other
@@ -88,8 +88,8 @@ public class GameView extends View {
      * Stage related types
      */
     private int currentStage, mobsStartIndex;
-    private int[] stageMobs = {4,5,6,7,8,8,9,9,11,12};         //Final Version
-    //    private int[] stageMobs = {11,3,3,4,5,6,7,8,9/*,10,11,12,13*/}; //DEBUG
+//    private int[] stageMobs = {4,5,7,8,9,10,12,13,14,15};         //Final Version
+    private int[] stageMobs = {10,5,6,7,8,9,10,11,12,13}; //DEBUG
     public static boolean stagePassed = true;
     private boolean isStagedPlayedSound;
 
@@ -250,7 +250,11 @@ public class GameView extends View {
                 BitmapFactory.decodeResource(getResources(), R.drawable.fish_cat),
                 BitmapFactory.decodeResource(getResources(), R.drawable.fish_octopus_swim),
                 BitmapFactory.decodeResource(getResources(), R.drawable.fish_octopus_attack),
-                BitmapFactory.decodeResource(getResources(), R.drawable.octopus_ink));
+                BitmapFactory.decodeResource(getResources(), R.drawable.octopus_ink),
+                BitmapFactory.decodeResource(getResources(), R.drawable.fish_angel),
+                BitmapFactory.decodeResource(getResources(), R.drawable.fish_clown),
+                BitmapFactory.decodeResource(getResources(), R.drawable.fish_surgeon),
+                BitmapFactory.decodeResource(getResources(), R.drawable.fish_needle));
         objects = BackgroundObject.prepareBackgroundObjects(
                 BitmapFactory.decodeResource(getResources(), R.drawable.bubbles),
                 BitmapFactory.decodeResource(getResources(), R.drawable.fishes_background));
