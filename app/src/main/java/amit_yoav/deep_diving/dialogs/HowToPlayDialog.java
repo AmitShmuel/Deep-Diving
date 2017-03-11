@@ -44,12 +44,4 @@ public class HowToPlayDialog extends Dialog {
         MainActivity.soundEffectsUtil.play(R.raw.quit_dialog);
         dismiss();
     }
-/*
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        if(mainActivity.getIsHowToPlayShown()) {
-            mainActivity.startGame(null);
-        }
-    }
-    */
 }

@@ -5,7 +5,9 @@ import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 
@@ -19,9 +21,11 @@ public class PauseSettingsDialog extends Dialog {
     private GameViewActivity gameViewActivity;
     private Switch switchSound;
     private SeekBar seekbarMusic;
+    private ImageButton howToPlay;
 
     private SharedPreferences preferences;
     private final SharedPreferences.Editor editor;
+    private HowToPlayDialog howToPlayDialog;
 
     public PauseSettingsDialog(Activity a) {
         super(a);
@@ -29,6 +33,9 @@ public class PauseSettingsDialog extends Dialog {
 //        mainActivity =  ma;
         preferences = PreferenceManager.getDefaultSharedPreferences(gameViewActivity);
         editor = preferences.edit();
+
+        howToPlayDialog = new HowToPlayDialog(gameViewActivity);
+
     }
 
     @Override
@@ -39,9 +46,12 @@ public class PauseSettingsDialog extends Dialog {
 
         switchSound = (Switch) this.findViewById(R.id.switchSound);
         seekbarMusic = (SeekBar) this.findViewById(R.id.seekbarMusic);
+        howToPlay = (ImageButton) this.findViewById(R.id.how_to_play_button);
+
 
         switchSound.setChecked(preferences.getBoolean("sound",true));
         seekbarMusic.setProgress(preferences.getInt("music", 99));
+
 
         switchSound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView,final boolean isChecked) {
@@ -80,6 +90,14 @@ public class PauseSettingsDialog extends Dialog {
 
                 MainActivity.setVolumeMusic((float)progress/100);
 //                ((MainActivity) gameViewActivity.getParent()).setVolumeMusic((float)progress/100);
+            }
+        });
+
+        howToPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.soundEffectsUtil.play(R.raw.open_dialog);
+                howToPlayDialog.show();
             }
         });
     }
