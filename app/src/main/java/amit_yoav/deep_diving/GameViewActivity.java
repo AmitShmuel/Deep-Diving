@@ -30,27 +30,43 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
 
 public class GameViewActivity extends AppCompatActivity implements SensorEventListener {
 
+    /*
+     * Views
+     */
     public GameView view;
     private PauseDialog pauseDialog;
     private PauseSettingsDialog pauseSettingsDialog;
-
     private GameOverDialog gameOverDialog;
 
+    /*
+     * Device manipulating
+     */
     public Vibrator vibrator;
-
     private SensorManager sensorManager;
     private boolean firstSensorChanged = true, firstTime = true;
     private float ySensorOffset;
+    private int sign = 1, index;
     public static float xAccel, yAccel;
+
+    /*
+     * Static Booleans controllers
+     */
     public static boolean sensorChanged, gameRunning, gamePaused, canShoot, shoot;
+
+    /*
+     * Other
+     */
+    public GoogleApiClient mGoogleApiClient;
     public static Random rand = new Random();
     private long startTime;
 
+    /*
+     * Shared Preferences types
+     */
     private int bestScore, mainCharacterBitmap;
     public int getBestScore() {return bestScore;}
     public int getMainCharResource() {return mainCharacterBitmap;}
 
-    public GoogleApiClient mGoogleApiClient;
 
 
     @Override
@@ -84,7 +100,8 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
                 .build();
         mGoogleApiClient.connect();
 
-        gameRunning = true;
+        gameRunning = firstSensorChanged = true;
+        canShoot = false;
 
         setContentView(R.layout.activity_game_view);
         view = (GameView) findViewById(R.id.activity_game_view);
@@ -103,6 +120,7 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     }
 
     public void gameOver(int score) {
+//        canShoot = false;
         togglePauseGame();
         MainActivity.soundEffectsUtil.play(R.raw.disqualification);
         MainActivity.musicPlayer.stopMusic(false);
@@ -166,12 +184,30 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if(sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            yAccel = 4 * sensorEvent.values[0] - ySensorOffset;
+
+            yAccel = sign * ((4 * sensorEvent.values[index]) - (sign*ySensorOffset));
             xAccel = 4 * sensorEvent.values[1];
+
             if(firstSensorChanged) {
-                ySensorOffset = yAccel;
+                ySensorOffset = 4 * sensorEvent.values[0];
+                System.out.println(ySensorOffset +"========================");
                 firstSensorChanged = false;
+//                 user is either lying on his back or sitting and the device is right in front of him
+                if(ySensorOffset > 25) {
+                    sign = -1;
+                    index = 2;
+                }
             }
+//            if(4 * sensorEvent.values[0] > )
+//            else{
+//                yAccel = -(4 * sensorEvent.values[2] + ySensorOffset);
+//                System.out.println(ySensorOffset + "===============");
+//                xAccel = 4 * sensorEvent.values[1];
+//                if (firstSensorChanged) {
+//                    firstSensorChanged = false;
+//                    ySensorOffset = yAccel;
+//                }
+//            }
             sensorChanged = true;
         }
     }
@@ -180,7 +216,7 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     public boolean onTouchEvent(MotionEvent event) {
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
             if((firstTime || System.currentTimeMillis() - startTime > 1000) &&
-                    event.getX() <= pauseWidth && event.getY() <= pauseHeight)  {
+                    event.getX() <= pauseWidth*1.5 && event.getY() <= pauseHeight*1.5)  {
 
                 togglePauseGame();
                 MainActivity.soundEffectsUtil.play(R.raw.open_dialog);

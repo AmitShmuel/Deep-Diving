@@ -313,7 +313,7 @@ public class GameView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         waterBackground.draw(canvas);
-        canvas.drawBitmap(pauseBitmap, 0, 0, null);
+        canvas.drawBitmap(pauseBitmap, pauseWidth/3, pauseHeight/3, null);
         // drawing small fishes (start after bubbles index)
         for (int i = BackgroundObject.BUBBLE_LENGTH; i < objects.length; i++) objects[i].draw(canvas);
         coin.draw(canvas);
