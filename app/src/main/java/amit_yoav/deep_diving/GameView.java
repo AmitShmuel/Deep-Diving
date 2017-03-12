@@ -88,8 +88,8 @@ public class GameView extends View {
      * Stage related types
      */
     private int currentStage, mobsStartIndex = 0;
-    private int[] stageMobs = {4,5,7,8,10,11,13,14,15,16};         //Final Version
-//    private int[] stageMobs = {16,5,6,7,8,9,10,11,12,13}; //DEBUG
+//    private int[] stageMobs = {4,5,7,8,10,11,13,14,15,16};         //Final Version
+    private int[] stageMobs = {16,5,6,7,8,9,10,11,12,13}; //DEBUG
     public static boolean stagePassed = true;
     private boolean isStagedPlayedSound;
 
@@ -501,6 +501,7 @@ public class GameView extends View {
             life.setSpeed(8);
             gun.setSpeed(9);
             shield.setSpeed(10);
+            gun.setPopulationTime(20000);
         }
         if(currentStage == 8) {
             MainActivity.musicPlayer.switchMusic(R.raw.music_3);
@@ -508,6 +509,7 @@ public class GameView extends View {
             life.setSpeed(10);
             gun.setSpeed(11);
             shield.setSpeed(12);
+            gun.setPopulationTime(15000);
         }
         isStagedPlayedSound = isDark = characters[Character.octopusIndex].term = false;
         for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++) {
@@ -552,10 +554,10 @@ public class GameView extends View {
         gun.stopTime(isPaused);
         life.stopTime(isPaused);
         coin.stopTime(isPaused);
-        protectCounter.stopTime(isPaused);
         shieldCounter.stopTime(isPaused);
-        shield.populationCounter.stopTime(isPaused);    //NEW
+        protectCounter.stopTime(isPaused);
         shieldBlinkCounter.stopTime(isPaused);
+        shield.populationCounter.stopTime(isPaused);    //NEW
         for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++) characters[i].stopTime(isPaused);
     }
 

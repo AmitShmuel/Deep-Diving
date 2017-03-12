@@ -28,7 +28,9 @@ public class Gun extends GameObject implements Collidable{
     private boolean canDraw, collected, firstTime = true;
     public boolean populated;
     private float speed = 6;
+    private long populationTime = 25000;
 
+    public void setPopulationTime(long time) {this.populationTime = time;}
     public void setSpeed(float speed) {this.speed = speed;}
 
     public static Gun prepareGun(Bitmap bitmap) {
@@ -52,7 +54,7 @@ public class Gun extends GameObject implements Collidable{
 
     @Override
     public void update() {
-        if(!collected && populationCounter.timePassed(25000)) {
+        if(!collected && populationCounter.timePassed(populationTime)) {
             populate();
             canDraw = true;
         }
