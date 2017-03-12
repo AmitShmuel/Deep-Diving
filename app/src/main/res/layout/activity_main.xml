@@ -70,16 +70,34 @@
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1" />
 
+    <ImageView
+        android:id="@+id/diver_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toRightOf="@+id/leftArrow"
+        app:layout_constraintRight_toLeftOf="@+id/rightArrow"
+        app:layout_constraintTop_toBottomOf="@+id/deepDivingLogo"
+        app:srcCompat="@drawable/black_diver_select" />
+
     <ImageButton
         android:id="@+id/leftArrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginTop="24dp"
         android:background="@android:color/transparent"
         android:onClick="setDiver"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/diver_select"
         app:layout_constraintTop_toBottomOf="@+id/deepDivingLogo"
         app:srcCompat="@drawable/left_arrow" />
 
@@ -87,12 +105,15 @@
         android:id="@+id/rightArrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="96dp"
-        android:layout_marginStart="96dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
         android:layout_marginTop="24dp"
         android:background="@android:color/transparent"
         android:onClick="setDiver"
-        app:layout_constraintLeft_toRightOf="@+id/leftArrow"
+        app:layout_constraintRight_toLeftOf="@+id/playButton"
+        app:layout_constraintLeft_toRightOf="@+id/diver_select"
         app:layout_constraintTop_toBottomOf="@+id/deepDivingLogo"
         app:srcCompat="@drawable/right_arrow" />
 
@@ -167,20 +188,5 @@
         app:srcCompat="@drawable/sign_in_button"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintTop_creator="1" />
-
-    <ImageView
-        android:id="@+id/diver_select"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintLeft_toRightOf="@+id/leftArrow"
-        app:layout_constraintRight_toLeftOf="@+id/rightArrow"
-        app:layout_constraintTop_toBottomOf="@+id/deepDivingLogo"
-        app:srcCompat="@drawable/black_diver_select" />
 
 </android.support.constraint.ConstraintLayout>
