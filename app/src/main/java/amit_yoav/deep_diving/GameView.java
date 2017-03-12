@@ -89,7 +89,7 @@ public class GameView extends View {
      */
     private int currentStage, mobsStartIndex;
 //    private int[] stageMobs = {4,5,7,8,9,10,12,13,14,15};         //Final Version
-    private int[] stageMobs = {10,5,6,7,8,9,10,11,12,13}; //DEBUG
+    private int[] stageMobs = {16,5,6,7,8,9,10,11,12,13}; //DEBUG
     public static boolean stagePassed = true;
     private boolean isStagedPlayedSound;
 

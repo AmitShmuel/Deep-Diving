@@ -77,7 +77,7 @@ public class Shield extends GameObject implements Collidable{
 
     @Override
     public void update() {
-        if(!collected && populationCounter.timePassed(4000)) {//35000
+        if(!collected && populationCounter.timePassed(35000)) {//35000
             populate();
             canDraw = true;
         }
