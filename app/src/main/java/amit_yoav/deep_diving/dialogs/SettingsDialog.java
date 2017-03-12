@@ -37,8 +37,6 @@ public class SettingsDialog extends Dialog {
         preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
         editor = preferences.edit();
 
-        editor.putInt("best_score", 3);
-        editor.commit();
 
         howToPlayDialog = new HowToPlayDialog(mainActivity);
         howToPlayDialog.setOnDismissListener(new OnDismissListener() {
@@ -55,6 +53,10 @@ public class SettingsDialog extends Dialog {
         //Use these lines to see How to play again
 //        editor.putBoolean("how_to_play", false);
 //        editor.commit();
+
+        //Use these lines to reset the Highest score (local)
+        editor.putInt("best_score", 1);
+        editor.commit();
     }
 
     @Override

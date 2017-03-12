@@ -554,6 +554,9 @@ public class GameView extends View {
         coin.stopTime(isPaused);
         protectCounter.stopTime(isPaused);
         shieldCounter.stopTime(isPaused);
+
+        shield.populationCounter.stopTime(isPaused);    //NEW
+
         shieldBlinkCounter.stopTime(isPaused);
         for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++)
             characters[i].stopTime(isPaused);

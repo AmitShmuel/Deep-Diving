@@ -395,7 +395,6 @@ public class MainActivity extends AppCompatActivity implements
         Context appContext;
         MediaPlayer mPlayer;
         private boolean musicIsPlaying = false;
-//        private boolean isMainMenu = true;
         private int currentMusicPlaying = R.raw.welcome_screen;
 
         MyMusicRunnable(Context c) {
@@ -429,7 +428,6 @@ public class MainActivity extends AppCompatActivity implements
         public void onCompletion(MediaPlayer mp) {
             // loop back - play again
             if (musicIsPlaying && mPlayer != null) {
-//                mPlayer.setVolume(volume, volume);
                 mPlayer.start();
             }
         }

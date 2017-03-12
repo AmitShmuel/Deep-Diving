@@ -25,7 +25,7 @@ public class Shield extends GameObject implements Collidable{
     private RectF bodyDst = new RectF();
     private RectF mainCharBody;
 
-    private MillisecondsCounter populationCounter = new MillisecondsCounter();
+    public MillisecondsCounter populationCounter = new MillisecondsCounter();
     private boolean canDraw, collected;
     public boolean populated;
 
@@ -77,7 +77,7 @@ public class Shield extends GameObject implements Collidable{
 
     @Override
     public void update() {
-        if(!collected && populationCounter.timePassed(35000)) {
+        if(!collected && populationCounter.timePassed(4000)) {//35000
             populate();
             canDraw = true;
         }
