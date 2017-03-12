@@ -2,6 +2,7 @@ package amit_yoav.deep_diving;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.ndk.CrashlyticsNdk;
@@ -49,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private static float volume = 0;
     private static boolean isSoundOn, gameStarted, isFinished, isHowToPlayShown;
+
+    private static TextView bestScoreText;
 
     public boolean getIsHowToPlayShown() {return isHowToPlayShown;}
 
@@ -120,6 +124,10 @@ public class MainActivity extends AppCompatActivity implements
         leftArrow = (ImageButton) (this.findViewById(R.id.leftArrow));
         diverPointer = settingsDialog.getMainCharacter();
         mainActivityDiver.setImageResource(divers[diverPointer]);
+
+        bestScoreText = (TextView) findViewById(R.id.high_score_main);
+        bestScoreText.setText(String.valueOf(settingsDialog.getBestScore()));
+        bestScoreText.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/SF_Slapstick_Comic_Bold_Oblique.ttf"));
     }
 
     public void startGame(View view) {
@@ -322,6 +330,10 @@ public class MainActivity extends AppCompatActivity implements
 
     public boolean isSignedIn() {
         return (mGoogleApiClient != null && mGoogleApiClient.isConnected());
+    }
+
+    public static void setBestScore(int bestScore) {
+        bestScoreText.setText(String.valueOf(bestScore));
     }
 
     public static class MySFxRunnable implements Runnable {

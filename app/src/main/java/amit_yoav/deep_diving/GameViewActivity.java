@@ -128,6 +128,7 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
         if(score > bestScore) {
             gameOverDialog.setBestScore(bestScore = score);
             ((MainActivity) getParent()).settingsDialog.setBestScore(bestScore);
+            MainActivity.setBestScore(bestScore);
         }
         gameOverDialog.show();
     }

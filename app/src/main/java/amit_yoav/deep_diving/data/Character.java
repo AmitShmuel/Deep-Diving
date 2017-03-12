@@ -170,8 +170,7 @@ public class Character extends GameObject implements Collidable{
             // after 4 seconds we want to go inside and wait populateDuration time
             waitOnFirstPopulation = true;
             if(populateCounter.timePassed(populateDuration)) {
-                firstPopulation = false;
-                waitOnFirstPopulation = false;
+                firstPopulation = waitOnFirstPopulation = false;
             }
         }
         canvas.restoreToCount(save);
@@ -217,6 +216,7 @@ public class Character extends GameObject implements Collidable{
 
     public void stopTime(boolean isPaused) {
         populateCounter.stopTime(isPaused);
+        firstPopulateCounter.stopTime(isPaused);
     }
 
     public void setFirstPopulation(boolean value) { firstPopulation = value; }

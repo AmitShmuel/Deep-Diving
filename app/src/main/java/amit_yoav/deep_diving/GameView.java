@@ -87,9 +87,9 @@ public class GameView extends View {
     /*
      * Stage related types
      */
-    private int currentStage, mobsStartIndex;
-//    private int[] stageMobs = {4,5,7,8,10,11,13,14,15,16};         //Final Version
-    private int[] stageMobs = {16,5,6,7,8,9,10,11,12,13}; //DEBUG
+    private int currentStage, mobsStartIndex = 0;
+    private int[] stageMobs = {4,5,7,8,10,11,13,14,15,16};         //Final Version
+//    private int[] stageMobs = {16,5,6,7,8,9,10,11,12,13}; //DEBUG
     public static boolean stagePassed = true;
     private boolean isStagedPlayedSound;
 
@@ -554,12 +554,9 @@ public class GameView extends View {
         coin.stopTime(isPaused);
         protectCounter.stopTime(isPaused);
         shieldCounter.stopTime(isPaused);
-
         shield.populationCounter.stopTime(isPaused);    //NEW
-
         shieldBlinkCounter.stopTime(isPaused);
-        for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++)
-            characters[i].stopTime(isPaused);
+        for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++) characters[i].stopTime(isPaused);
     }
 
     private void updateLeaderBoard(final int finishedScore) {

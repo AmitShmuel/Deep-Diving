@@ -55,8 +55,8 @@ public class SettingsDialog extends Dialog {
 //        editor.commit();
 
         //Use these lines to reset the Highest score (local)
-        editor.putInt("best_score", 1);
-        editor.commit();
+//        editor.putInt("best_score", 1);
+//        editor.commit();
     }
 
     @Override
