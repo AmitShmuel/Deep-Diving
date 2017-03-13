@@ -142,8 +142,6 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
             MainActivity.musicPlayer.stopMusic(true);
             pauseDialog.show();
         }
-
-
     }
 
     @Override
