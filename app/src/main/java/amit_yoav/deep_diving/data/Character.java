@@ -158,9 +158,9 @@ public class Character extends GameObject implements Collidable{
                 else {
                     if(isMovingDiagonally){
                         if(goingUp) {
-                            bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top - speed/12);
+                            bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top - speed/10);
                         }
-                        else bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top + speed/12);
+                        else bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top + speed/10);
                     }
                     else bodyDst.offsetTo(bodyDst.left - speed, bodyDst.top);
                 }
