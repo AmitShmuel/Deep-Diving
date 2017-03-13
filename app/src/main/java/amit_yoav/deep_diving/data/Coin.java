@@ -28,11 +28,12 @@ public class Coin extends GameObject implements Collidable{
 
     private MillisecondsCounter frameCounter = new MillisecondsCounter();
     private MillisecondsCounter populationCounter = new MillisecondsCounter();
+    private MillisecondsCounter firstPopulateCounter = new MillisecondsCounter();
 
     private final int frameDuration = 50;
-    private int frame, populateDuration = 3000;
+    private int frame, populateDuration = 4500;
     private boolean collected, canPopulate;
-    private boolean firstPopulation = true;
+    private boolean firstPopulation = true, waitOnFirstPopulation;
 
 
     public static Coin prepareCoin(Bitmap bitmap) {
@@ -60,14 +61,15 @@ public class Coin extends GameObject implements Collidable{
     public void draw(Canvas canvas) {
         canvas.drawBitmap(bitmap, bodySrc[frame], scoreDst, null);
         canvas.drawBitmap(bitmap, bodySrc[frame], bodyDst, null);
-        if(collected && !gamePaused) {
+
+        if (collected && !gamePaused) {
             // move the coin to the score direction
-            if(bodyDst.left < scoreDst.left) bodyDst.offsetTo(bodyDst.left + 20, bodyDst.top);
-            if(bodyDst.top > scoreDst.top ) bodyDst.offsetTo(bodyDst.left, bodyDst.top - 20);
-            if(bodyDst.top < scoreDst.top && bodyDst.left > scoreDst.left) {
-                /* making him disappear when he reached the top right corner by giving him + 100
-                   until he will be populated again to the screen */
-                bodyDst.offsetTo(bodyDst.left +500, bodyDst.top - 500);
+            if (bodyDst.left < scoreDst.left) bodyDst.offsetTo(bodyDst.left + 20, bodyDst.top);
+            if (bodyDst.top > scoreDst.top) bodyDst.offsetTo(bodyDst.left, bodyDst.top - 20);
+            if (bodyDst.top < scoreDst.top && bodyDst.left > scoreDst.left) {
+            /* making him disappear when he reached the top right corner by giving him + 500
+               until he will be populated again to the screen */
+                bodyDst.offsetTo(bodyDst.left + 500, bodyDst.top - 500);
                 collected = false; // done collecting
                 canPopulate = true;
                 // we want the coin to populate right after it reaches the score
@@ -86,6 +88,7 @@ public class Coin extends GameObject implements Collidable{
             }
         }
         if(canPopulate && stagePassed) {
+            populateDuration = 4500;
             populationCounter.restartCount();
             canPopulate = false;
         } else if(!collected && populationCounter.timePassed(populateDuration)) {
@@ -108,6 +111,7 @@ public class Coin extends GameObject implements Collidable{
 
     public void stopTime(boolean isPaused) {
         populationCounter.stopTime(isPaused);
+        firstPopulateCounter.stopTime(isPaused);
     }
 
     Rect getScoreRect() { return scoreDst; }
