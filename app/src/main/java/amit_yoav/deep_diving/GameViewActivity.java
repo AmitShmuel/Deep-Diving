@@ -183,18 +183,23 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     public void onSensorChanged(SensorEvent sensorEvent) {
         if(sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 
-            yAccel = sign * ((4 * sensorEvent.values[index]) - (sign*ySensorOffset));
-            xAccel = 4 * sensorEvent.values[1];
+                // the values you were calculating originally here were over 10000!
+            xAccel = (int) Math.pow(sensorEvent.values[1], 2);
+            yAccel = (int) Math.pow(sensorEvent.values[2], 2);
 
-            if(firstSensorChanged) {
-                ySensorOffset = 4 * sensorEvent.values[0];
-                System.out.println(ySensorOffset +"========================");
-                firstSensorChanged = false;
+//            yAccel = sign * ((4 * sensorEvent.values[index]) - (sign*ySensorOffset));
+//            xAccel = 4 * sensorEvent.values[1];
+//
+//            if(firstSensorChanged) {
+//                firstSensorChanged = false;
+//                ySensorOffset = 4 * sensorEvent.values[0];
+//                System.out.println(ySensorOffset +"========================");
 //                 user is either lying on his back or sitting and the device is right in front of him
-                if(ySensorOffset > 25) {
-                    sign = -1;
-                    index = 2;
-                }
+//                if(ySensorOffset > 25) {
+//                    sign = -1;
+//                    index = 2;
+                    //CONT FROM HERE
+//                }
             }
 //            if(4 * sensorEvent.values[0] > )
 //            else{
@@ -206,8 +211,8 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
 //                    ySensorOffset = yAccel;
 //                }
 //            }
-            sensorChanged = true;
-        }
+//            sensorChanged = true;
+//        }
     }
 
     @Override

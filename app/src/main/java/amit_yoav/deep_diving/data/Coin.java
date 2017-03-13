@@ -28,12 +28,11 @@ public class Coin extends GameObject implements Collidable{
 
     private MillisecondsCounter frameCounter = new MillisecondsCounter();
     private MillisecondsCounter populationCounter = new MillisecondsCounter();
-    private MillisecondsCounter firstPopulateCounter = new MillisecondsCounter();
 
     private final int frameDuration = 50;
     private int frame, populateDuration = 4500;
     private boolean collected, canPopulate;
-    private boolean firstPopulation = true, waitOnFirstPopulation;
+    private boolean firstPopulation = true;
 
 
     public static Coin prepareCoin(Bitmap bitmap) {
@@ -111,7 +110,6 @@ public class Coin extends GameObject implements Collidable{
 
     public void stopTime(boolean isPaused) {
         populationCounter.stopTime(isPaused);
-        firstPopulateCounter.stopTime(isPaused);
     }
 
     Rect getScoreRect() { return scoreDst; }
