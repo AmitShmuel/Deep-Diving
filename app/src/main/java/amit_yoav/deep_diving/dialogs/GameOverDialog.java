@@ -19,11 +19,14 @@ public class GameOverDialog extends Dialog implements android.view.View.OnClickL
 
     private Activity gameViewActivity;
     private int scores = 0, bestScores = 0;
+    private Typeface face;
 
     public GameOverDialog(Activity a) {
         super(a);
         this.gameViewActivity = a;
         this.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        face = Typeface.createFromAsset(
+                gameViewActivity.getAssets(),"fonts/SF_Slapstick_Comic_Bold_Oblique.ttf");
     }
 
     public void setScores(int scores) {
@@ -46,8 +49,7 @@ public class GameOverDialog extends Dialog implements android.view.View.OnClickL
         scoresText.setText(String.valueOf(scores));
         bestScoreText.setText(String.valueOf(bestScores));
 
-        Typeface face= Typeface.createFromAsset(
-                gameViewActivity.getAssets(),"fonts/SF_Slapstick_Comic_Bold_Oblique.ttf");
+
         scoresText.setTypeface(face);
         bestScoreText.setTypeface(face);
 
@@ -61,10 +63,11 @@ public class GameOverDialog extends Dialog implements android.view.View.OnClickL
         switch (v.getId()) {
 
             case R.id.restart_game_button:
+                MainActivity.soundEffectsUtil.play(R.raw.start_bubble);
                 gameViewActivity.recreate();
                 MainActivity.musicPlayer.startMusic(false);
+                MainActivity.musicPlayer.switchMusic(R.raw.game); //TEST
 //                MainActivity.musicPlayer.switchMusic(R.raw.game);
-                MainActivity.soundEffectsUtil.play(R.raw.start_bubble);
                 break;
 
             case R.id.back_main_menu_button:

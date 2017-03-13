@@ -2,6 +2,7 @@ package amit_yoav.deep_diving;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -213,6 +214,12 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onRestart() {
         super.onRestart();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (musicPlayer != null && musicPlayer.mPlayer != null) musicPlayer.mPlayer.release();
     }
 
     @Override
@@ -458,16 +465,20 @@ public class MainActivity extends AppCompatActivity implements
                 if (mPlayer == null) {
                     mPlayer = MediaPlayer.create(appContext, R.raw.welcome_screen);
                     mPlayer.setVolume(volume, volume);
+                    mPlayer.setLooping(true);
                     mPlayer.start();
-                    mPlayer.setOnCompletionListener(this); // MediaPlayer.OnCompletionListener
+//                    mPlayer.setOnCompletionListener(this); // MediaPlayer.OnCompletionListener
                 } else {
-                    try {
-                        mPlayer.prepare();
-                        mPlayer.setVolume(volume, volume);
-                        mPlayer.start();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    mPlayer.setVolume(volume, volume);
+                    mPlayer.setLooping(true);
+                    mPlayer.start();
+//                    try {
+//                        mPlayer.prepare();
+//                        mPlayer.setVolume(volume, volume);
+//                        mPlayer.start();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
                 }
                 musicIsPlaying = true;
             }
@@ -477,12 +488,44 @@ public class MainActivity extends AppCompatActivity implements
             if(musicIsPlaying) {
                 if(currentMusicPlaying == id) return;
                 currentMusicPlaying = id;
-                mPlayer.stop();
-                mPlayer.release();
-                mPlayer = MediaPlayer.create(appContext, id);
-                mPlayer.setVolume(volume, volume);
-                mPlayer.start();
-                mPlayer.setOnCompletionListener(this);
+//                mPlayer.stop();
+//                mPlayer.release();
+//                mPlayer = null;
+//                mPlayer = MediaPlayer.create(appContext, id);
+//                mPlayer.setVolume(volume, volume);
+//                mPlayer.start();
+//                mPlayer.setOnCompletionListener(this);
+                AssetFileDescriptor afd = appContext.getResources().openRawResourceFd(currentMusicPlaying);
+
+                try {
+                    mPlayer.reset();
+
+                    mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getDeclaredLength());
+                    mPlayer.prepare();
+                    mPlayer.setLooping(true);
+                    mPlayer.start();
+                }
+                catch (IllegalArgumentException e)
+                {
+                    Log.d("musicPlayer:", "Unable to play audio queue do to exception: " + e.getMessage(), e);
+                }
+                catch (IllegalStateException e)
+                {
+                    Log.d("musicPlayer:", "Unable to play audio queue do to exception: " + e.getMessage(), e);
+                }
+                catch (IOException e)
+                {
+                    Log.d("musicPlayer:", "Unable to play audio queue do to exception: " + e.getMessage(), e);
+                }
+                finally {
+                    try {
+                        afd.close();
+                    } catch (IOException e) {
+                        Log.e("musicPlayer:", "Failed to close afd: " + e.getMessage(), e);
+
+                    }
+
+                }
             }
         }
     }
