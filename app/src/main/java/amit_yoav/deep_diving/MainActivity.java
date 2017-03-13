@@ -199,8 +199,9 @@ public class MainActivity extends AppCompatActivity implements
         super.onResume();
         if(isFinished) android.os.Process.killProcess(android.os.Process.myPid());
         gameStarted = false;
-        musicPlayer.switchMusic(R.raw.welcome_screen);
-        if(musicPlayer.mPlayer != null && isPaused) {
+        if(!isPaused) musicPlayer.switchMusic(R.raw.welcome_screen);
+//        musicPlayer.startMusic(true);
+        else if(musicPlayer.mPlayer != null && isPaused) {
             musicPlayer.startMusic(true);
             isPaused = false;
         }
@@ -211,8 +212,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStop() {
         super.onStop();
         if (mGoogleApiClient.isConnected()) mGoogleApiClient.disconnect();
-        if(!gameStarted) musicPlayer.stopMusic(true);
-        isPaused = true;
+        if(!gameStarted) musicPlayer.stopMusic(isPaused = true);
     }
 
     @Override
@@ -427,8 +427,12 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         public void stopMusic(boolean isPaused) {
-            if(isPaused) mPlayer.pause();
-            else mPlayer.stop();
+            try {
+                if(isPaused) mPlayer.pause();
+                else mPlayer.stop();
+            } catch(IllegalStateException e) {
+                Log.d("musicPlayer:", "mPlayer is not initialized yet: " + e.getMessage(), e);
+            }
         }
 
         public void startMusic(boolean isResumed) {
