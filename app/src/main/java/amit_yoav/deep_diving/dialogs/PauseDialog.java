@@ -61,7 +61,7 @@ public class PauseDialog extends Dialog implements
                 MainActivity.soundEffectsUtil.play(R.raw.quit_dialog);
                 dismiss();
                 gamePaused = false;
-                MainActivity.musicPlayer.startMusic(true);
+                MainActivity.musicPlayer.startMusic();
                 break;
 
             case R.id.pause_settings_button:

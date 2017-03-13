@@ -30,7 +30,6 @@ public class PauseSettingsDialog extends Dialog {
     public PauseSettingsDialog(Activity a) {
         super(a);
         gameViewActivity = (GameViewActivity) a;
-//        mainActivity =  ma;
         preferences = PreferenceManager.getDefaultSharedPreferences(gameViewActivity);
         editor = preferences.edit();
 
@@ -55,7 +54,6 @@ public class PauseSettingsDialog extends Dialog {
 
         switchSound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView,final boolean isChecked) {
-//                mainActivity.playToggleSoundEffect(isChecked);
                 MainActivity.playToggleSoundEffect(isChecked);
                 MainActivity.setIsSoundOn(isChecked);
 
@@ -89,7 +87,6 @@ public class PauseSettingsDialog extends Dialog {
             public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
 
                 MainActivity.setVolumeMusic((float)progress/100);
-//                ((MainActivity) gameViewActivity.getParent()).setVolumeMusic((float)progress/100);
             }
         });
 
@@ -101,11 +98,6 @@ public class PauseSettingsDialog extends Dialog {
             }
         });
     }
-
-//    public float getVolume() {
-//        return (float)(preferences.getInt("music",99))/100;
-//    }
-//    public boolean getSound() {return preferences.getBoolean("sound",true);}
 
     @Override
     public void onBackPressed() {

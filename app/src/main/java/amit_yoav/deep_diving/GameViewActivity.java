@@ -6,7 +6,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.annotation.IntDef;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,12 +20,10 @@ import amit_yoav.deep_diving.dialogs.PauseDialog;
 import amit_yoav.deep_diving.dialogs.PauseSettingsDialog;
 import amit_yoav.deep_diving.utilities.AsyncHandler;
 
-import java.lang.annotation.Retention;
 import java.util.Random;
 
 import static amit_yoav.deep_diving.GameView.pauseHeight;
 import static amit_yoav.deep_diving.GameView.pauseWidth;
-import static java.lang.annotation.RetentionPolicy.CLASS;
 
 public class GameViewActivity extends AppCompatActivity implements SensorEventListener {
 

@@ -33,7 +33,6 @@ import java.io.IOException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.games.leaderboard.Leaderboard;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.example.games.basegameutils.BaseGameUtils;
 
@@ -54,8 +53,6 @@ public class MainActivity extends AppCompatActivity implements
     private static boolean isSoundOn, gameStarted, isFinished, isHowToPlayShown;
 
     private static TextView bestScoreText;
-
-    public boolean getIsHowToPlayShown() {return isHowToPlayShown;}
 
     private int[] divers = {
       R.drawable.black_diver_select, R.drawable.magenta_diver_select, R.drawable.pink_diver_select
@@ -201,8 +198,8 @@ public class MainActivity extends AppCompatActivity implements
         gameStarted = false;
         if(!isPaused) musicPlayer.switchMusic(R.raw.welcome_screen);
 //        musicPlayer.startMusic(true);
-        else if(musicPlayer.mPlayer != null && isPaused) {
-            musicPlayer.startMusic(true);
+        else if(musicPlayer.mPlayer != null) {
+            musicPlayer.startMusic();
             isPaused = false;
         }
         settingsDialog = new SettingsDialog(this);
@@ -414,11 +411,11 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public static class MyMusicRunnable implements Runnable, MediaPlayer.OnCompletionListener {
+    public static class MyMusicRunnable implements Runnable {
         Context appContext;
         MediaPlayer mPlayer;
         private boolean musicIsPlaying = false;
-        private int currentMusicPlaying = R.raw.welcome_screen;
+        public int currentMusicPlaying = R.raw.welcome_screen, currentPosition;
 
         MyMusicRunnable(Context c) {
             // be careful not to leak the activity context.
@@ -427,32 +424,21 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         public void stopMusic(boolean isPaused) {
-            if(isPaused) mPlayer.pause();
-            else mPlayer.stop();
+            if(isPaused) {
+                currentPosition = mPlayer.getCurrentPosition();
+                mPlayer.pause();
+
+            }
+            else {
+                currentPosition = 0;
+                mPlayer.stop();
+            }
+
         }
 
-        public void startMusic(boolean isResumed) {
-            if(!isResumed) {
-                try {
-                    mPlayer.prepare();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        public void startMusic() {
+            mPlayer.seekTo(currentPosition);
             mPlayer.start();
-        }
-
-        /**
-         * MediaPlayer.OnCompletionListener callback
-         *
-         * @param mp - this is the MediaPlayer
-         */
-        @Override
-        public void onCompletion(MediaPlayer mp) {
-            // loop back - play again
-            if (musicIsPlaying && mPlayer != null) {
-                mPlayer.start();
-            }
         }
 
         /**
@@ -480,13 +466,6 @@ public class MainActivity extends AppCompatActivity implements
                     mPlayer.setVolume(volume, volume);
                     mPlayer.setLooping(true);
                     mPlayer.start();
-//                    try {
-//                        mPlayer.prepare();
-//                        mPlayer.setVolume(volume, volume);
-//                        mPlayer.start();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
                 }
                 musicIsPlaying = true;
             }
@@ -496,33 +475,15 @@ public class MainActivity extends AppCompatActivity implements
             if(musicIsPlaying) {
                 if(currentMusicPlaying == id) return;
                 currentMusicPlaying = id;
-//                mPlayer.stop();
-//                mPlayer.release();
-//                mPlayer = null;
-//                mPlayer = MediaPlayer.create(appContext, id);
-//                mPlayer.setVolume(volume, volume);
-//                mPlayer.start();
-//                mPlayer.setOnCompletionListener(this);
                 AssetFileDescriptor afd = appContext.getResources().openRawResourceFd(currentMusicPlaying);
-
                 try {
                     mPlayer.reset();
-
                     mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getDeclaredLength());
                     mPlayer.prepare();
                     mPlayer.setLooping(true);
                     mPlayer.start();
                 }
-                catch (IllegalArgumentException e)
-                {
-                    Log.d("musicPlayer:", "Unable to play audio queue do to exception: " + e.getMessage(), e);
-                }
-                catch (IllegalStateException e)
-                {
-                    Log.d("musicPlayer:", "Unable to play audio queue do to exception: " + e.getMessage(), e);
-                }
-                catch (IOException e)
-                {
+                catch (IOException e) {
                     Log.d("musicPlayer:", "Unable to play audio queue do to exception: " + e.getMessage(), e);
                 }
                 finally {

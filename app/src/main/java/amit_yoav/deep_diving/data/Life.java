@@ -60,7 +60,7 @@ public class Life extends GameObject implements Collidable{
 
     @Override
     public void update() {
-        if(life < 3 && populationCounter.timePassed(60000)) {
+        if(life < 3 && populationCounter.timePassed(50000)) {
             populate();
             canDraw = true;
         }

@@ -65,9 +65,8 @@ public class GameOverDialog extends Dialog implements android.view.View.OnClickL
             case R.id.restart_game_button:
                 MainActivity.soundEffectsUtil.play(R.raw.start_bubble);
                 gameViewActivity.recreate();
-                MainActivity.musicPlayer.startMusic(false);
+                MainActivity.musicPlayer.currentMusicPlaying = -1;
                 MainActivity.musicPlayer.switchMusic(R.raw.game); //TEST
-//                MainActivity.musicPlayer.switchMusic(R.raw.game);
                 break;
 
             case R.id.back_main_menu_button:
