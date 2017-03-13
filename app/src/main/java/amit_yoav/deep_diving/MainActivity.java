@@ -193,14 +193,17 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    private boolean isPaused;
     @Override
     public void onResume() {
         super.onResume();
         if(isFinished) android.os.Process.killProcess(android.os.Process.myPid());
         gameStarted = false;
         musicPlayer.switchMusic(R.raw.welcome_screen);
-        if(musicPlayer.mPlayer != null)
+        if(musicPlayer.mPlayer != null && isPaused) {
             musicPlayer.startMusic(true);
+            isPaused = false;
+        }
         settingsDialog = new SettingsDialog(this);
     }
 
@@ -209,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onStop();
         if (mGoogleApiClient.isConnected()) mGoogleApiClient.disconnect();
         if(!gameStarted) musicPlayer.stopMusic(true);
+        isPaused = true;
     }
 
     @Override
