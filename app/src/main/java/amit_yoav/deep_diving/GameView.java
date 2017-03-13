@@ -551,14 +551,24 @@ public class GameView extends View {
     }
 
     public void stopTime(boolean isPaused) {
+//        System.out.println("gun");
         gun.stopTime(isPaused);
+//        System.out.println("life");
         life.stopTime(isPaused);
+//        System.out.println("coin");
         coin.stopTime(isPaused);
+//        System.out.println("shieldCounter");
         shieldCounter.stopTime(isPaused);
+//        System.out.println("protect");
         protectCounter.stopTime(isPaused);
+//        System.out.println("blinkShield");
         shieldBlinkCounter.stopTime(isPaused);
-        shield.populationCounter.stopTime(isPaused);    //NEW
-        for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++) characters[i].stopTime(isPaused);
+//        System.out.println("shieldPopulate");
+        shield.stopTime(isPaused);    //NEW
+        for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++) {
+//            System.out.println("character" + i);
+            characters[i].stopTime(isPaused);
+        }
     }
 
     private void updateLeaderBoard(final int finishedScore) {

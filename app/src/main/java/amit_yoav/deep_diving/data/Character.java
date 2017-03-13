@@ -166,7 +166,7 @@ public class Character extends GameObject implements Collidable{
                 }
             }
         } // wait before populate (new stage)
-        else if (waitOnFirstPopulation || firstPopulateCounter.timePassed(4000)) {
+        else if (!gamePaused && (waitOnFirstPopulation || firstPopulateCounter.timePassed(4000))) {
             // after 4 seconds we want to go inside and wait populateDuration time
             waitOnFirstPopulation = true;
             if(populateCounter.timePassed(populateDuration)) {

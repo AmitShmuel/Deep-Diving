@@ -124,4 +124,6 @@ public class Shield extends GameObject implements Collidable{
         if(blinker.getAlpha() == 50) blinker.setAlpha(255);
         else blinker.setAlpha(50);
     }
+
+    public void stopTime(boolean isPaused) { populationCounter.stopTime(isPaused); }
 }
