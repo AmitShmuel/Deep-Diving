@@ -459,7 +459,11 @@ public class MainActivity extends AppCompatActivity implements
         public void run() {
 
             if (musicIsPlaying) {
-                mPlayer.stop();
+                try {
+                    mPlayer.stop();
+                } catch (IllegalStateException e) {
+                    Log.d("musicPlayer:", "mPlayer is not initialized yet: " + e.getMessage(), e);
+                }
                 musicIsPlaying = false;
             } else {
                 if (mPlayer == null) {
