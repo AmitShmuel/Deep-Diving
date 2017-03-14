@@ -35,6 +35,7 @@ import amit_yoav.deep_diving.data.Life;
 import amit_yoav.deep_diving.data.MainCharacter;
 import amit_yoav.deep_diving.data.Shield;
 import amit_yoav.deep_diving.data.StageLabel;
+import amit_yoav.deep_diving.data.Star;
 import amit_yoav.deep_diving.utilities.AsyncHandler;
 import amit_yoav.deep_diving.utilities.CollisionUtil;
 import amit_yoav.deep_diving.utilities.MillisecondsCounter;
@@ -69,6 +70,7 @@ public class GameView extends View {
     private Shield shield;
     private Gun gun;
     private Arrow arrow;
+    private Star[] stars;
     private StageLabel[] stageLabels;
     private final int newRecordIndex = 10, finishLabelIndex = 11;
     private int mainCharResource, mainCharGunResource;
@@ -88,10 +90,10 @@ public class GameView extends View {
      * Stage related types
      */
     private int currentStage, mobsStartIndex = 0;
-//    private int[] stageMobs = {4,5,7,8,10,11,13,14,15,16};         //Final Version
-    private int[] stageMobs = {16,5,6,7,8,9,10,11,12,16}; //DEBUG
+    private int[] stageMobs = {4,5,7,8,10,11,13,14,15,16};         //Final Version
+//    private int[] stageMobs = {16,5,6,7,8,9,10,11,12,16}; //DEBUG
     public static boolean stagePassed = true;
-    private boolean isStagedPlayedSound;
+    private boolean isStagedPlayedSound, gameFinished;
 
     /*
      * Score related types
@@ -138,6 +140,7 @@ public class GameView extends View {
                     coin.update();
                     life.update();
                     gun.update();
+                    if(gameFinished) for (Star star : stars) star.update();
                     detectCollisions();
                     continue; // no need to go down..
                 }
@@ -266,6 +269,7 @@ public class GameView extends View {
         shield = Shield.prepareShield(BitmapFactory.decodeResource(getResources(), R.drawable.shield), mainChar.getBody());
         stageLabels = StageLabel.prepareStageLabels(BitmapFactory.decodeResource(getResources(), R.drawable.stage_labels),
                 BitmapFactory.decodeResource(getResources(), R.drawable.winner_stage));
+        stars = Star.prepareStar(BitmapFactory.decodeResource(getResources(), R.drawable.stars));
         pauseBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pause_button);
         pauseHeight = pauseBitmap.getHeight();
         pauseWidth = pauseBitmap.getWidth();
@@ -342,9 +346,13 @@ public class GameView extends View {
                 isStagedPlayedSound = true;
             }
         }
-        stageLabels[currentStage].draw(canvas);
+        if(!gameFinished) stageLabels[currentStage].draw(canvas);
+        else stageLabels[finishLabelIndex].draw(canvas);
         if(stageLabels[newRecordIndex].canDraw) stageLabels[newRecordIndex].draw(canvas);
-        if(stageLabels[finishLabelIndex].canDraw) stageLabels[finishLabelIndex].draw(canvas);
+        if(stageLabels[finishLabelIndex].canDraw){
+            stageLabels[finishLabelIndex].draw(canvas);
+            for(Star star: stars) star.draw(canvas);
+        }
         postInvalidateOnAnimation();
 
 //        if(mainChar.hasGun) drawShootingButton(canvas);
@@ -395,7 +403,7 @@ public class GameView extends View {
                 vibrator.vibrate(300);
                 MainActivity.soundEffectsUtil.play(R.raw.hit);
                 mainChar.canGetHit = false;
-//                life.setLife(life.getLife() == 0 ? 0 : life.getLife() - 1);
+                life.setLife(life.getLife() == 0 ? 0 : life.getLife() - 1);
             }
             if (arrow.populated && CollisionUtil.isCollisionDetected(characters[i], arrow)) {
                 hit = true;
@@ -425,15 +433,18 @@ public class GameView extends View {
         }
         if(CollisionUtil.isCollisionDetected(coin, mainChar)) {
             if(!coin.isCollected()) {
-                updateScore(score+10); // could do score++ but the function makes more sense like that
+                updateScore(score+1); // could do score++ but the function makes more sense like that
                 MainActivity.soundEffectsUtil.play(R.raw.coin_collected);
 
                 if(!isBestScoreUsed && score > bestScore) bestScore();
                 if(score == (currentStage+1) * 10) {
                     if(currentStage < 9) levelUp();
-                    else if(currentStage == 9) { 
+                    else if(currentStage == 9) {
                         MainActivity.soundEffectsUtil.play(R.raw.game_finished);
                         stageLabels[finishLabelIndex].canDraw = true;
+                        stageLabels[currentStage].canDraw = false;
+                        gameFinished = true;
+                        for(Star star : stars) star.toPopulate = true;
                     }
                 }
 

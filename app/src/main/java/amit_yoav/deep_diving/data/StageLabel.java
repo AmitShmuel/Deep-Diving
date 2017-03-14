@@ -64,7 +64,10 @@ public class StageLabel extends GameObject {
                 if (isNewRecordLabel || isFinishLabel) {
                     if (bodyDst.top > screenHeight/4 && populated) {
                         bodyDst.offsetTo(bodyDst.left, bodyDst.top - 2);
-                    } else if(populated) canDraw = false;
+                    } else if(populated) {
+                        canDraw = false;
+                        if(isFinishLabel) isFinishLabel = false;
+                    }
                 } else { // NewLevelLabel
                     if (bodyDst.bottom < screenHeight / 2) bodyDst.offsetTo(bodyDst.left, bodyDst.top + 2);
                     else stagePassed = false;
@@ -84,7 +87,6 @@ public class StageLabel extends GameObject {
     public void update() {
         if(toPopulate){
             populate();
-
             toPopulate = false;
         }
     }
