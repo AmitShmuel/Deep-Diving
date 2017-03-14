@@ -403,6 +403,7 @@ public class MainActivity extends AppCompatActivity implements
             soundsMap.put(R.raw.shoot, soundPool.load(appContext, R.raw.shoot, 1));
             soundsMap.put(R.raw.killed, soundPool.load(appContext, R.raw.killed, 1));
             soundsMap.put(R.raw.drop_inks, soundPool.load(appContext, R.raw.drop_inks, 1));
+            soundsMap.put(R.raw.game_finished, soundPool.load(appContext, R.raw.game_finished, 1));
         }
 
         public void play(int soundKey) {

@@ -45,7 +45,7 @@ public class BackgroundObject extends GameObject {
     })
     @interface ObjectKind {}
 
-    @ObjectKind public int kind;
+    @ObjectKind private int kind;
     private Rect objectSrc;
     private RectF objectDst = new RectF();
     private float speed;

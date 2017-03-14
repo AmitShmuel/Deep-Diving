@@ -21,16 +21,15 @@ public class StageLabel extends GameObject {
     private RectF bodyDst = new RectF();
     private Paint paint = new Paint();
     private int alpha = 255;
-    private boolean toPopulate, isNewRecordLabel;
-    public boolean canDraw = true;
+    public boolean canDraw;
+    private boolean isNewRecordLabel, isFinishLabel, populated, toPopulate;
 
-
-    public static StageLabel[] prepareStageLabels(Bitmap bitmap) {
+    public static StageLabel[] prepareStageLabels(Bitmap bitmap, Bitmap finishBitmap) {
 
         StageLabel[] stageLabel = new StageLabel[] {
                 new StageLabel(), new StageLabel(), new StageLabel(), new StageLabel(), new StageLabel(),
                 new StageLabel(), new StageLabel(), new StageLabel(), new StageLabel(), new StageLabel(),
-                new StageLabel()
+                new StageLabel(), new StageLabel()
         };
 
         int stageLabelWidth = bitmap.getWidth();
@@ -41,7 +40,15 @@ public class StageLabel extends GameObject {
             stageLabel[i].setSize(stageLabelWidth, stageLabelHeight);
             stageLabel[i].bodySrc = new Rect(0, i * stageLabelHeight, stageLabelWidth, (i + 1) * stageLabelHeight);
         }
-        stageLabel[stageLabel.length - 1].isNewRecordLabel = true;
+        stageLabel[0].canDraw = true;
+        stageLabel[stageLabel.length - 2].toPopulate = true;
+        stageLabel[stageLabel.length - 2].isNewRecordLabel = true;
+        stageLabel[stageLabel.length - 1].isFinishLabel = true;
+        stageLabel[stageLabel.length - 1].toPopulate = true;
+        stageLabel[stageLabel.length - 1].setBitmap(finishBitmap);
+        stageLabel[stageLabel.length - 1].setSize(finishBitmap.getWidth(), finishBitmap.getHeight());
+        stageLabel[stageLabel.length - 1].bodySrc = new Rect(0, 0, finishBitmap.getWidth(), finishBitmap.getHeight());
+
         return stageLabel;
     }
 
@@ -50,13 +57,14 @@ public class StageLabel extends GameObject {
 
         int save = canvas.save();
 
-        if(stagePassed || isNewRecordLabel) {
+        if(stagePassed || isNewRecordLabel || isFinishLabel) {
             canvas.drawBitmap(bitmap, bodySrc, bodyDst, paint);
             if (!gamePaused) {
                 if (alpha > 0) paint.setAlpha(alpha--);
-                if (isNewRecordLabel) {
-                    if (bodyDst.top > screenHeight / 2) bodyDst.offsetTo(bodyDst.left, bodyDst.top - 2);
-                    else canDraw = false;
+                if (isNewRecordLabel || isFinishLabel) {
+                    if (bodyDst.top > screenHeight/4 && populated) {
+                        bodyDst.offsetTo(bodyDst.left, bodyDst.top - 2);
+                    } else if(populated) canDraw = false;
                 } else { // NewLevelLabel
                     if (bodyDst.bottom < screenHeight / 2) bodyDst.offsetTo(bodyDst.left, bodyDst.top + 2);
                     else stagePassed = false;
@@ -76,15 +84,17 @@ public class StageLabel extends GameObject {
     public void update() {
         if(toPopulate){
             populate();
+
             toPopulate = false;
         }
     }
 
     private void populate() {
-        if(isNewRecordLabel) {
+        if(isNewRecordLabel || isFinishLabel) {
             bodyDst.set(screenWidth/2 - width/2, screenHeight, screenWidth/2 + width/2, screenHeight + height);
         }
         else bodyDst.set(screenWidth/2 - width/2, -height, screenWidth/2 + width/2, 0);
+        populated = true;
     }
 
     public void setToPopulate(boolean toPopulate) { this.toPopulate = toPopulate; }

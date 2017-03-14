@@ -70,7 +70,7 @@ public class GameView extends View {
     private Gun gun;
     private Arrow arrow;
     private StageLabel[] stageLabels;
-    private final int newRecordIndex = 10;
+    private final int newRecordIndex = 10, finishLabelIndex = 11;
     private int mainCharResource, mainCharGunResource;
     private final int octopusIndex = 10, piranhaIndex = 13,
             whiteSharkIndex = 15, hammerSharkIndex = 14;
@@ -131,6 +131,7 @@ public class GameView extends View {
                     for (BackgroundObject ob : objects) ob.update();
                     stageLabels[currentStage].update();
                     stageLabels[newRecordIndex].update();
+                    stageLabels[finishLabelIndex].update();
                     mainChar.update();
                     updateMainCharVulnerability();
                     shield.update();
@@ -263,7 +264,8 @@ public class GameView extends View {
         gun = Gun.prepareGun(BitmapFactory.decodeResource(getResources(), R.drawable.gun));
         arrow = Arrow.prepareArrow(BitmapFactory.decodeResource(getResources(), R.drawable.arrow));
         shield = Shield.prepareShield(BitmapFactory.decodeResource(getResources(), R.drawable.shield), mainChar.getBody());
-        stageLabels = StageLabel.prepareStageLabels(BitmapFactory.decodeResource(getResources(), R.drawable.stage_labels));
+        stageLabels = StageLabel.prepareStageLabels(BitmapFactory.decodeResource(getResources(), R.drawable.stage_labels),
+                BitmapFactory.decodeResource(getResources(), R.drawable.winner_stage));
         pauseBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pause_button);
         pauseHeight = pauseBitmap.getHeight();
         pauseWidth = pauseBitmap.getWidth();
@@ -342,6 +344,7 @@ public class GameView extends View {
         }
         stageLabels[currentStage].draw(canvas);
         if(stageLabels[newRecordIndex].canDraw) stageLabels[newRecordIndex].draw(canvas);
+        if(stageLabels[finishLabelIndex].canDraw) stageLabels[finishLabelIndex].draw(canvas);
         postInvalidateOnAnimation();
 
 //        if(mainChar.hasGun) drawShootingButton(canvas);
@@ -426,7 +429,13 @@ public class GameView extends View {
                 MainActivity.soundEffectsUtil.play(R.raw.coin_collected);
 
                 if(!isBestScoreUsed && score > bestScore) bestScore();
-                if( (score == (currentStage+1) * 10) && (currentStage < 9) ) levelUp();
+                if(score == (currentStage+1) * 10) {
+                    if(currentStage < 9) levelUp();
+                    else if(currentStage == 9) { 
+                        MainActivity.soundEffectsUtil.play(R.raw.game_finished);
+                        stageLabels[finishLabelIndex].canDraw = true;
+                    }
+                }
 
                 if(isSignedIn()) {
                     actionAchievement(INC, achievementIdCoin);
@@ -488,13 +497,12 @@ public class GameView extends View {
     private void bestScore() {
         isBestScoreUsed = true;
         MainActivity.soundEffectsUtil.play(R.raw.new_record);
-        stageLabels[newRecordIndex].setToPopulate(true);
         stageLabels[newRecordIndex].canDraw = true;
     }
 
     private void levelUp() {
-        stagePassed = true;
         currentStage++;
+        stagePassed = true;
 
         if(currentStage == 4) {
             MainActivity.musicPlayer.switchMusic(R.raw.music_2);
@@ -510,12 +518,6 @@ public class GameView extends View {
             gun.setSpeed(11);
             shield.setSpeed(12);
             gun.setPopulationTime(15000);
-        }
-        else if(currentStage+1 == 11) {
-            //GAME IS FINISHED !
-            // Some sound effect
-            // isDraw of fireworks = true (will make the fireworks draw on screen
-            // stage label will be replaced....
         }
         isStagedPlayedSound = isDark = characters[Character.octopusIndex].term = false;
         for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++) {
