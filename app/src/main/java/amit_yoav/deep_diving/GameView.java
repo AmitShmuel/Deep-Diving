@@ -511,8 +511,11 @@ public class GameView extends View {
             shield.setSpeed(12);
             gun.setPopulationTime(15000);
         }
-        else if(currentStage+1 == 10) {
+        else if(currentStage+1 == 11) {
             //GAME IS FINISHED !
+            // Some sound effect
+            // isDraw of fireworks = true (will make the fireworks draw on screen
+            // stage label will be replaced....
         }
         isStagedPlayedSound = isDark = characters[Character.octopusIndex].term = false;
         for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++) {

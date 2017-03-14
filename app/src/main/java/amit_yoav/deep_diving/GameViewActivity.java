@@ -61,6 +61,7 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
      * Shared Preferences types
      */
     private int bestScore, mainCharacterBitmap;
+
     public int getBestScore() {return bestScore;}
     public int getMainCharResource() {return mainCharacterBitmap;}
 
@@ -81,10 +82,10 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
         pauseSettingsDialog = new PauseSettingsDialog(this);
 
         gameOverDialog = new GameOverDialog(this);
-        bestScore = ((MainActivity) getParent()).settingsDialog.getBestScore();
+        bestScore = MainActivity.settingsDialog.getBestScore();
 
         //getting the color of the diver
-        int charIndex = ((MainActivity) getParent()).settingsDialog.getMainCharacter();
+        int charIndex = MainActivity.settingsDialog.getMainCharacter();
         if(charIndex == 0) mainCharacterBitmap = R.drawable.black_diver;
         else if(charIndex == 1) mainCharacterBitmap = R.drawable.magenta_diver;
         else mainCharacterBitmap = R.drawable.pink_diver;
@@ -124,7 +125,7 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
         gameOverDialog.setScores(score);
         if(score > bestScore) {
             gameOverDialog.setBestScore(bestScore = score);
-            ((MainActivity) getParent()).settingsDialog.setBestScore(bestScore);
+            MainActivity.settingsDialog.setBestScore(bestScore);
             MainActivity.setBestScore(bestScore);
         }
         gameOverDialog.show();
@@ -181,36 +182,28 @@ public class GameViewActivity extends AppCompatActivity implements SensorEventLi
     public void onSensorChanged(SensorEvent sensorEvent) {
         if(sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 
-                // the values you were calculating originally here were over 10000!
-            xAccel = (int) Math.pow(sensorEvent.values[1], 2);
-            yAccel = (int) Math.pow(sensorEvent.values[2], 2);
+            yAccel = sign * ((4 * sensorEvent.values[index]) - (sign*ySensorOffset));
+            xAccel = 4 * sensorEvent.values[1];
 
-//            yAccel = sign * ((4 * sensorEvent.values[index]) - (sign*ySensorOffset));
-//            xAccel = 4 * sensorEvent.values[1];
-//
-//            if(firstSensorChanged) {
-//                firstSensorChanged = false;
-//                ySensorOffset = 4 * sensorEvent.values[0];
-//                System.out.println(ySensorOffset +"========================");
-//                 user is either lying on his back or sitting and the device is right in front of him
-//                if(ySensorOffset > 25) {
-//                    sign = -1;
-//                    index = 2;
-                    //CONT FROM HERE
-//                }
+            if(firstSensorChanged) {
+                firstSensorChanged = false;
+                ySensorOffset = 4 * sensorEvent.values[0];
+//                xSensorOffset = 4 * sensorEvent.values[1];
+//                System.out.println("ySensorOffset = " +ySensorOffset +"========================");
+//                System.out.println("xSensorOffset = " +xSensorOffset +"========================");
+//                System.out.println("zSensorOffset = " + 4 * sensorEvent.values[2]+"========================");
+                if(ySensorOffset > 25) {
+//                    System.out.println("YOU ARE Sitting");
+                    ySensorOffset /= 2;
+                }
+                if(sensorEvent.values[2] < 0) {
+//                    System.out.println("YOU ARE Lying");
+                    sign = -1;
+                    index = 2;
+                }
             }
-//            if(4 * sensorEvent.values[0] > )
-//            else{
-//                yAccel = -(4 * sensorEvent.values[2] + ySensorOffset);
-//                System.out.println(ySensorOffset + "===============");
-//                xAccel = 4 * sensorEvent.values[1];
-//                if (firstSensorChanged) {
-//                    firstSensorChanged = false;
-//                    ySensorOffset = yAccel;
-//                }
-//            }
-//            sensorChanged = true;
-//        }
+            sensorChanged = true;
+        }
     }
 
     @Override

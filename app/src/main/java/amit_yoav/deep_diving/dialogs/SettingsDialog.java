@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.SwitchCompat;
 import android.view.View;
+import android.view.Window;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
@@ -19,7 +23,7 @@ import amit_yoav.deep_diving.utilities.AsyncHandler;
 public class SettingsDialog extends Dialog {
 
     private MainActivity mainActivity;
-    private Switch switchSound;
+    private SwitchCompat switchSound;
     private SeekBar seekbarMusic;
     private ImageButton howToPlay;
 //    private static boolean isStarted = true;
@@ -33,6 +37,8 @@ public class SettingsDialog extends Dialog {
     public SettingsDialog(Activity a) {
         super(a);
         this.mainActivity = (MainActivity) a;
+        this.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        this.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
         editor = preferences.edit();
@@ -65,7 +71,7 @@ public class SettingsDialog extends Dialog {
         setContentView(R.layout.settings_dialog);
         this.setCanceledOnTouchOutside(false);
 
-        switchSound = (Switch) this.findViewById(R.id.switchSound);
+        switchSound = (SwitchCompat) this.findViewById(R.id.switchSound);
         seekbarMusic = (SeekBar) this.findViewById(R.id.seekbarMusic);
         howToPlay = (ImageButton) this.findViewById(R.id.how_to_play_button);
 
