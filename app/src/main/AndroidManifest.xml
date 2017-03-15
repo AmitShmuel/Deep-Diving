@@ -3,9 +3,6 @@
     package="amit_yoav.deep_diving">
 
     <uses-feature
-        android:name="android.hardware.sensor.compass"
-        android:required="true" />
-    <uses-feature
         android:name="android.hardware.sensor.accelerometer"
         android:required="true" />
     <uses-permission android:name="android.permission.INTERNET" />
