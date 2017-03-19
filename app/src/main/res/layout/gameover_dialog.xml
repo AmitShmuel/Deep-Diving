@@ -59,27 +59,27 @@
         android:id="@+id/scoreView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginLeft="60dp"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
         app:layout_constraintTop_toBottomOf="@+id/game_over_text"
         app:srcCompat="@drawable/score"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:layout_marginLeft="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/back_main_menu_button" />
 
     <ImageView
         android:id="@+id/bestScoreView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginLeft="60dp"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="4dp"
         app:layout_constraintTop_toBottomOf="@+id/scoreView"
         app:srcCompat="@drawable/best_score"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:layout_marginLeft="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/scoreView" />
 
     <TextView
         android:text="@string/test_number_10"
-        android:layout_width="100dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:id="@+id/best_score"
         android:textStyle="normal|bold"
@@ -91,14 +91,14 @@
         android:shadowRadius="5"
         android:shadowColor="@android:color/black"
         app:layout_constraintLeft_toRightOf="@+id/bestScoreView"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintTop_toTopOf="@+id/bestScoreView"
-        android:layout_marginTop="0dp" />
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bestScoreView"
+        android:layout_marginBottom="4dp" />
 
     <TextView
         android:text="@string/test_number_10"
-        android:layout_width="100dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:id="@+id/end_score"
         android:textStyle="normal|bold"
@@ -110,9 +110,9 @@
         android:shadowRadius="5"
         android:shadowColor="@android:color/black"
         app:layout_constraintLeft_toRightOf="@+id/scoreView"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="0dp"
-        app:layout_constraintTop_toTopOf="@+id/scoreView" />
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/scoreView" />
 
 </android.support.constraint.ConstraintLayout>

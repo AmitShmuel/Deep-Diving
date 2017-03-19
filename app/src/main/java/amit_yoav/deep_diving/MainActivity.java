@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements
     private static TextView bestScoreText;
 
     private int[] divers = {
-      R.drawable.black_diver_select, R.drawable.magenta_diver_select, R.drawable.pink_diver_select
+            R.drawable.black_diver_select, R.drawable.magenta_diver_select, R.drawable.pink_diver_select
     };
     private int diverPointer = 0;
     ImageView mainActivityDiver = null;
@@ -67,12 +67,16 @@ public class MainActivity extends AppCompatActivity implements
     private static final int REQUEST_ACHIEVEMENTS = 5001, REQUEST_LEADERBOARD = 5001;
 
     private static int RC_SIGN_IN = 9001;
+
     private boolean mResolvingConnectionFailure = false;
     private boolean mAutoStartSignInflow = true;
     private boolean mSignInClicked = false;
 
     boolean mExplicitSignOut = false;
     boolean mInSignInFlow = false;
+
+
+    private boolean isAutoConnect;
 
     public void setDiver(View v) {
         soundEffectsUtil.play(R.raw.open_dialog);
@@ -109,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements
         volume = settingsDialog.getVolume();
         isSoundOn = settingsDialog.getSound();
         isHowToPlayShown = settingsDialog.getHowToPlayUsed();
+        isAutoConnect = settingsDialog.getIsAutoConnected();
 
         if (musicPlayer == null) {
             musicPlayer = new MyMusicRunnable(this);
@@ -133,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements
         if(isHowToPlayShown) {
             soundEffectsUtil.play(R.raw.start_bubble);
             gameStarted = true;
+            if(!isSignedIn()) settingsDialog.setIsAutoConnected(isAutoConnect = false);
             musicPlayer.switchMusic(R.raw.game);
             Intent intent = new Intent(this, GameViewActivity.class);
             startActivity(intent);
@@ -147,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements
     public void quitGame(View view) {
         soundEffectsUtil.play(R.raw.quit_dialog);
         quitDialog.dismiss();
+        if(isSignedIn()) mGoogleApiClient.disconnect();
         isFinished = true;
         finish();
     }
@@ -184,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        if (!mInSignInFlow && !mExplicitSignOut) {
+        if (!mInSignInFlow && !mExplicitSignOut && isAutoConnect) {
 //             auto sign in
             mGoogleApiClient.connect();
         }
@@ -208,8 +215,12 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        if (mGoogleApiClient.isConnected()) mGoogleApiClient.disconnect();
-        if(!gameStarted) musicPlayer.stopMusic(isPaused = true);
+        if(!gameStarted) {
+            musicPlayer.stopMusic(isPaused = true);
+            if(mGoogleApiClient.isConnected()) mGoogleApiClient.disconnect();
+        }
+//        if (mGoogleApiClient.isConnected() && !gameStarted) mGoogleApiClient.disconnect();
+//        if(!gameStarted) musicPlayer.stopMusic(isPaused = true);
     }
 
     @Override
@@ -259,6 +270,7 @@ public class MainActivity extends AppCompatActivity implements
         // show sign-out button, hide the sign-in button
         findViewById(R.id.sign_in_button).setVisibility(View.GONE);
         findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
+        settingsDialog.setIsAutoConnected(isAutoConnect = true);
 
         // (your code here: update UI, enable functionality that depends on sign in, etc)
     }
@@ -271,7 +283,15 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+//        if(!connectionResult.isSuccess() && !mSignInClicked) {
+//            System.out.println("YOU CANCELED THE CONNECTECTION!");//IF WE GET HERE, IT'S GOOD!
+//            System.out.println(connectionResult.getErrorMessage());
+//            settingsDialog.setIsAutoConnected(false); //IF WE GET HERE
+//        }
+
         if (mResolvingConnectionFailure) {
+//            System.out.println("YOU CANCELED THE CONNECTECTION!");//IF WE GET HERE, IT'S GOOD!
+//            settingsDialog.setIsAutoConnected(false); //IF WE GET HERE
             // already resolving
             return;
         }
@@ -330,6 +350,7 @@ public class MainActivity extends AppCompatActivity implements
             mExplicitSignOut = true;
             mSignInClicked = false;
             if (isSignedIn()) {
+                settingsDialog.setIsAutoConnected(isAutoConnect = false);
                 Games.signOut(mGoogleApiClient);
                 mGoogleApiClient.disconnect();
             }

@@ -85,7 +85,7 @@ public class Life extends GameObject implements Collidable{
     }
 
     public void setPoint(Coin coinForMeasure) {
-        lifePoint.set((int)(coinForMeasure.getScoreRect().right-bitmap.getWidth()),
+        lifePoint.set(coinForMeasure.getScoreRect().right-bitmap.getWidth(),
             (int)(coinForMeasure.getHeight()*1.5f));
     }
 
