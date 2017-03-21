@@ -79,7 +79,7 @@
 
     <TextView
         android:text="@string/test_number_10"
-        android:layout_width="120dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:id="@+id/best_score"
         android:textStyle="normal|bold"
@@ -91,14 +91,15 @@
         android:shadowRadius="5"
         android:shadowColor="@android:color/black"
         app:layout_constraintLeft_toRightOf="@+id/bestScoreView"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginStart="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/bestScoreView"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:textAlignment="center" />
 
     <TextView
         android:text="@string/test_number_10"
-        android:layout_width="120dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:id="@+id/end_score"
         android:textStyle="normal|bold"
@@ -110,9 +111,10 @@
         android:shadowRadius="5"
         android:shadowColor="@android:color/black"
         app:layout_constraintLeft_toRightOf="@+id/scoreView"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginStart="0dp"
         android:layout_marginBottom="4dp"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="@+id/scoreView" />
 
 </android.support.constraint.ConstraintLayout>

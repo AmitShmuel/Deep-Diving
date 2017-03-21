@@ -25,8 +25,8 @@
 
     <TextView
         android:text="@string/sound"
-        android:layout_width="92dp"
-        android:layout_height="43dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/textViewSound"
         android:fontFamily="casual"
         android:textSize="24sp"
