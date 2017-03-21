@@ -1,6 +1,8 @@
 # Deep Diving
 
 [Google-Doc](https://docs.google.com/document/d/1w6cQPvVO5fuB43tWjU9pKnpVl2wMv3YP2d9w3gouAyo/edit?ts=5883af3b)
+[Promo Video](https://www.youtube.com/watch?v=G7ov0_JXZr8&feature=youtu.be)
+[Google Play link](https://play.google.com/store/apps/details?id=amit_yoav.deep_diving)
 
 ##### Dive deep into the ocean and collect as much coins as you can while escaping hungry fish!
 
