@@ -49,6 +49,10 @@ public class Character extends GameObject implements Collidable{
         this.populateDuration = populateDuration;
     }
 
+    public void setPopulateDuration(int newPopulateDuration) {
+        populateDuration = newPopulateDuration;
+    }
+
     public static Character[] prepareCharacters(Bitmap greenFishBitmap,
                     Bitmap hammerFishBitmap,Bitmap piranhaFishBitmap,   Bitmap greatSharkFishBitmap,
                     Bitmap redFishBitmap,   Bitmap goldFishBitmap,      Bitmap parrotFishBitmap,
@@ -58,18 +62,18 @@ public class Character extends GameObject implements Collidable{
                     Bitmap surgeonFishBitmap, Bitmap needleFishBitmap) {
 
         Character[] characters = new Character[]{
-                new Character(4, 100)/*Gold Fish*/,
-                new Character(5.5f ,350)/*Dog Fish*/,
-                new Character(6 ,500)/*Parrot Fish*/,
+                new Character(4, 200)/*Gold Fish*/, //In stage 4 populate changes to 1000
+                new Character(5.5f ,400)/*Dog Fish*/,   //In stage 4 populate changes to 1400
+                new Character(6 ,600)/*Parrot Fish*/,   //In stage 8 populate changes to 1600
                 new Character(5 ,800)/*Cat Fish*/,
-                new Character(7, 1500)/*Lion Fish*/,
-                new Character(7, 1000)/*Angel Fish - NEW*/,
-                new Character(8, 600)/*Clown Fish - NEW*/,
+                new Character(7, 1400)/*Lion Fish*/,
+                new Character(7, 1200)/*Angel Fish - NEW*/,
+                new Character(8, 1000)/*Clown Fish - NEW*/,
                 new Character(9, 1100)/*Surgeon Fish - NEW*/,//7
-                new Character(12, 1500)/*Needle Fish - NEW*/,
+                new Character(12, 2500)/*Needle Fish - NEW*/,
                 new Character(8, 2000)/*Green fish*/, //9
                 new Character(3.5f, 7000)/*Octopus*/, //10
-                new Character(10, 2200)/*Sword Fish*/, //11
+                new Character(10, 2500)/*Sword Fish*/, //11
                 new Character(11, 3000)/*Red Fish*/,
                 new Character(15, 4000)/*Piranha Fish*/, //13
                 new Character(16, 6000)/*Hammer Shark*/,

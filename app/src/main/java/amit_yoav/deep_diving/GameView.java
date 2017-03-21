@@ -515,6 +515,8 @@ public class GameView extends View {
 
         if(currentStage == 4) {
             MainActivity.musicPlayer.switchMusic(R.raw.music_2);
+            characters[0].setPopulateDuration(1000);
+            characters[1].setPopulateDuration(1400);
             life.setSpeed(8);
             gun.setSpeed(9);
             shield.setSpeed(10);
@@ -522,6 +524,7 @@ public class GameView extends View {
         }
         else if(currentStage == 8) {
             MainActivity.musicPlayer.switchMusic(R.raw.music_3);
+            characters[2].setPopulateDuration(1600);
 //            mobsStartIndex += 2;
             life.setSpeed(10);
             gun.setSpeed(11);
