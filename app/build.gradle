@@ -26,10 +26,9 @@ android {
         config_debug {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
-            storeFile file('C:/Users/Yoav Saroya/.android/debug.keystore')
+            storeFile file('C:/Users/aamit/.android/debug.keystore')
             storePassword 'android'
         }//    storeFile file('C:/Users/Yoav Saroya/.android/debug.keystore')
-
     }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
