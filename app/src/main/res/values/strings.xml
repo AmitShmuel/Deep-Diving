@@ -90,4 +90,12 @@
     <string name="resume">Resume</string>
     <string name="test_number_10">10</string>
     <string name="restart">RESTART</string>
+    <string name="game_info">Game Info</string>
+    <string name="_2017_the_dept_of_software_engineering">© 2017 - The Dept. of Software Engineering,</string>
+    <string name="shenkar_engineering_design_art">Shenkar: Engineering. Design. Art</string>
+    <string name="app_name_deep_diving">App Name: Deep Diving</string>
+    <string name="version_2_0">Version: 2.0</string>
+    <string name="developed_by_yoav_saroya_amp_amit_shmuel"><![CDATA[Developed By Yoav Saroya & Amit Shmuel]]></string>
+    <string name="developed_in_the_introduction_to_mobile_computing_course_2017">Developed in the Introduction to Mobile Computing Course, 2017</string>
+    <string name="instructors_dr_amnon_dekel_and_amir_uval">Instructors: Dr. Amnon Dekel and Amir Uval</string>
 </resources>

@@ -162,6 +162,17 @@ public class SettingsDialog extends Dialog {
         });
     }
 
+    public boolean getIsAutoConnected() {return preferences.getBoolean("auto_connect", true);}
+    public void setIsAutoConnected(final boolean isAutoConnected) {
+        AsyncHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                editor.putBoolean("auto_connect", isAutoConnected);
+                editor.commit();
+            }
+        });
+    }
+
     @Override
     public void onBackPressed() {
         mainActivity.closeDialog(null);

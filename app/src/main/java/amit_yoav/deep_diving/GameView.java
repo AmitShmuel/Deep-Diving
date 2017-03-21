@@ -16,12 +16,9 @@ import android.view.View;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.games.GamesStatusCodes;
 import com.google.android.gms.games.achievement.Achievement;
 import com.google.android.gms.games.achievement.AchievementBuffer;
 import com.google.android.gms.games.achievement.Achievements;
-import com.google.android.gms.games.leaderboard.LeaderboardVariant;
-import com.google.android.gms.games.leaderboard.Leaderboards;
 
 import java.lang.annotation.Retention;
 
@@ -81,7 +78,7 @@ public class GameView extends View {
      * Other
      */
     public static boolean hit, isDark; // arrow hits character
-    private Paint shootingCirclePaint = new Paint();
+//    private Paint shootingCirclePaint = new Paint();
     private Vibrator vibrator;
     private GoogleApiClient mGoogleApiClient;
 
@@ -93,7 +90,7 @@ public class GameView extends View {
     private int[] stageMobs = {4,5,7,8,10,11,13,14,15,16};         //Final Version
 //    private int[] stageMobs = {16,5,6,7,8,9,10,11,12,16}; //DEBUG
     public static boolean stagePassed = true;
-    private boolean isStagedPlayedSound, gameFinished;
+    private boolean gameFinished;
 
     /*
      * Score related types
@@ -191,7 +188,7 @@ public class GameView extends View {
     /*
      * Leaderboard
      */
-    private long leaderboardScore;
+//    private long leaderboardScore;
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -231,9 +228,9 @@ public class GameView extends View {
         runUpdater();
     }
 
-    private boolean isScoreResultValid(final Leaderboards.LoadPlayerScoreResult scoreResult) {
-        return scoreResult != null && GamesStatusCodes.STATUS_OK == scoreResult.getStatus().getStatusCode() && scoreResult.getScore() != null;
-    }
+//    private boolean isScoreResultValid(final Leaderboards.LoadPlayerScoreResult scoreResult) {
+//        return scoreResult != null && GamesStatusCodes.STATUS_OK == scoreResult.getStatus().getStatusCode() && scoreResult.getScore() != null;
+//    }
 
     private void initDrawObjects() {
         waterBackground = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background_water), WATER_SPEED, true);
@@ -292,8 +289,8 @@ public class GameView extends View {
         scorePaint.setTypeface(Typeface.DEFAULT_BOLD);
         scorePaint.setColor(0xff_dd_c4_52);
         alphaLifePaint.setAlpha(50);
-        shootingCirclePaint.setColor(0xff_ff_00_00);
-        shootingCirclePaint.setAntiAlias(true);
+//        shootingCirclePaint.setColor(0xff_ff_00_00);
+//        shootingCirclePaint.setAntiAlias(true);
     }
 
     private void updateScore(int newScore) {
@@ -339,13 +336,13 @@ public class GameView extends View {
 
         drawScore(canvas);
         drawLife(canvas);
-
-        if(stagePassed && stageLabels[currentStage].canDraw) {
-            if(currentStage != 0 && !isStagedPlayedSound) {
-                MainActivity.soundEffectsUtil.play(R.raw.level_complete);
-                isStagedPlayedSound = true;
-            }
-        }
+//
+//        if(stagePassed && stageLabels[currentStage].canDraw) {
+//            if(currentStage != 0 && !isStagedPlayedSound) {
+//                MainActivity.soundEffectsUtil.play(R.raw.level_complete);
+//                isStagedPlayedSound = true;
+//            }
+//        }
         if(!gameFinished) stageLabels[currentStage].draw(canvas);
         else stageLabels[finishLabelIndex].draw(canvas);
         if(stageLabels[newRecordIndex].canDraw) stageLabels[newRecordIndex].draw(canvas);
@@ -512,11 +509,14 @@ public class GameView extends View {
     }
 
     private void levelUp() {
+        MainActivity.soundEffectsUtil.play(R.raw.level_complete);
         currentStage++;
         stagePassed = true;
 
         if(currentStage == 4) {
             MainActivity.musicPlayer.switchMusic(R.raw.music_2);
+            characters[0].setPopulateDuration(1000);
+            characters[1].setPopulateDuration(1400);
             life.setSpeed(8);
             gun.setSpeed(9);
             shield.setSpeed(10);
@@ -524,13 +524,14 @@ public class GameView extends View {
         }
         else if(currentStage == 8) {
             MainActivity.musicPlayer.switchMusic(R.raw.music_3);
+            characters[2].setPopulateDuration(1600);
 //            mobsStartIndex += 2;
             life.setSpeed(10);
             gun.setSpeed(11);
             shield.setSpeed(12);
             gun.setPopulationTime(15000);
         }
-        isStagedPlayedSound = isDark = characters[Character.octopusIndex].term = false;
+        isDark = characters[Character.octopusIndex].term = false;
         for (int i = mobsStartIndex; i < stageMobs[currentStage]; i++) {
             characters[i].setFirstPopulation(true);
             characters[i].restartPopulation();
@@ -582,21 +583,24 @@ public class GameView extends View {
 
     private void updateLeaderBoard(final int finishedScore) {
         if(isSignedIn()) {
-            Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,
-                    getResources().getString(R.string.leaderboard_top_divers),
-                    LeaderboardVariant.TIME_SPAN_ALL_TIME, LeaderboardVariant.COLLECTION_PUBLIC)
-                    .setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+            Games.Leaderboards.submitScore(mGoogleApiClient, getResources().getString(R.string.leaderboard_top_divers), finishedScore);
 
-                        @Override
-                        public void onResult(@NonNull Leaderboards.LoadPlayerScoreResult arg0) {
-                            if(isScoreResultValid(arg0)) {
-                                leaderboardScore = arg0.getScore().getRawScore();
-                                if(leaderboardScore < finishedScore) {
-                                    Games.Leaderboards.submitScore(mGoogleApiClient, getResources().getString(R.string.leaderboard_top_divers), finishedScore);
-                                }
-                            }
-                        }
-                    });
+//            Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,
+//                    getResources().getString(R.string.leaderboard_top_divers),
+//                    LeaderboardVariant.TIME_SPAN_ALL_TIME, LeaderboardVariant.COLLECTION_PUBLIC)
+//                    .setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+//
+//                        @Override
+//                        public void onResult(@NonNull Leaderboards.LoadPlayerScoreResult arg0) {
+//                            if(isScoreResultValid(arg0)) {
+//                                leaderboardScore = arg0.getScore().getRawScore();
+//                                if(leaderboardScore < finishedScore) {
+//                                    Games.Leaderboards.submitScore(mGoogleApiClient, getResources().getString(R.string.leaderboard_top_divers), finishedScore);
+//                                    Toast.makeText(getContext(), "Score was updated in leaderboard !", Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        }
+//                    });
         }
     }
 
